@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import Header from "./components/Header.jsx"
 import SmallHeader from "./components/SmallHeader.jsx"
 import ShowcaseSection from "./components/ShowcaseSection.jsx"
+import ProductsCat from "./components/ProductsCat.jsx"
 
 import './App.css'
 
@@ -15,6 +16,7 @@ function App() {
             <Header />
             <SmallHeader />
             <ShowcaseSection />
+            <ProductsCat />
         </div>
     )
 }
