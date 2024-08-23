@@ -9,7 +9,7 @@ services:
       - api
     build: ./client
     ports:
-      - 5173:5173
+      - 4000:4000
     environment:
       VITE_URL_API: http://localhost:8080
     develop:
