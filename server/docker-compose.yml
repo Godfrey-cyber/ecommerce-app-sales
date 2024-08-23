@@ -1,0 +1,52 @@
+# docker-compose.yml
+
+version: "3.8"
+
+# services and containers to be rune images
+services:
+  web:
+    depends_on:
+      - api
+    build: ./client
+    ports:
+      - 5173:5173
+    environment:
+      VITE_URL_API: http://localhost:8080
+    develop:
+      watch:
+        - path: ./client/package.json
+          action: rebuild
+        - path: ./client/package-lock.json
+          action: rebuild
+        - path: ./client
+          target: /app
+          action: sync
+
+  api:
+    depends_on:
+      - db
+    build: ./server
+    ports:
+      - 8080:8080
+    environment:
+      - MONGO_URL=mongodb+srv://wave-ecommerce:com-shop-0860@cluster0.vqtnd.mongodb.net/commerce-sale?retryWrites=true&w=majority
+    # volumes:
+      # - ./server:/app
+      # - /app/node_modules
+    develop:
+      watch:
+        - path: ./server/package.json
+          action: rebuild
+        - path: ./server/package-lock.json
+          action: rebuild
+        - path: ./server
+          target: /app
+          action: sync
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    # volumes:
+      # - hello:/data/db
+# volumes:
+  # hello:
