@@ -5,6 +5,7 @@ import Header from "./components/Header.jsx"
 import SmallHeader from "./components/SmallHeader.jsx"
 import ShowcaseSection from "./components/ShowcaseSection.jsx"
 import ProductsCat from "./components/ProductsCat.jsx"
+import MoreProducts from "./components/MoreProducts.jsx"
 
 import './App.css'
 
@@ -17,6 +18,7 @@ function App() {
             <SmallHeader />
             <ShowcaseSection />
             <ProductsCat />
+            <MoreProducts />
         </div>
     )
 }
