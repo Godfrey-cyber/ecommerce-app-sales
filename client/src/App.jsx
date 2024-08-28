@@ -7,6 +7,8 @@ import ShowcaseSection from "./components/ShowcaseSection.jsx"
 import ProductsCat from "./components/ProductsCat.jsx"
 import MoreProducts from "./components/MoreProducts.jsx"
 import BestSellers from "./components/BestSellers.jsx"
+import NewArrivals from "./components/NewArrivals.jsx"
+import Test from "./components/Test.jsx"
 
 import './App.css'
 
@@ -21,6 +23,8 @@ function App() {
             <ProductsCat />
             <MoreProducts />
             <BestSellers />
+            <NewArrivals />
+            <Test /> />
         </div>
     )
 }

@@ -6,6 +6,7 @@ export const products = [
       "price": 999.99,
       "description": "The latest Apple iPhone 14 with 128GB storage, 6.1-inch display, and advanced camera system.",
       "stock": 50,
+      "discount": 25,
       "brand": "Apple",
       "rating": 4.7,
       "image": "https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180",
@@ -29,6 +30,7 @@ export const products = [
       "price": 899.99,
       "description": "Samsung Galaxy S23 with 256GB storage, 6.8-inch display, and excellent camera capabilities.",
       "stock": 30,
+      "discount": 10,
       "brand": "Samsung",
       "rating": 4.5,
       "image": "https://electrox.arenacommerce.com/cdn/shop/products/macpro.png?v=1649400995&width=180",
@@ -52,6 +54,7 @@ export const products = [
       "price": 349.99,
       "description": "Noise-cancelling wireless headphones with high-quality sound and comfort.",
       "stock": 75,
+      "discount": 15,
       "brand": "Sony",
       "rating": 4.8,
       "image": "https://electrox.arenacommerce.com/cdn/shop/products/watchsmart_990c1e8f-39b4-4b67-8b2d-68bcdc260006.png?v=1649400113&width=180",
@@ -75,6 +78,7 @@ export const products = [
       "price": 149.99,
       "description": "Comfortable and stylish Nike Air Max 270 sneakers with a large air cushioning unit.",
       "stock": 120,
+      "discount": 30,
       "brand": "Nike",
       "rating": 4.6,
       "image": "https://electrox.arenacommerce.com/cdn/shop/products/bluePhone_a39e84fa-4375-49b0-922c-cc70c9076080.png?v=1649399976&width=180",
@@ -98,6 +102,7 @@ export const products = [
       "price": 179.99,
       "description": "Advanced fitness tracker with health monitoring features, GPS, and long battery life.",
       "stock": 60,
+      "discount": 15,
       "brand": "Fitbit",
       "rating": 4.4,
       "image": "https://electrox.arenacommerce.com/cdn/shop/products/printer_e0a36a10-e05c-48ae-803e-dbae21ff92a6.png?v=1649400757&width=180",
@@ -121,6 +126,7 @@ export const products = [
       "price": 89.99,
       "description": "Versatile electric pressure cooker with multiple cooking functions, including slow cook, steam, and sauté.",
       "stock": 40,
+      "discount": 40,
       "brand": "Instant Pot",
       "rating": 4.7,
       "image": "https://electrox.arenacommerce.com/cdn/shop/products/ipadgreen_12974f4c-4274-4704-b489-9bc4ce10e211.png?v=1649400717&width=180",
@@ -137,4 +143,13 @@ export const products = [
         }
       ]
     }
+]
+
+export const categories = [
+  "Best Deals",
+  "TV & Video",
+  "Cameras",
+  "Audio",
+  "Cellphones",
+  "GPS & Navigation"
 ]
