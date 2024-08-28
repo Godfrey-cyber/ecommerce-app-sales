@@ -11,7 +11,7 @@ const NewArrivals = () => {
 					<span className="flex items-center text-center border-b-2 my-4 border-yellow-500 cursor-pointer py-1">
 						<p className="text-lg font-semibold text-gray-800">New Arrivals</p>
 					</span>
-					<div className="flex justify-between items-center">
+					<div className="flex justify-between items-center divide-x">
 						
 					
 					{products.map(item => (

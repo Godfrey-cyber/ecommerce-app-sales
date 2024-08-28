@@ -20,27 +20,12 @@ const MoreProducts = () => {
 			<div className="grid grid-cols-12 gap-x-1">
 				{/*two prods*/}
 				<div className="col-span-4 flex flex-col space-x-2 items-center">
-					<div className="flex items-center justify-between">
-						{products.slice(2, 4).map(item => (
-							<div className="flex flex-col space-y-2 w-48 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
+					<div className="grid grid-cols-2 gap-2 divide-x">
+						{products.slice(2, 6).map(item => (
+							<div className="flex flex-col space-y-2 w-52  h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
 								<p className="text-xs text-gray-500">{item.category}</p>
 								<p className="text-sm text-blue-600 font-medium">{item.name.length > 19 ? item.name.slice(0,18) : item.name}</p>
-								<img className="h-32 w-44 cursor-pointer" src={item.image} alt="" />
-								<span className="flex items-center justify-between w-full">
-									<p className="text-sm font-normal text-lg text-gray-800">{item.price}</p>
-									<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
-										<MdOutlineAddShoppingCart className="items-center" />
-									</span>
-								</span>
-							</div>
-						))}
-					</div>
-					<div className="flex items-center justify-between">
-						{products.slice(0, 2).map(item => (
-							<div className="flex flex-col space-y-2 w-48 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
-								<p className="text-xs text-gray-500">{item.category}</p>
-								<p className="text-sm text-blue-600 font-medium">{item.name.length > 19 ? item.name.slice(0,18) : item.name}</p>
-								<img className="h-32 w-44 cursor-pointer" src={item.image} alt="" />
+								<img className="h-32 min-w-40 cursor-pointer object-cover" src={item.image} alt="" />
 								<span className="flex items-center justify-between w-full">
 									<p className="text-sm font-normal text-lg text-gray-800">{item.price}</p>
 									<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
@@ -66,7 +51,7 @@ const MoreProducts = () => {
 								<img className="h-10 w-10 cursor-pointer items-center" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
 							</span>
 							<span className="h-12 w-12 border border-gray-300 items-center flex">
-								<img className="h-10 w-10 cursor-pointer items-center" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
+								<img className="h-10 w-10 cursor-pointer items-center object-cover" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
 							</span>
 							<span className="h-12 w-12 border border-gray-300 items-center flex">
 								<img className="h-10 w-10 cursor-pointer items-center" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
@@ -83,12 +68,12 @@ const MoreProducts = () => {
 				</div>
 				{/*two prods*/}
 				<div className="col-span-4 flex flex-col space-x-2 items-center">
-					<div className="flex items-center justify-between">
-						{products.slice(5, 7).map(item => (
-							<div className="flex flex-col space-y-2 w-48 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
+					<div className="grid grid-cols-2 gap-2 divide-x">
+						{products.slice(0, 4).map(item => (
+							<div className="flex flex-col space-y-2 w-52 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
 								<p className="text-xs text-gray-500">{item.category}</p>
 								<p className="text-sm text-blue-600 font-medium">{item.name.length > 19 ? item.name.slice(0,18) : item.name}</p>
-								<img className="h-32 w-44 cursor-pointer" src={item.image} alt="" />
+								<img className="h-32 min-w-40 cursor-pointer object-cover" src={item.image} alt="" />
 								<span className="flex items-center justify-between w-full">
 									<p className="text-sm font-normal text-lg text-gray-800">{item.price}</p>
 									<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
@@ -98,7 +83,7 @@ const MoreProducts = () => {
 							</div>
 						))}
 					</div>
-					<div className="flex items-center justify-between">
+					{/*<div className="flex items-center justify-between divide-x">
 						{products.slice(3, 5).map(item => (
 							<div className="flex flex-col space-y-2 w-48 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
 								<p className="text-xs text-gray-500">{item.category}</p>
@@ -112,7 +97,7 @@ const MoreProducts = () => {
 								</span>
 							</div>
 						))}
-					</div>
+					</div>*/}
 				</div>
 			</div>
 		</section>
