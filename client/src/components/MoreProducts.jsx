@@ -74,9 +74,9 @@ const MoreProducts = () => {
 						<p className="text-lg text-gray-500">Donna Karan</p>
 						
 						<p className="text-sm text-blue-600 font-medium">Vivo Y03 2024</p>
-						<img className="h-80 w-80 cursor-pointer" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
+						<img className="h-80 w-80 cursor-pointer" src="https://electrox.arenacommerce.com/cdn/shop/products/1.png?v=1649393409&width=540" alt="" />
 						<div className="flex space-x-3 items-center">
-							<span className="h-12 w-12 border border-gray-300 items-center flex">
+							<span className="h-12 w-12 border border-gray-300 hover:border-b-2 hover:border-b-yellow-400 items-center flex">
 								<img className="h-10 w-10 cursor-pointer items-center" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
 							</span>
 							<span className="h-12 w-12 border border-gray-300 items-center flex">
