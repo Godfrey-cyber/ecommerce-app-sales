@@ -29,8 +29,8 @@ const ProductsCat = () => {
 							<hr className="bg-gray-300 border-b border-gray-300 my-1" />
 						</span>
 						<span className="h-[1px] bg-gray-300 w-full hidden group-hover:inline-flex"></span>
-						<div className="flex justify-between items-center w-full hidden group-hover:inline-flex transition delay-400 mt-2">
-							<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
+						<div className="flex justify-between items-center w-full hidden group-hover:inline-flex transition duration-300 ease-in-out mt-2">
+							<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full ">
 								<FaRegHeart className="items-center" />
 							</span>
 							<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">

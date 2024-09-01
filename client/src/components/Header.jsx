@@ -7,7 +7,7 @@ const Header = () => {
 	return (
 		<div className="bg-yellow-400 h-16 w-full px-20">
 			<div className="flex justify-between items-center h-full">
-				<span className="text-4xl font-bold text-gray-800">electro.</span>
+				<div className="text-4xl font-bold flex text-gray-800">electro<span className="text-white">.</span></div>
 				{/*  search */}
 				<div className="flex items-center">
 					<span className="border-0 bg-white w-[400px] h-10 rounded-tl-3xl rounded-bl-3xl">
@@ -25,7 +25,7 @@ const Header = () => {
 						<span className="text-gray-800"> 
 							<FaRegHeart className="text-xl"/>
 						</span>
-						<span className="bg-black absolute top-2 left-1 text-white rounded-full items-center h-5 w-5 flex justify-center">
+						<span className="bg-black absolute top-2 left-1 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
 							<p className="text-xs items-center">0</p>
 						</span>
 					</div>
@@ -33,7 +33,7 @@ const Header = () => {
 						<span className="text-gray-800">
 							<BsBasket3Fill className="text-xl" />
 						</span>
-						<span className="bg-black absolute top-2 left-1 text-white rounded-full items-center h-5 w-5 flex justify-center">
+						<span className="bg-black absolute top-2 hover:animate-bounce left-1 text-white rounded-full items-center h-5 w-5 flex justify-center">
 							<p className="text-xs items-center">0</p>
 						</span>
 						<span className="text-gray-800 pl-2">Ksh. 10,250.00 </span>
