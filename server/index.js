@@ -5,7 +5,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import helmet from 'helmet'
 
-// import userRoutes from "./routes/user.js"
+import userRoutes from "./routes/users.js"
 import postRoutes from "./routes/posts.js"
 // import authRoutes from "./routes/user.js"
 
@@ -17,6 +17,14 @@ app.use(cookieParser())
 
 app.use(cors({
     origin: process.env.CLIENT_URL,
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
+    allowHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Cache-Control",
+        "Expires",
+        "Pragma"
+    ]
     credentials: true
 }))
 
