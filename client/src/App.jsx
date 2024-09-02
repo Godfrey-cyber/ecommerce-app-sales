@@ -8,6 +8,8 @@ import ProductsCat from "./components/ProductsCat.jsx"
 import MoreProducts from "./components/MoreProducts.jsx"
 import BestSellers from "./components/BestSellers.jsx"
 import NewArrivals from "./components/NewArrivals.jsx"
+import ProfiledProducts from "./components/ProfiledProducts.jsx"
+import EmailSignUp from "./components/EmailSignUp.jsx"
 import Test from "./components/Test.jsx"
 
 import './App.css'
@@ -24,6 +26,8 @@ function App() {
             <MoreProducts />
             <BestSellers />
             <NewArrivals />
+            <ProfiledProducts />
+            <EmailSignUp />
             <Test /> />
         </div>
     )
