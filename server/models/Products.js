@@ -9,11 +9,13 @@ const ProductSchema = new mongoose.Schema({
 	},
 	image: { 
 		type: String,
-		default: "https://sky.garden/assets/loading-spinners.svg"
+		default: "https://sky.garden/assets/loading-spinners.svg",
+		required: true
 	},
 	condition: {
 		type: String, required: true, enum: ["New", "Refurblished", "Home Made", "Generic"], default: "New"
 	},
+	brand: { type: String, required: true },
 	review: { 
 		type: mongoose.Schema.ObjectId, 
 		ref: "Review"
@@ -28,12 +30,12 @@ const ProductSchema = new mongoose.Schema({
 		type: Number, default: 0,
 	},
 	userId: { 
-		type: mongoose.Schema.ObjectId, ref: "User", 
-		required: [true, "A Product must belong to a user"] 
+		type: mongoose.Schema.ObjectId, 
+		// ref: "User", required: [true, "A Product must belong to a user"] 
 	},
 	catId: { 
 		type: mongoose.Schema.ObjectId, 
-		ref: "Category", required: [true, "A Product must belong to a Category"] 
+		// ref: "Category", required: [true, "A Product must belong to a Category"] 
 	}
 }, { timestamps: true } )
 

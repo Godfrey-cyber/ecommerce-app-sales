@@ -6,7 +6,7 @@ import mongoose from 'mongoose'
 import helmet from 'helmet'
 
 import userRoutes from "./routes/users.js"
-import postRoutes from "./routes/posts.js"
+import productRoutes from "./routes/products.js"
 // import authRoutes from "./routes/user.js"
 
 dotenv.config()
@@ -37,7 +37,7 @@ mongoose.connection.on("disconnected", (error) => {
 });
 
 app.use("/v1/api/users", userRoutes);
-app.use("/v1/api/posts", postRoutes);
+app.use("/v1/api/products", productRoutes);
 // app.use("/v1/api/auth", authRoutes);
 
 app.listen(PORT, () => console.log(`Success 💯! Database running on port: ${PORT} 👍`))
