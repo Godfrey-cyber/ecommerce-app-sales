@@ -70,7 +70,7 @@ export const registerUser = async(req, res) => {
 
 export const getAllUsers = async(req, res) => {
     try {
-        const users = await Users.find()
+        const users = req.query.new ? await Users.find().sort({ createdAt: -1} ).limit(5).select("-password") : await Users.find().select("-password")
         // const { _id, }
         return res.status(200).json({ 
             users, 
@@ -89,3 +89,32 @@ export const getAllUsers = async(req, res) => {
         }
     }
 }
+
+export const loginStatus = async(req,res) => {
+    const {token} = req.cookies
+    if (!token) {
+        return res.status(400).json({
+            msg: "🚫 No token found",
+            statusText: "Fail",
+            statusCode: 400,
+            loginStatus: false
+        })
+    }
+    const isTokenValid = jwt.verify(token, process.env.JWT_TOKEN)
+    if (isTokenValid) {
+        res.status(200).json({
+            msg: "You are Logged in",
+            statusText: "ok",
+            statusCode: 200,
+            loginStatus: true
+        })
+    }else {
+        res.status(400).json({
+            msg: "You are not Logged in",
+            statusText: "Fail",
+            statusCode: 400,
+            loginStatus: false
+        })
+    }
+}
+

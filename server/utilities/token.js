@@ -18,17 +18,7 @@ export const generateTokens = (userId) => {
         accessToken
     }
 }
-
-// if user exixts
-export const checkifUserExists = async(response, email) => {
-    const userExists = await Users.findOne({ email })
-    // if (userExists) {
-    //     return response.status(400).json({ msg: "🚫 This email already exists!" })
-    // }
-    // return userExists
-}
-
-// redis
+    // redis
 export const storeRefreshTokens = async (userId, refreshToken) => {
     // await redis.set(`refresh_token: ${userId}`, refreshToken, "EX", 7*24*60*60)
 }
@@ -65,5 +55,3 @@ redisClient.on('connect', () => {
 redisClient.on('error', (err) => {
   console.error('Redis error:', err);
 });
-
-// module.exports = redisClient;
