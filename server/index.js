@@ -24,20 +24,20 @@ app.use(cors({
         "Cache-Control",
         "Expires",
         "Pragma"
-    ]
+    ],
     credentials: true
 }))
 
 const MONGO_URL = process.env.MONGO_URL
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 5000
 
 mongoose.connect(MONGO_URL);
 mongoose.connection.on("disconnected", (error) => {
     console.log("❌ MongoDatabase disconnected❗", error)
 });
 
-// app.use("/v1/api/user", userRoutes);
-app.use("/v1/api/post", postRoutes);
+app.use("/v1/api/users", userRoutes);
+app.use("/v1/api/posts", postRoutes);
 // app.use("/v1/api/auth", authRoutes);
 
 app.listen(PORT, () => console.log(`Success 💯! Database running on port: ${PORT} 👍`))
