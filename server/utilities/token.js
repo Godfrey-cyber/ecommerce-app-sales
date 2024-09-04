@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import Users from "../models/User.js"
+import Token from "../models/Token.js"
 // import { redis } from "../redis.js"
 import redis from "redis"
 import dotenv from "dotenv"
@@ -18,9 +19,14 @@ export const generateTokens = (userId) => {
         accessToken
     }
 }
-    // redis
+    // store token in Db
 export const storeRefreshTokens = async (userId, refreshToken) => {
-    // await redis.set(`refresh_token: ${userId}`, refreshToken, "EX", 7*24*60*60)
+    await new Token({
+        userId,
+        token: refreshToken,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 7 * 24 * 60 * 1000 // 7 days
+    }).save()
 }
 
 export const setCookies = (res, accessToken, refreshToken) => {
