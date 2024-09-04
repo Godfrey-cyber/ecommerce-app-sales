@@ -21,11 +21,15 @@ export const generateTokens = (userId) => {
 }
     // store token in Db
 export const storeRefreshTokens = async (userId, refreshToken) => {
+    const token = await Token.findOne({ userId })
+    if (token) {
+        await Token.deleteOne()
+    }
     await new Token({
         userId,
         token: refreshToken,
         createdAt: Date.now(),
-        expiresAt: Date.now() + 7 * 24 * 60 * 1000 // 7 days
+        expiresAt: Date.now() + 7 * 24 * 60 * 1000 // -> 7 days
     }).save()
 }
 

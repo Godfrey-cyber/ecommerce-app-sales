@@ -1,4 +1,5 @@
 import Users from '../models/User.js'
+import Token from '../models/Token.js'
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import bcrypt from "bcryptjs"
@@ -47,7 +48,7 @@ export const registerUser = async(req, res) => {
         const newUser = await Users.create({ username, password, email })
        
         const { refreshToken, accessToken } = generateTokens(newUser._id) // authenticate
-        // await storeRefreshTokens(newUser._id, refreshToken)
+        await storeRefreshTokens(newUser._id, refreshToken)
         setCookies(res, accessToken, refreshToken)
         res.status(200).json({
             user: { _id: newUser._id, username: newUser.username, email: newUser.email, accessToken },
@@ -155,8 +156,9 @@ export const loginUser = async (req, res) => {
     try {
         if (userExists && ifPasswordIsCorrect) {
             const { refreshToken, accessToken } = generateTokens(userExists._id) // authenticate
-            // await storeRefreshTokens(newUser._id, refreshToken)
+            await storeRefreshTokens(userExists._id, refreshToken)
             setCookies(res, accessToken, refreshToken)
+            // console.log(userExists, refreshToken, accessToken)
             res.status(200).json({
                 user: { _id: userExists._id, username: userExists.username, email: userExists.email, accessToken },
                 statusText: "ok",
@@ -175,3 +177,79 @@ export const loginUser = async (req, res) => {
         }
     }
 }
+
+// logout user
+export const logoutUser = async (req, res) => {
+    const token = await Token.findOne({ userId: req.user._id})
+    if (token) {
+        await Token.deleteOne()
+    }
+    res.cookie('access_token', "", {
+        path: "/",
+        httpOnly: true,
+        expires: new Date(0),
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production"
+    })
+    return res.status(200).json({ message: "User has been successfully logged out" })
+}
+
+export const token = async (req, res) => {
+    const access_token = await Token.find()
+    res.status(200).json({ access_token })
+}
+
+export const refreshToken = async(req, res) => {
+    try {
+        const { refresh_token } = req.cookies
+        if (!refresh_token) {
+            return res.status(401).json({ msg: "Token not found" })
+        }
+        const verifyToken = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET)
+        const storedRefreshToken = await Token.findOne({ userId: verifyToken.userId })
+       
+        if (storedRefreshToken.token !== refresh_token) {
+            return res.status(401).json({ msg: "Invalid token!" })
+        }
+        const newAccessToken = jwt.sign({ userId: verifyToken.userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" })
+
+        res.cookie("newAccessToken", newAccessToken, {
+            path: '/',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000
+        })
+        return res.status(200).json({
+            msg: 'New access token created successfully',
+            newAccessToken,
+            statusCode: 200,
+            statusText: 'ok'
+        })
+        // console.log("\n")
+        // console.log("req.cookies =", req.cookies)
+        // console.log("\n")
+        // console.log("new_access_token =", newAccessToken)
+        // console.log("\n")
+        // console.log("refresh_token =", refresh_token)
+        // console.log("\n")
+        // console.log("stored_refresh_token =", storedRefreshToken.token)
+        // console.log("\n")
+        // console.log((storedRefreshToken.token == refresh_token))
+        // console.log("\n")
+        // console.log("verifyToken.userId =", verifyToken)
+    } catch (error) {
+        if (error) {
+            res.status(400).json({
+                msg: "Something went wrong",
+                statusText: "Failure",
+                statusCode: 401,
+                error
+            })
+        }
+    }
+}
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ3MDhiNzBlMTk2YmM0ODU5ZjhkNTIiLCJpYXQiOjE3MjU0NTE1MjQsImV4cCI6MTcyNjA1NjMyNH0.sPwG8zfPm31-UZGQbRjlPK91JB26kOtqh9rCSbMgP7Y
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ3MDhiNzBlMTk2YmM0ODU5ZjhkNTIiLCJpYXQiOjE3MjU0NTE1MjQsImV4cCI6MTcyNjA1NjMyNH0.sPwG8zfPm31-UZGQbRjlPK91JB26kOtqh9rCSbMgP7Y
