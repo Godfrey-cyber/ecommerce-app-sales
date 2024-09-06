@@ -10,13 +10,12 @@ import BestSellers from "./components/BestSellers.jsx"
 import NewArrivals from "./components/NewArrivals.jsx"
 import ProfiledProducts from "./components/ProfiledProducts.jsx"
 import EmailSignUp from "./components/EmailSignUp.jsx"
+import Footer from "./components/Footer.jsx"
 import Test from "./components/Test.jsx"
 
 import './App.css'
 
 function App() {
-    const [count, setCount] = useState(0)
-
     return (
         <div className="">
             <Header />
@@ -28,7 +27,8 @@ function App() {
             <NewArrivals />
             <ProfiledProducts />
             <EmailSignUp />
-            <Test /> />
+            <Footer />
+            {/*<Test /> />*/}
         </div>
     )
 }

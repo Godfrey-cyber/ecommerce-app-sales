@@ -142,8 +142,104 @@ export const products = [
           "comment": "Great product, though a bit bulky."
         }
       ]
-    }
-]
+    },
+    {
+      "id": "7",
+      "name": "Instant Pot Duo 7-in-1",
+      "category": "Home Appliances",
+      "price": 89.99,
+      "description": "Versatile electric pressure cooker with multiple cooking functions, including slow cook, steam, and sauté.",
+      "stock": 40,
+      "discount": 40,
+      "brand": "Instant Pot",
+      "rating": 4.7,
+      "image": "https://electrox.arenacommerce.com/cdn/shop/products/ipadgreen_12974f4c-4274-4704-b489-9bc4ce10e211.png?v=1649400717&width=180",
+      "reviews": [
+        {
+          "user": "SophiaYoung",
+          "rating": 5,
+          "comment": "A must-have for any kitchen. So convenient and easy to use!"
+        },
+        {
+          "user": "JamesMiller",
+          "rating": 4,
+          "comment": "Great product, though a bit bulky."
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Instant Pot Duo 7-in-1",
+      "category": "Home Appliances",
+      "price": 89.99,
+      "description": "Versatile electric pressure cooker with multiple cooking functions, including slow cook, steam, and sauté.",
+      "stock": 40,
+      "discount": 40,
+      "brand": "Instant Pot",
+      "rating": 4.7,
+      "image": "https://electrox.arenacommerce.com/cdn/shop/products/ipadgreen_12974f4c-4274-4704-b489-9bc4ce10e211.png?v=1649400717&width=180",
+      "reviews": [
+        {
+          "user": "SophiaYoung",
+          "rating": 5,
+          "comment": "A must-have for any kitchen. So convenient and easy to use!"
+        },
+        {
+          "user": "JamesMiller",
+          "rating": 4,
+          "comment": "Great product, though a bit bulky."
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Instant Pot Duo 7-in-1",
+      "category": "Home Appliances",
+      "price": 89.99,
+      "description": "Versatile electric pressure cooker with multiple cooking functions, including slow cook, steam, and sauté.",
+      "stock": 40,
+      "discount": 40,
+      "brand": "Instant Pot",
+      "rating": 4.7,
+      "image": "https://electrox.arenacommerce.com/cdn/shop/products/ipadgreen_12974f4c-4274-4704-b489-9bc4ce10e211.png?v=1649400717&width=180",
+      "reviews": [
+        {
+          "user": "SophiaYoung",
+          "rating": 5,
+          "comment": "A must-have for any kitchen. So convenient and easy to use!"
+        },
+        {
+          "user": "JamesMiller",
+          "rating": 4,
+          "comment": "Great product, though a bit bulky."
+        }
+      ]
+    },
+    {
+    "id": "10",
+    "name": "Instant Pot Duo 7-in-1",
+    "category": "Home Appliances",
+    "price": 89.99,
+    "description": "Versatile electric pressure cooker with multiple cooking functions, including slow cook, steam, and sauté.",
+    "stock": 40,
+    "discount": 40,
+    "brand": "Instant Pot",
+    "rating": 4.7,
+    "image": "https://electrox.arenacommerce.com/cdn/shop/products/ipadgreen_12974f4c-4274-4704-b489-9bc4ce10e211.png?v=1649400717&width=180",
+    "reviews": [
+      {
+        "user": "SophiaYoung",
+        "rating": 5,
+        "comment": "A must-have for any kitchen. So convenient and easy to use!"
+      },
+      {
+        "user": "JamesMiller",
+        "rating": 4,
+        "comment": "Great product, though a bit bulky."
+      }
+    ]
+  }
+] 
 
 export const categories = [
   "Best Deals",
