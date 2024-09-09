@@ -21,15 +21,24 @@ services:
         - path: ./client
           target: /app
           action: sync
-
+  
+  redis:
+    image: redis:alpine
+    # container_name: redis
+    ports:
+      - '6379:6379'
+          
   api:
     depends_on:
       - db
+      - redis
     build: ./server
     ports:
       - 8080:8080
     environment:
       - MONGO_URL=mongodb+srv://wave-ecommerce:com-shop-0860@cluster0.vqtnd.mongodb.net/commerce-sale?retryWrites=true&w=majority
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     # volumes:
       # - ./server:/app
       # - /app/node_modules

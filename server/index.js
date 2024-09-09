@@ -29,7 +29,7 @@ app.use(cors({
 }))
 
 const MONGO_URL = process.env.MONGO_URL
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8080
 
 mongoose.connect(MONGO_URL);
 mongoose.connection.on("disconnected", (error) => {

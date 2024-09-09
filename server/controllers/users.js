@@ -226,18 +226,6 @@ export const refreshToken = async(req, res) => {
             statusCode: 200,
             statusText: 'ok'
         })
-        // console.log("\n")
-        // console.log("req.cookies =", req.cookies)
-        // console.log("\n")
-        // console.log("new_access_token =", newAccessToken)
-        // console.log("\n")
-        // console.log("refresh_token =", refresh_token)
-        // console.log("\n")
-        // console.log("stored_refresh_token =", storedRefreshToken.token)
-        // console.log("\n")
-        // console.log((storedRefreshToken.token == refresh_token))
-        // console.log("\n")
-        // console.log("verifyToken.userId =", verifyToken)
     } catch (error) {
         if (error) {
             res.status(400).json({
