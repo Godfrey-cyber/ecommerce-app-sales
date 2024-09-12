@@ -4,7 +4,7 @@ import { MdChevronRight } from "react-icons/md";
 const ShowcaseSection = () => {
 	return (
 		<div className="grid grid-cols-12 h-[450px] w-full px-2 md:px-10 lg:px-20 my-8 gap-y-6 lg:gap-x-6">
-			<div className="col-span-12 lg:col-span-9 flex justify-between items-center bg-gray-100  px-5 md:px-10  w-full h-full">
+			<div className="col-span-12 lg:col-span-9 flex justify-between items-center bg-gray-100  px-7 py-4 md:px-10  w-full h-full">
 				{/*desc*/}
 				<div className="flex flex-col space-y-4 lg:space-y-3 w-1/2">
 					<p className="text-3xl lg:text-6xl text-gray-800">THE NEW <span>STANDARD</span></p>
