@@ -7,7 +7,7 @@ import { products, categories } from "../assets/products.js"
 const MoreProducts = () => {
 	// const name = products.slice(0,2).map(item => item)
 	return (
-		<section className="w-full h-fit flex flex-col space-y-3 mb-5 px-10">
+		<section className="w-full h-fit flex flex-col space-y-3 mb-5 px-4 lg:px-10">
 			<div className="flex space-x-5 justify-center px-30 my-2 border-b border-gray-300 py-2 w-full overflow-x-scroll scrollbar-hide mx-auto h-10">
 				{categories.map(cat => (
 					<span key={cat} className="flex text-sm font-normal active:border-2 hover:rounded-xl py-.5 px-2 hover:border-yellow-400 w-fit cursor-pointer traansition-all delay-200">{cat}</span>

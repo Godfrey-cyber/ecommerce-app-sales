@@ -6,7 +6,7 @@ import { products } from "../assets/products.js"
 
 const ProductsCat = () => {
 	return (
-		<div className="w-full h-fit bg-gray-50 px-10">
+		<div className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-10">
 			<span className="flex items-center space-x-6 border-b border-gray-300 py-2">
 				<p className="text-lg font-medium active:border-b active:border-yellow-400 cursor-pointer">Featured</p>
 				<p className="text-lg font-light active:border-b active:border-yellow-400 cursor-pointer">Top Rated</p>
