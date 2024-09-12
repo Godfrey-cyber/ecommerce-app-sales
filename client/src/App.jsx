@@ -17,7 +17,7 @@ import './App.css'
 
 function App() {
     return (
-        <div className="flex-col h-fit">
+        <div className="flex-col font-['Nunito']">
             <Header />
             <SmallHeader />
             <ShowcaseSection />

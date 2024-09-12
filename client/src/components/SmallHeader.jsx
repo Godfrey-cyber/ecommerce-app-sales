@@ -3,13 +3,13 @@ import { IoChevronDownSharp } from "react-icons/io5";
 
 const SmallHeader = () => {
 	return (
-		<div className="flex justify-between items-center bg-white h-9 px-20 border-b border-gray-300 w-full px-5 overflow-x-hidden">
-			<span className="hidden lg:flex items-center space-x-1 hover:cursor-pointer">
+		<div className="flex justify-center items-center bg-white h-9 px-20 border-b border-gray-300 w-full px-5 overflow-x-hidden">
+			<span className="hidden lg:flex justify-center items-center space-x-1 hover:cursor-pointer w-full">
 				<p className="text-sm font-semibold text-black">All Departments</p>
 				<IoChevronDownSharp className="text-black "/>
 			</span>
 			{/* middle div*/}
-			<div className="flex justify-center lg:justify-between items-center space-x-3 w-full">
+			<div className="flex justify-center  items-center space-x-3 w-full">
 				<span className="flex items-center space-x-1">
 					<p className="text-sm font-light text-gray-700">Home</p>
 					<IoChevronDownSharp className="text-black "/>
@@ -28,7 +28,7 @@ const SmallHeader = () => {
 				</span>
 			</div>
 			{/*shipping info*/}
-			<span className="hidden lg:flex text-sm font-normal text-gray-700">Free Shipping on Orders Ksh. 50,000+</span>
+			<span className="hidden lg:flex text-sm font-normal justify-center text-gray-700 w-full">Free Shipping on Orders Ksh. 50,000+</span>
 		</div>
 	)
 }
