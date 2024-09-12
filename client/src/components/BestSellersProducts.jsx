@@ -5,7 +5,7 @@ import { MdOutlineAddShoppingCart } from "react-icons/md";
 const BestSellersProducts = () => {
 	return (
 		<div className="w-full h-fit my-8">
-			<div className="grid grid-rows-2 grid-flow-col gap-y-2 w-full divide-x overflow-x-scroll scrollbar-hide">
+			<div className="grid grid-rows-2 grid-flow-col gap-y-2 w-full divide-x overflow-x-scroll">
 				{products.map(item => (
 					// <div key={item.id} className=" w-full">
 						<div className="flex justify-between items-center space-y-2 p-4 rounded-md hover:shadow-2xl shadow-gray-800 items-center min-w-80 relative group">

@@ -7,12 +7,12 @@ import { products } from "../assets/products.js"
 const ProductsCat = () => {
 	return (
 		<div className="w-full h-fit bg-gray-50 px-10">
-			<span className="flex items-center space-x-6  border-b border-gray-300 py-2">
+			<span className="flex items-center space-x-6 border-b border-gray-300 py-2">
 				<p className="text-lg font-medium active:border-b active:border-yellow-400 cursor-pointer">Featured</p>
 				<p className="text-lg font-light active:border-b active:border-yellow-400 cursor-pointer">Top Rated</p>
 				<p className="text-lg font-light active:border-b active:border-yellow-400 cursor-pointer">On sale</p>
 			</span>
-			<div className="grid grid-cols-6 items-center my-8 divide-x">
+			<div className="grid grid-cols-2 lg:grid-cols-6 items-center my-8 divide-x">
 				{/*products*/}
 				{products.map(item => (
 					<div key={item.id} className="flex flex-col w-50 h-80 p-4 rounded-sm hover:shadow-lg shadow-gray-500 items-center group">

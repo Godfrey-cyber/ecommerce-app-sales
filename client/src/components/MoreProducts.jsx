@@ -8,7 +8,7 @@ const MoreProducts = () => {
 	// const name = products.slice(0,2).map(item => item)
 	return (
 		<section className="w-full h-fit flex flex-col space-y-3 mb-5 px-10">
-			<div className="flex space-x-5 justify-center px-30 my-2 border-b border-gray-300 py-2 w-full mx-auto h-10">
+			<div className="flex space-x-5 justify-center px-30 my-2 border-b border-gray-300 py-2 w-full overflow-x-scroll scrollbar-hide mx-auto h-10">
 				{categories.map(cat => (
 					<span key={cat} className="flex text-sm font-normal active:border-2 hover:rounded-xl py-.5 px-2 hover:border-yellow-400 w-fit cursor-pointer traansition-all delay-200">{cat}</span>
 				))}
@@ -17,7 +17,7 @@ const MoreProducts = () => {
 			{/*products*/}
 			<div className="grid grid-cols-12 gap-x-1">
 				{/*two prods*/}
-				<div className="col-span-4 flex flex-col space-x-2 items-center">
+				<div className="col-span-12 lg:col-span-4 flex flex-col space-x-2 items-center">
 					<div className="grid grid-cols-2 gap-2 divide-x">
 						{products.slice(2, 6).map(item => (
 							<div key={item.id} className="flex flex-col space-y-2 w-52  h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
@@ -35,7 +35,7 @@ const MoreProducts = () => {
 					</div>
 				</div>
 				{/*one product*/}
-				<div className="col-span-4 flex-col">
+				<div className="col-span-12 lg:col-span-4 flex-col">
 					<div className="flex flex-col space-y-2 rounded-sm hover:shadow-3xl h-full justify-center items-center shadow-gray-800 items-center relative hover:border hover:border-gray-300">
 						<span className="flex flex-col items-center justify-center space-x-1 absolute top-20 right-4 bg-yellow-400 rounded-full h-16 w-16">
 								<p className="text-sm font-light text-black">Save</p>
@@ -65,7 +65,7 @@ const MoreProducts = () => {
 
 				</div>
 				{/*two prods*/}
-				<div className="col-span-4 flex flex-col space-x-2 items-center">
+				<div className="col-span-12 lg:col-span-4 flex flex-col space-x-2 items-center">
 					<div className="grid grid-cols-2 gap-2 divide-x">
 						{products.slice(0, 4).map(item => (
 							<div key={item.id} className="flex flex-col space-y-2 w-52 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
