@@ -4,14 +4,18 @@ import cookieParser from "cookie-parser"
 import cors from 'cors'
 import mongoose from 'mongoose'
 import helmet from 'helmet'
+import { authMiddleware } from "../middleWare/authMiddleware.js"
 
 import userRoutes from "./routes/users.js"
 import productRoutes from "./routes/products.js"
+
 // import authRoutes from "./routes/user.js"
 
 dotenv.config()
 
+
 const app = express()
+app.use(authMiddleware)
 app.use(express.json());
 app.use(cookieParser())
 

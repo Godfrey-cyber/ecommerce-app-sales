@@ -1,14 +1,13 @@
 import express from 'express'
-import { registerUser, getAllUsers, loginStatus, loginUser, logoutUser, token, refreshToken } from "../controllers/users.js"
-import { protect } from "../middleWare/authMiddleware.js"
+import { registerUser, getAllUsers, loginUser, logoutUser, tokenRefresh, changePassword } from "../controllers/users.js"
+import { authenticate } from "../middleWare/authMiddleware.js"
 const router = express.Router()
 
 router.post("/register-user", registerUser)
 router.post("/login-user", loginUser)
-router.post("/logout-user", protect, logoutUser)
+router.post("/logout-user", authenticate, logoutUser)
 router.get("/get-users", getAllUsers)
-router.get("/login-status", loginStatus)
-router.get("/token", token)
-router.post("/refresh_token", refreshToken)
+router.post("/change-password", changePassword)
+router.post("/refresh_token", tokenRefresh)
 
 export default router

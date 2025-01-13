@@ -8,5 +8,6 @@ router.get("/get-products", getAllProducts);
 router.post("/create-product", protect, createProduct);
 // router.delete("/delete-product", deleteProduct);
 // router.put("/update-product", updateProduct);
+console.log(router)
 
 export default router;
