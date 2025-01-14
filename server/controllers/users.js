@@ -1,4 +1,4 @@
-import Users from '../models/User.js'
+import User from '../models/User.js'
 import Token from '../models/Token.js'
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
@@ -136,7 +136,7 @@ export const changePassword = async(req, res) => {
 // get all users
 export const getAllUsers = async(req, res) => {
     try {
-        const users = req.query.new ? await Users.find().sort({ createdAt: -1} ).limit(5).select("-password") : await Users.find().select("-password")
+        const users = req.query.new ? await User.find().sort({ createdAt: -1} ).limit(5).select("-password") : await User.find().select("-password")
         // const { _id, }
         return res.status(200).json({ 
             users, 
