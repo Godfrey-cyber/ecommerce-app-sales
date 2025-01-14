@@ -1,6 +1,6 @@
 import express from 'express'
 import { registerUser, getAllUsers, loginUser, logoutUser, tokenRefresh, changePassword } from "../controllers/users.js"
-import { authenticate } from "../middleWare/authMiddleware.js"
+import { authenticate } from "../utilities/authMiddleware.js"
 const router = express.Router()
 
 router.post("/register-user", registerUser)

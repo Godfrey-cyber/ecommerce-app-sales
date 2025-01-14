@@ -3,8 +3,6 @@ import Token from '../models/Token.js'
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import bcrypt from "bcryptjs"
-import { generateTokens, storeRefreshTokens, setCookies } from "../utilities/token.js"
-
 import { createRefreshToken, createAccessToken, validateEmail, validatePassword } from "../utilities/utiles.js"
 
 export const registerUser = async (req, res) => {
