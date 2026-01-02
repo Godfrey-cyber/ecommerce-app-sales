@@ -1,8 +1,8 @@
 import React from 'react'
 
-const ProductsPage = () => {
+const ProductsPage = ({ name, id, color }) => {
 	return (
-		<div>
+		<div className="">
 			
 		</div>
 	)
