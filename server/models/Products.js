@@ -17,8 +17,8 @@ const ProductSchema = new mongoose.Schema({
 	},
 	brand: { type: String, required: true },
 	review: { 
-		type: mongoose.Schema.ObjectId, 
-		ref: "Review"
+		type: mongoose.Schema.Types.ObjectId, 
+		ref: "Review",
 	},
 	quantity: { 
 		type: Number, required: [true, "A Product must have a quantity"], default: 1
@@ -30,12 +30,15 @@ const ProductSchema = new mongoose.Schema({
 		type: Number, default: 0,
 	},
 	userId: { 
-		type: mongoose.Schema.ObjectId, 
-		// ref: "User", required: [true, "A Product must belong to a user"] 
+		type: mongoose.Schema.Types.ObjectId, 
+		ref: "User", required: [true, "A Product must belong to a user"] 
+	},
+	slug: {
+		type: String, required: true, unique: true, lowercase: true, index: true,
 	},
 	catId: { 
-		type: mongoose.Schema.ObjectId, 
-		// ref: "Category", required: [true, "A Product must belong to a Category"] 
+		type: mongoose.Schema.Types.ObjectId, 
+		ref: "Category", required: [true, "A Product must belong to a Category"] 
 	}
 }, { timestamps: true } )
 
