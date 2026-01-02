@@ -31,11 +31,14 @@ const ProductSchema = new mongoose.Schema({
 	},
 	userId: { 
 		type: mongoose.Schema.ObjectId, 
-		// ref: "User", required: [true, "A Product must belong to a user"] 
+		ref: "User", required: [true, "A Product must belong to a user"] 
 	},
+	slug: {
+		type: String, required: true, unique: true, lowercase: true, index: true,
+	}
 	catId: { 
 		type: mongoose.Schema.ObjectId, 
-		// ref: "Category", required: [true, "A Product must belong to a Category"] 
+		ref: "Category", required: [true, "A Product must belong to a Category"] 
 	}
 }, { timestamps: true } )
 
