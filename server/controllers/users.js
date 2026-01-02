@@ -5,7 +5,7 @@ import crypto from "crypto"
 import bcrypt from "bcryptjs"
 import { createRefreshToken, createAccessToken, validateEmail, validatePassword } from "../utilities/utiles.js"
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
         // check all fields
@@ -38,11 +38,11 @@ export const registerUser = async (req, res) => {
         return res.status(201).json({ msg: "User Registration successfull🥇" })
     } catch(error) {
         console.log(error)
-        res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message })
     }
 }
 // login user
-export const loginUser = async(req, res) => {
+export const loginUser = async(req, res, next) => {
     try{
         const {password, email} = req.body
         if(!email || !password) {
@@ -78,16 +78,17 @@ export const loginUser = async(req, res) => {
         // Generate tokens
         const accessToken = createAccessToken(userExists._id);
         const refreshToken = createRefreshToken(userExists._id);
+        const { password: _, ...userSafe } = userExists;
 
         // Send refresh token to the front-end
         res.cookie('refreshToken', refreshToken, {
             path: "/",
             httpOnly: true,
-            maxAge: new Date(Date.now() + 1000 * 86400),
-            sameSite: "Strict",
-            secure: process.env.NODE_ENV === 'production'
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: process.env.NODE_ENV === 'production',
         })
-        res.status(200).json({ accessToken, msg: "Login successfull🥇" })
+        res.status(200).json({ userExists: userSafe, accessToken, msg: "Login successfull🥇" })
     }catch(error) {
         console.log(error.message)
         return res.status(500).json({ message: error.message })
@@ -172,14 +173,34 @@ export const logoutUser = async (req, res) => {
     return res.status(200).json({ message: "User has been successfully logged out" })
 }
 
-// refresh token
-export const tokenRefresh = (req, res) => {
-    const { refreshToken } = req.cookies;
-    if (!refreshToken) return res.status(403).json({ message: "Refresh token not provided" });
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, decoded) => {
-        if (error) return res.status(403).json({ message: "Invalid refresh token" });
+// @refresh token
+export const tokenRefresh = async (req, res) => {
+    try {
+        const token = req.cookies.refreshToken;
+        if (!token) return res.status(403).json({ message: "Refresh token not provided" });
+        const payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
 
-        const accessToken = createAccessToken(decoded.userId);
-        res.status(200).json({ accessToken });
-    });
+        // @Get loggedin user
+        const user = await User.findById(payload.userId)
+        // @Check if user exists
+        if (!user) {
+          return res.status(400).json("No user found");
+        }
+
+        // Generate tokens
+        const accessToken = createAccessToken(payload.userId);
+        const refreshToken = createRefreshToken(payload.userId);
+
+        // @Send refreshToken
+        res.cookie("refreshToken", refreshToken, {
+          path: "/",
+          httpOnly: true,
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+          secure: process.env.NODE_ENV === "production",
+        });
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({ message: error.message })
+    }
 }
