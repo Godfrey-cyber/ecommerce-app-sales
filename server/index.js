@@ -44,4 +44,10 @@ app.use("/v1/api/users", userRoutes);
 app.use("/v1/api/products", productRoutes);
 // app.use("/v1/api/auth", authRoutes);
 
-app.listen(PORT, () => console.log(`Success 💯! Database running on port: ${PORT} 👍`))
+app.use((req, res, next) => {
+  res.status(404).json({ msg: "Route not found" });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Success 💯! Database running on port: ${PORT} 👍`)
+})
