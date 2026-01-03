@@ -38,12 +38,99 @@ export const createProduct = async(req, res) => {
 }
 
 export const getAllProducts = async(req, res) => {
-    const searchTerm = req.query.search
-    console.log(searchTerm)
     try {
-        const products = searchTerm ? await Products.find({ $text: { $search: searchTerm } }) : await Products.find().sort({ createdAt: -1 })
-        return res.status(200).json({ data: products, status: "Success", count: products.length })
+        const { search, page = 1, limit = 10, sortBy = 'createdAt', order = 'desc', minPrice, maxPrice, minRating, maxRating, amenities, } = req.query;
+        // @Initialize pipeline
+        const pipeline = []
+
+        // @Search filter.
+        if (search) {
+            const regex = new RegExp(search, 'i')
+            pipeline.push({
+                $match: {
+                    $or: [
+                        { title: regex },
+                        { desc: regex },
+                        { category: regex },
+                        { brand: regex },
+                        { condition: regex },
+                        // { 'location.country': regex },
+                    ],
+                },
+            })
+        }
+
+        // Price range filter
+        if (minPrice || maxPrice) {
+            pipeline.push({
+                $match: {
+                    pricePerNight: {
+                        ...(minPrice ? { $gte: Number(minPrice) } : {}),
+                        ...(maxPrice ? { $lte: Number(maxPrice) } : {}),
+                    },
+                },
+            })
+        }
+
+        // Rating range filter
+        if (minRating || maxRating) {
+            pipeline.push({
+                $match: {
+                    averageRating: {
+                        ...(minRating ? { $gte: Number(minRating) } : {}),
+                        ...(maxRating ? { $lte: Number(maxRating) } : {}),
+                    },
+                },
+            })
+        }
+
+        // Sorting
+        const sortOrder = order === 'asc' ? 1 : -1
+        pipeline.push({ $sort: { [sortBy]: sortOrder } })
+
+        // Pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit)
+        pipeline.push({ $skip: skip })
+        pipeline.push({ $limit: parseInt(limit) })
+
+        pipeline.push({
+            $project: {
+                title: 1,
+                desc: 1,
+                category: 1,
+                brand: 1,
+                location: 1,
+                price: 1,
+                averageRating: 1,
+                createdAt: 1,
+                slug: 1,
+            },
+        })
+
+        const products = await Products.aggregate(pipeline)
+
+        const countPipeline = pipeline.filter((stage) => !('$skip' in stage) && !('$limit' in stage))
+        countPipeline.push({ $count: 'total' })
+        const countResult = await Products.aggregate(countPipeline)
+        const total = countResult[0]?.total || 0
+
+        res.status(200).json({
+            success: true,
+            count: products.length,
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit),
+            products,
+        })
+        console.log(search)
+    // try {
+
+
+        // const products = searchTerm ? await Products.find({ $text: { $search: searchTerm } }) : await Products.find().sort({ createdAt: -1 })
+        // return res.status(200).json({ data: products, status: "Success", count: products.length })
     } catch (error) {
-        return res.status(401).json({msg: error})
+        if (process.env.NODE_ENV === 'development') {
+            console.error(error)
+        }
     }
 }
