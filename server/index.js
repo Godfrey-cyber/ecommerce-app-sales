@@ -8,6 +8,7 @@ import helmet from 'helmet'
 
 import userRoutes from "./routes/users.js"
 import productRoutes from "./routes/products.js"
+import categoryRoutes from "./routes/category.js"
 
 // import authRoutes from "./routes/user.js"
 
@@ -42,7 +43,7 @@ mongoose.connection.on("disconnected", (error) => {
 
 app.use("/v1/api/users", userRoutes);
 app.use("/v1/api/products", productRoutes);
-// app.use("/v1/api/auth", authRoutes);
+app.use("/v1/api/categories", categoryRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ msg: "Route not found" });
