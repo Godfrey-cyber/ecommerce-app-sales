@@ -7,9 +7,9 @@ import { createRefreshToken, createAccessToken, validateEmail, validatePassword 
 
 export const registerUser = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body;
+        const { lastname, firstname, email, password } = req.body;
         // check all fields
-        if (!email || !password || !username) {
+        if (!email || !password || !lastname || !firstname) {
             return res.status(400).json({ msg: '❌ Please enter all fields' })
         }
 
@@ -32,7 +32,7 @@ export const registerUser = async (req, res, next) => {
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
         
         //Create user
-        const user = new User({ username, email, password });
+        const user = new User({ lastname, firstname, email, password });
         await user.save()
         console.log("new registered user", user)
         return res.status(201).json({ msg: "User Registration successfull🥇" })
@@ -49,36 +49,42 @@ export const loginUser = async(req, res, next) => {
             return res.status(400).json({msg: '❌ Please fill in all fields'})
         }
 
-        // Validate password format
+        // @Validate password format
         try {
             validatePassword(password);
         } catch (error) {
             return res.status(400).json({ msg: error.message });
         }
 
-        // Validate email format
+        // @Validate email format
         try {
             validateEmail(email);
         } catch (error) {
             return res.status(400).json({ msg: error.message });
         }
 
-        // check if user exists
-        const userExists = await User.findOne({ email })
-        if (!userExists) {
+        // @check if user exists
+        const user = await User.findOne({ email }).select("+password")
+        if (!user) {
             return res.status(400).json({msg: "🚫 This email does not exist!"})
         }
-       
-        const ifPasswordIsCorrect = await bcrypt.compare(password, userExists.password)
-        console.log("password correct", ifPasswordIsCorrect)
+        // @Check if password is correct
+        const ifPasswordIsCorrect = await bcrypt.compare(password, user.password)
         if (!ifPasswordIsCorrect) {
             return res.status(400).json({ msg: "🚫 Invalid email or password." });
         }
+        // @Generate tokens
+        const accessToken = createAccessToken(user._id);
+        const refreshToken = createRefreshToken(user._id);
 
-        // Generate tokens
-        const accessToken = createAccessToken(userExists._id);
-        const refreshToken = createRefreshToken(userExists._id);
-        const { password: _, ...userSafe } = userExists;
+        const safeUser = {
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            role: user.role,
+            verified: user.verify,
+        }
 
         // Send refresh token to the front-end
         res.cookie('refreshToken', refreshToken, {
@@ -88,7 +94,7 @@ export const loginUser = async(req, res, next) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             secure: process.env.NODE_ENV === 'production',
         })
-        res.status(200).json({ userExists: userSafe, accessToken, msg: "Login successfull🥇" })
+        return res.status(200).json({ user: safeUser, accessToken });
     }catch(error) {
         console.log(error.message)
         return res.status(500).json({ message: error.message })
