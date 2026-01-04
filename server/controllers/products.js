@@ -3,12 +3,12 @@ import slugify from 'slugify'
 import mongoose from "mongoose"
 
 export const createProduct = async(req, res) => {
-    const { name, desc, price, image, quantity, discount, catId, userId, brand, condition } = req.body
-    if (name == "" || desc == "" || price == "" || image == "" || quantity == "" || discount == "" || catId == "" || condition == "" || userId == "" || brand == "") {
+    const { name, description, price, image, stock, discount, category, user, brand, condition, specifications, attributes, rating, review } = req.body
+    if (name == "" || desc == "" || price == "" || stock == "" || discount == "" || condition == "" || user == "" || brand == "" || attributes == "") {
         return res.status(400).json({ msg: '❌ Please enter all fields' })
     }
 
-    if (!req.userId) {
+    if (!req.user) {
       return res.status(400).json("Unauthorized");
     }
     const slug = slugify(title, { lower: true })
@@ -18,19 +18,19 @@ export const createProduct = async(req, res) => {
       return res.status(409).json({ msg: "🚫 A blog with this title already exists" })
     }
     // @Check for duplicate category
-    const existingCategory = await Category.findById(catId);
+    const existingCategory = await Category.findById(category);
     if (!existingCategory) {
       return res.status(400).json("Category does not exist");
     }
 
     // @validate ObjectId format
-    if (!mongoose.Schema.Types.ObjectId.isValid(catId)) {
+    if (!mongoose.Schema.Types.ObjectId.isValid(category)) {
         return res.status(400).json({ msg: '❌ Invalid category Id' })
     }
 
     try {
-        const product = await Products.create({ name, desc, price, image, quantity, discount, catId, userId, brand, condition, slug })
-            // await Category.findByIdAndUpdate(catId, {$push:{productId: product._id }})
+        const product = await Products.create({ name, desc, price, image, quantity, discount, category, user, brand, condition, slug })
+            // await Category.findByIdAndUpdate(category, {$push:{productId: product._id }})
         return res.status(201).json({data: product, status: 'Success', statusText: "ok", statusCode: 201 })
     } catch (error) {
         return res.status(500).json(error)
@@ -39,12 +39,12 @@ export const createProduct = async(req, res) => {
 
 export const getAllProducts = async(req, res) => {
     try {
-        const { search, page = 1, limit = 10, sortBy = 'createdAt', order = 'desc', minPrice, maxPrice, minRating, maxRating, amenities, } = req.query;
+        const { search, page = 1, limit = 10, sortBy = 'createdAt', order = 'desc', minPrice, maxPrice, minRating, maxRating, brand } = req.query;
         // @Initialize pipeline
         const pipeline = []
 
         // @Search filter.
-        if (search) {
+        if (search) { // searchTerm
             const regex = new RegExp(search, 'i')
             pipeline.push({
                 $match: {
@@ -123,14 +123,19 @@ export const getAllProducts = async(req, res) => {
             products,
         })
         console.log(search)
-    // try {
-
-
-        // const products = searchTerm ? await Products.find({ $text: { $search: searchTerm } }) : await Products.find().sort({ createdAt: -1 })
-        // return res.status(200).json({ data: products, status: "Success", count: products.length })
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
             console.error(error)
         }
+    }
+}
+
+export const getProduct = async (req, res) => {
+    const { id } = req.params
+    try {
+        const product = await Products.findById(id)
+        return res.status(200).json({ message: "Product fetch successfull🥇", product })
+    } catch (error) {
+        return res.status(401).json(error)
     }
 }
