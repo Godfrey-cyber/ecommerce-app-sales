@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 
 const ProductSchema = new mongoose.Schema({
-	name: { 
-		type: String, unique: true, required: [true, "A Product must have a title"]
+	title: { 
+		type: String, unique: true, required: [true, "🚫 A Product must have a title"]
 	 },
 	description: { 
 		type: String, required: [true, "A Product must have a description"] 
@@ -10,7 +10,6 @@ const ProductSchema = new mongoose.Schema({
 	image: { 
 		type: String,
 		default: "https://sky.garden/assets/loading-spinners.svg",
-		required: false
 	},
 	condition: {
 		type: String, required: true, enum: ["New", "Refurblished", "Home Made", "Generic"], default: "New"

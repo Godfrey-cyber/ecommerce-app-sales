@@ -1,21 +1,29 @@
 import Products from '../models/Products.js'
+import Category from '../models/Category.js'
 import slugify from 'slugify'
 import mongoose from "mongoose"
 
 export const createProduct = async(req, res) => {
-    const { name, description, price, image, stock, discount, category, user, brand, condition, specifications, attributes, rating, review } = req.body
-    if (name == "" || desc == "" || price == "" || stock == "" || discount == "" || condition == "" || user == "" || brand == "" || attributes == "") {
+    const { title, description, price, image, stock, discount, category, user, brand, condition, specifications, attributes, rating, review } = req.body
+
+    if (title == "" || description == "" || price == "" || stock == "" || condition == "" || brand == "") {
         return res.status(400).json({ msg: '❌ Please enter all fields' })
     }
 
-    if (!req.user) {
+    if (!req.userId) {
       return res.status(400).json("Unauthorized");
+      console.log(req.userId)
     }
     const slug = slugify(title, { lower: true })
-    // @Check for duplicate slug
+    // @Check for duplicate slug name
     const existingSlug = await Products.findOne({ slug })
     if (existingSlug) {
-      return res.status(409).json({ msg: "🚫 A blog with this title already exists" })
+      return res.status(409).json({ msg: "🚫 A product with this title already exists" })
+    }
+
+    // @validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(category)) {
+        return res.status(400).json({ msg: '❌ Invalid category Id' })
     }
     // @Check for duplicate category
     const existingCategory = await Category.findById(category);
@@ -23,16 +31,12 @@ export const createProduct = async(req, res) => {
       return res.status(400).json("Category does not exist");
     }
 
-    // @validate ObjectId format
-    if (!mongoose.Schema.Types.ObjectId.isValid(category)) {
-        return res.status(400).json({ msg: '❌ Invalid category Id' })
-    }
-
     try {
-        const product = await Products.create({ name, desc, price, image, quantity, discount, category, user, brand, condition, slug })
+        const product = await Products.create({ title, description, price, image, discount, category, user: req.userId, brand, condition, slug, specifications, attributes, stock, rating, review })
             // await Category.findByIdAndUpdate(category, {$push:{productId: product._id }})
         return res.status(201).json({data: product, status: 'Success', statusText: "ok", statusCode: 201 })
     } catch (error) {
+        console.log(error)
         return res.status(500).json(error)
     }
 }
@@ -139,3 +143,4 @@ export const getProduct = async (req, res) => {
         return res.status(401).json(error)
     }
 }
+
