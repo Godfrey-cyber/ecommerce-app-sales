@@ -19,3 +19,5 @@ export default [
     }
   }
 ];
+
+// npx eslint . lints the code to check for errors
