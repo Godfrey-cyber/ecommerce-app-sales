@@ -155,6 +155,26 @@ export const getProduct = async (req, res) => {
     }
 }
 
+// @Get my products
+export const myProducts = async (req, res) => {
+    try {
+        // @validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(req.userId)) {
+            return res.status(400).json({ msg: '❌ Invalid product Id' })
+        }
+        // @Get hthe product
+        const products = await Products.find({ user: req.userId }).populate('user', 'firstName email').sort({ createdAt: -1 })
+        res.status(200).json({
+            success: true,
+            // count: products.length,
+            products,
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(401).json(error)
+    }
+}
+
 // @Edit Product
 export const updateProduct = async (req, res) => {
     const { id } = req.params
@@ -170,7 +190,7 @@ export const updateProduct = async (req, res) => {
         }
         const userID = product.user
         if (req.userId !== userID.toString()) {
-            return res.status(403).json({ success: false, message: 'You must be an Admin or a the owner of this product' })
+            return res.status(403).json({ success: false, message: 'You must be an Admin or the owner of this product' })
         }
 
         const allowedFields = [
@@ -210,6 +230,11 @@ export const deleteProduct = async (req, res) => {
         // @check if product exists
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found.' })
+        }
+        // @Check if owner
+        const userID = product.user
+        if (req.userId !== userID.toString()) {
+            return res.status(403).json({ success: false, message: 'You must be an Admin or the owner of this product' })
         }
         // 🔐 AUDIT LOG (before delete)
         await DeletionAudit.create({
