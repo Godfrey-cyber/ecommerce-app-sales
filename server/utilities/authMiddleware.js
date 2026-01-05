@@ -37,8 +37,6 @@ export const restrictTo = (...roles) => {
 				if (!roles.includes(user.role)) {
 					return res.status(403).json(`Access denied. You do not have the required role, you are a ${user.role}.`)
 				}
-
-				// If everything is okay, proceed to the next middleware
 				next()
 			})
 		} catch (error) {
