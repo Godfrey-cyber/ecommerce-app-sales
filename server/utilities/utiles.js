@@ -30,3 +30,11 @@ export const validatePassword = (password) => {
 	    throw new Error("🚫 Password must be between 8 to 15 characters containing at least one lowercase letter, one uppercase letter, one numeric digit, and one special character" )
 	}
 }
+
+export const allowedUpdates = (product, requestObject, allowedfields) => {
+	for(const key of allowedfields) {
+		if (requestObject[key] !== undefined) {
+			product[key] = requestObject[key]
+		}
+	}
+}

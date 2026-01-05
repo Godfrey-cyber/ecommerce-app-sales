@@ -2,6 +2,7 @@ import Products from '../models/Products.js'
 import Category from '../models/Category.js'
 import slugify from 'slugify'
 import mongoose from "mongoose"
+import { allowedUpdates } from "../utilities/utiles.js"
 
 export const createProduct = async(req, res) => {
     const { title, description, price, image, stock, discount, category, brand, condition, specifications, attributes, rating, review } = req.body
@@ -77,7 +78,7 @@ export const getAllProducts = async(req, res) => {
         if (minPrice || maxPrice) {
             pipeline.push({
                 $match: {
-                    pricePerNight: {
+                    price: {
                         ...(minPrice ? { $gte: Number(minPrice) } : {}),
                         ...(maxPrice ? { $lte: Number(maxPrice) } : {}),
                     },
@@ -114,7 +115,7 @@ export const getAllProducts = async(req, res) => {
                 brand: 1,
                 location: 1,
                 price: 1,
-                averageRating: 1,
+                rating: 1,
                 createdAt: 1,
                 slug: 1,
             },
@@ -141,7 +142,7 @@ export const getAllProducts = async(req, res) => {
         return res.status(401).json(error)
     }
 }
-
+// @Single Product
 export const getProduct = async (req, res) => {
     const { id } = req.params
     try {
@@ -152,3 +153,35 @@ export const getProduct = async (req, res) => {
     }
 }
 
+// @Edit Product
+export const updateProduct = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const product = await Products.findById(id)
+        if (!product) {
+            return res.status(403).json({ success: false, message: 'Product not found.' })
+        }
+
+        const allowedFields = [
+            'title',
+            'description',
+            'price',
+            'rating',
+            'category',
+            'discount',
+            'stock',
+            'condition',
+            'brand',
+        ]
+
+        allowedUpdates(product, req.body, allowedFields)
+        const updated = await product.save()
+    } catch (error) {
+        console.log(error)
+        return res.status(401).json(error)
+    }
+}
+
+// @Delete Product
+export const deleteProduct = async (req, res) => {}
