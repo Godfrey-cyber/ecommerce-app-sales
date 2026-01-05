@@ -1,5 +1,6 @@
 import Products from '../models/Products.js'
 import Category from '../models/Category.js'
+import DeletionAudit from "../models/DelAudit.js"
 import slugify from 'slugify'
 import mongoose from "mongoose"
 import { allowedUpdates } from "../utilities/utiles.js"
@@ -160,7 +161,7 @@ export const updateProduct = async (req, res) => {
     try {
         // @validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ msg: '❌ Invalid category Id' })
+            return res.status(400).json({ msg: '❌ Invalid product Id' })
         }
 
         const product = await Products.findById(id)
@@ -169,9 +170,6 @@ export const updateProduct = async (req, res) => {
         }
         const userID = product.user
         if (req.userId !== userID.toString()) {
-            console.log("Is the logged in user same as the product owner", req.userId == product.user)
-            console.log(typeof(req.userId), req.userId)
-            console.log(typeof(userID.toString()), userID.toString())
             return res.status(403).json({ success: false, message: 'You must be an Admin or a the owner of this product' })
         }
 
@@ -191,7 +189,7 @@ export const updateProduct = async (req, res) => {
         const updated = await product.save()
         res.status(200).json({
             success: true,
-            message: '✅ Product updated successfully!',
+            message: `✅ ${product.title} - has been updated successfully!`,
             updated,
         })
     } catch (error) {
@@ -202,6 +200,35 @@ export const updateProduct = async (req, res) => {
 
 // @Delete Product
 export const deleteProduct = async (req, res) => {
-    const { id } = req.params
-    return res.status(200).json({ msg: "delete a product", id })
+    const { id, entityType, entityId, title, price, category, deletedBy, reason } = req.params
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ msg: '❌ Invalid product Id' })
+        }
+        // @get-product
+        const product = await Products.findById(id)
+        // @check if product exists
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found.' })
+        }
+        // 🔐 AUDIT LOG (before delete)
+        await DeletionAudit.create({
+            entityType,
+            entityId: product._id,
+            title: product.title,
+            price: product.price,
+            category: product.category,
+            deletedBy: req.user.id, // from auth middleware
+            reason,
+        });
+        // @Delete the product
+        await product.deleteOne()
+        res.status(200).json({
+            success: true,
+            message: "Product has been deleted successfully!",
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Server error while deleting product' })
+    }   
 }
