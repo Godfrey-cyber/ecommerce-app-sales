@@ -138,7 +138,6 @@ export const getAllProducts = async(req, res) => {
             pages: Math.ceil(total / limit),
             products,
         })
-        console.log(search)
     } catch (error) {
         console.error(error)
         return res.status(401).json(error)

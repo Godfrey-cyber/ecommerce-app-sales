@@ -67,7 +67,7 @@ export const parentCategories = async (req, res) => {
   }
 };
 
-// @Create a subcategory
+// @Get subcategories
 export const subCategories = async (req, res) => {
   try {
     const { parentId } = req.params;
