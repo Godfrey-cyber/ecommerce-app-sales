@@ -3,7 +3,6 @@ import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import cors from 'cors'
 import mongoose from 'mongoose'
-import helmet from 'helmet'
 // import { authMiddleware } from "../utilities/authMiddleware.js"
 
 import userRoutes from "./routes/users.js"
@@ -45,7 +44,7 @@ app.use("/v1/api/users", userRoutes);
 app.use("/v1/api/products", productRoutes);
 app.use("/v1/api/categories", categoryRoutes);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({ msg: "Route not found" });
 });
 

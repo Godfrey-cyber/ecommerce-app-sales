@@ -4,18 +4,18 @@ import slugify from 'slugify'
 import mongoose from "mongoose"
 
 export const createProduct = async(req, res) => {
-    const { title, description, price, image, stock, discount, category, user, brand, condition, specifications, attributes, rating, review } = req.body
+    const { title, description, price, image, stock, discount, category, brand, condition, specifications, attributes, rating, review } = req.body
 
-    if (title == "" || description == "" || price == "" || stock == "" || condition == "" || brand == "") {
+    if (title === "" || description === "" || price === "" || stock === "" || condition === "" || brand === "") {
         return res.status(400).json({ msg: '❌ Please enter all fields' })
     }
 
     if (!req.userId) {
+      console.log(req.userId)  
       return res.status(400).json("Unauthorized");
-      console.log(req.userId)
     }
     const slug = slugify(title, { lower: true })
-    // @Check for duplicate slug name
+    // @Check for duplicate slug
     const existingSlug = await Products.findOne({ slug })
     if (existingSlug) {
       return res.status(409).json({ msg: "🚫 A product with this title already exists" })
@@ -128,9 +128,8 @@ export const getAllProducts = async(req, res) => {
         })
         console.log(search)
     } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-            console.error(error)
-        }
+        console.error(error)
+        return res.status(401).json(error)
     }
 }
 

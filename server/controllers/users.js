@@ -1,11 +1,9 @@
 import User from '../models/User.js'
-import Token from '../models/Token.js'
 import jwt from "jsonwebtoken"
-import crypto from "crypto"
 import bcrypt from "bcryptjs"
 import { createRefreshToken, createAccessToken, validateEmail, validatePassword } from "../utilities/utiles.js"
 
-export const registerUser = async (req, res, next) => {
+export const registerUser = async (req, res) => {
     try {
         const { lastname, firstname, email, password } = req.body;
         // check all fields
@@ -42,7 +40,7 @@ export const registerUser = async (req, res, next) => {
     }
 }
 // login user
-export const loginUser = async(req, res, next) => {
+export const loginUser = async(req, res) => {
     try{
         const {password, email} = req.body
         if(!email || !password) {
@@ -98,6 +96,7 @@ export const loginUser = async(req, res, next) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             secure: process.env.NODE_ENV === 'production',
         })
+        
         return res.status(200).json({ user: safeUser, accessToken });
     }catch(error) {
         console.log(error.message)
@@ -149,6 +148,7 @@ export const getAllUsers = async(req, res) => {
     try {
         const users = req.query.new ? await User.find().sort({ createdAt: -1} ).limit(5).select("-password") : await User.find().select("-password")
         // const { _id, }
+        console.log("NODE_ENV: ", process.env.NODE_ENV)
         return res.status(200).json({ 
             users, 
             statusText: "ok",
@@ -182,9 +182,6 @@ export const logoutUser = async (req, res) => {
         if (!user) {
           return res.status(403).json({ message: 'No user found' });
         }
-
-        console.log("Logout", typeof token); // should be "string"
-        console.log("Logout", typeof user.refreshTokens[0].token);
        
         // @Remove refresh token from DB
         user.refreshTokens = user.refreshTokens.filter(refToken => refToken.token !== token);

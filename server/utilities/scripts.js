@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 
 async function dropIndex() {
   try {
-  	const MONGO_URL = process.env.MONGO_URL
     await mongoose.connect("mongodb+srv://wave-ecommerce:com-shop-0860@cluster0.vqtnd.mongodb.net/commerce-sale?retryWrites=true&w=majority"); // replace with your Mongo URI
     const db = mongoose.connection.db;
 
