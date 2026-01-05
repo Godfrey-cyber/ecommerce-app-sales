@@ -3,7 +3,19 @@ import mongoose from 'mongoose';
 
 async function dropIndex() {
   try {
-    await mongoose.connect("mongodb+srv://wave-ecommerce:com-shop-0860@cluster0.vqtnd.mongodb.net/commerce-sale?retryWrites=true&w=majority"); // replace with your Mongo URI
+    if (!process.env.MONGO_URL) {
+      console.log("env: ", process.env.MONGO_URL)
+      throw new Error('MONGO_URL is not defined');
+    }
+
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(process.env.MONGO_URL)
+      console.log('MongoDb connected successfully')
+    }
+
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(process.env.MONGO_URL); // replace with your Mongo URI
+    }
     const db = mongoose.connection.db;
 
     const indexes = await db.collection('products').indexes();
@@ -24,5 +36,15 @@ async function dropIndex() {
 
 dropIndex();
 
+import mongoose from 'mongoose'
+
+export const connectDb = async () => {
+  try {
+
+  } catch (error) {
+    console.error('MongoDb connnection error:', error.message, error)
+    process.exit(1)
+  }
+}
 
 // Dropped username_1 index  run node utilities/scripts.js
