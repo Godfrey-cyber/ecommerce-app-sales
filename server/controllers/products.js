@@ -63,6 +63,15 @@ export const getAllProducts = async(req, res) => {
                 },
             })
         }
+        // Brand filter
+        if (brand) {
+            const regex = new RegExp(brand, 'i')
+            pipeline.push({
+                $match: {
+                    brand: regex
+                }
+            })
+        }
 
         // Price range filter
         if (minPrice || maxPrice) {
@@ -113,7 +122,7 @@ export const getAllProducts = async(req, res) => {
 
         const products = await Products.aggregate(pipeline)
 
-        const countPipeline = pipeline.filter((stage) => !('$skip' in stage) && !('$limit' in stage))
+        const countPipeline = pipeline.filter((stage) => !('$skip' in stage) && !('$limit' in stage) && !('$project' in stage))
         countPipeline.push({ $count: 'total' })
         const countResult = await Products.aggregate(countPipeline)
         const total = countResult[0]?.total || 0
