@@ -48,14 +48,14 @@ export const getAllProducts = async(req, res) => {
         // @Initialize pipeline
         const pipeline = []
 
-        // @Search filter.
+        // @Search filter. console
         if (search) { // searchTerm
             const regex = new RegExp(search, 'i')
             pipeline.push({
                 $match: {
                     $or: [
                         { title: regex },
-                        { desc: regex },
+                        { description: regex },
                         { category: regex },
                         { brand: regex },
                         { condition: regex },
@@ -110,14 +110,15 @@ export const getAllProducts = async(req, res) => {
         pipeline.push({
             $project: {
                 title: 1,
-                desc: 1,
+                description: 1,
                 category: 1,
                 brand: 1,
-                location: 1,
+                stock: 1,
                 price: 1,
                 rating: 1,
                 createdAt: 1,
                 slug: 1,
+                user: 1,
             },
         })
 
@@ -156,11 +157,22 @@ export const getProduct = async (req, res) => {
 // @Edit Product
 export const updateProduct = async (req, res) => {
     const { id } = req.params
-
     try {
+        // @validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ msg: '❌ Invalid category Id' })
+        }
+
         const product = await Products.findById(id)
         if (!product) {
             return res.status(403).json({ success: false, message: 'Product not found.' })
+        }
+        const userID = product.user
+        if (req.userId !== userID.toString()) {
+            console.log("Is the logged in user same as the product owner", req.userId == product.user)
+            console.log(typeof(req.userId), req.userId)
+            console.log(typeof(userID.toString()), userID.toString())
+            return res.status(403).json({ success: false, message: 'You must be an Admin or a the owner of this product' })
         }
 
         const allowedFields = [
@@ -177,6 +189,11 @@ export const updateProduct = async (req, res) => {
 
         allowedUpdates(product, req.body, allowedFields)
         const updated = await product.save()
+        res.status(200).json({
+            success: true,
+            message: '✅ Product updated successfully!',
+            updated,
+        })
     } catch (error) {
         console.log(error)
         return res.status(401).json(error)
@@ -184,4 +201,7 @@ export const updateProduct = async (req, res) => {
 }
 
 // @Delete Product
-export const deleteProduct = async (req, res) => {}
+export const deleteProduct = async (req, res) => {
+    const { id } = req.params
+    return res.status(200).json({ msg: "delete a product", id })
+}
