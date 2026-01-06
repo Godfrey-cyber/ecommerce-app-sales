@@ -1,13 +1,20 @@
 import express from 'express'
-import { getAllProducts, createProduct } from "../controllers/products.js"
-import { authenticate } from "../utilities/authMiddleware.js"
+import { getAllProducts, createProduct, getProduct, updateProduct, deleteProduct, myProducts } from "../controllers/products.js"
+import { authenticate, restrictTo } from "../utilities/authMiddleware.js"
 const router = express.Router()
-
+// @All 
 router.get("/get-products", getAllProducts);
-// router.get("/get-product/:id", getProduct);
+// @Single
+router.get("/get-product/:id", getProduct);
+// @My products
+router.get("/get-my-products", authenticate, myProducts);
+// @Authentication
+
+// @Create
 router.post("/create-product", authenticate, createProduct);
-// router.delete("/delete-product", deleteProduct);
-// router.put("/update-product", updateProduct);
-console.log(router)
+// @Delete
+router.delete("/delete-product/:id", authenticate, deleteProduct);
+// @Update
+router.put("/update-product/:id", authenticate, updateProduct);
 
 export default router;

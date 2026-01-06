@@ -21,10 +21,10 @@ export const restrictTo = (...roles) => {
 		try {
 			const token = req.headers.authorization?.split(' ')[1]
 
-			if (!token) return errorResponse(res, 401, "Access token required")
+			if (!token) return res.status(401).json("Access token required")
 
 			jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, decoded) => {
-				if (error) return errorResponse(res, 403, "Access token required", error)
+				if (error) return res.status(403).json("Access token required")
 
 				// Attach user data to request
 				req.userId = decoded.userId
@@ -32,13 +32,11 @@ export const restrictTo = (...roles) => {
 				// Find the user in the database
 				const user = await User.findById(req.userId)
 				
-				if (!user) return errorResponse(res, 404, "User not found", error)
+				if (!user) return res.status(403).json("User not found")
 				// Check if user has required role
 				if (!roles.includes(user.role)) {
-					return errorResponse(res, 403, `Access denied. You do not have the required role, you are a ${user.role}.`, error)
+					return res.status(403).json(`Access denied. You do not have the required role, you are a ${user.role}.`)
 				}
-
-				// If everything is okay, proceed to the next middleware
 				next()
 			})
 		} catch (error) {
