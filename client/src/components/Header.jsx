@@ -4,6 +4,8 @@ import { IoSearchOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import { CiMenuFries, CiUser } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa6";
+import { Link } from "react-router-dom" 
+import { ChevronDown, ShoppingCart, Search, Star, Menu, X, Home } from 'lucide-react';
 
 const Header = () => {
 	return (
@@ -31,28 +33,36 @@ const Header = () => {
 				</div>
 				{/*  cart & wishlist */}
 				<div className="flex justify-between space-x-4 items-center text-sm font-bold">
-					<div className="flex items-center space-x-2 hover:cursor-pointer relative">
-						<span className="text-gray-800">
+					<div className="flex items-center space-x-2 hover:cursor-pointer ">
+						<span className="md:hidden md:text-gray-800">
 							<IoSearchOutline className="text-2xl" />
 						</span>
-						<span className="hidden md:text-gray-800"> 
-							<FaRegHeart className="text-xl"/>
-						</span>
-						<span className="flex md:hidden text-gray-800"> 
+						<span className="md:text-gray-800"> 
 							<FaRegUser className="text-xl"/>
 						</span>
-						<span className="hidden md:flex bg-black absolute top-2 left-7 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
-							<p className="text-xs items-center">0</p>
-						</span>
 					</div>
-					<div className="flex items-center space-x-2 hover:cursor-pointer relative">
-						<span className="text-gray-800">
-							<BsBasket3Fill className="text-xl" />
-						</span>
-						<span className="bg-black absolute top-2 hover:animate-bounce left-1 text-white rounded-full items-center h-5 w-5 flex justify-center">
-							<p className="text-xs items-center">0</p>
-						</span>
-						<span className="text-gray-800 pl-2 hidden lg:flex">Ksh. 10,250.00 </span>
+					{/* ==================== cart & wishlist ================================ */}
+					<div className="flex items-center justify-center space-x-3 md:space-x-4 hover:cursor-pointer">
+						<div className="flex space-x-4 items-center relative">
+							<span className="hidden md:flex text-gray-800"> 
+								<FaRegHeart className="text-xl"/>
+							</span>
+							<span className="hidden md:flex bg-black absolute bottom-2 left-.5 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
+								<p className="text-xs items-center">0</p>
+							</span>
+						</div>
+						<Link to="/items/cart">
+							<div className="flex space-x-4 items-center relative">
+								<span className="text-gray-800">
+									{/*<BsBasket3Fill className="text-xl" />*/}
+									<ShoppingCart size={24} />
+								</span>
+								<span className="bg-black absolute bottom-3 left-.5 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
+									<p className="text-xs items-center">0</p>
+								</span>
+								<span className="text-gray-800 pl-2 hidden lg:flex">Ksh. 10,250.00 </span>
+							</div>
+						</Link>
 					</div>
 				</div>
 			</div>

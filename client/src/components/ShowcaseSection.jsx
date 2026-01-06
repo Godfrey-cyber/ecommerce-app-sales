@@ -1,21 +1,101 @@
-import React from 'react'
-import { MdChevronRight } from "react-icons/md";
+import { slides } from "../utilities/assets.js"
+import React, { useState, useEffect } from 'react'
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 const ShowcaseSection = () => {
+	const [currentSlide, setCurrentSlide] = useState(0);
+	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+	useEffect(() => {
+		if (!isAutoPlaying) return;
+		
+		const interval = setInterval(() => {
+			setCurrentSlide((prev) => (prev + 1) % slides.length);
+		}, 4000);
+
+		return () => clearInterval(interval);
+	}, [isAutoPlaying, slides.length]);
+
+	const goToSlide = (index) => {
+		setCurrentSlide(index);
+		setIsAutoPlaying(false);
+		setTimeout(() => setIsAutoPlaying(true), 5000);
+	};
+
+	const nextSlide = () => {
+		setCurrentSlide((prev) => (prev + 1) % slides.length);
+		setIsAutoPlaying(false);
+		setTimeout(() => setIsAutoPlaying(true), 5000);
+	};
+
+	const prevSlide = () => {
+		setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+		setIsAutoPlaying(false);
+		setTimeout(() => setIsAutoPlaying(true), 5000);
+	};
+
 	return (
 		<div className="grid grid-cols-12 h-[450px] w-full px-2 md:px-10 lg:px-20 my-8 gap-y-6 lg:gap-x-6">
-			<div className="col-span-12 lg:col-span-9 flex justify-between items-center bg-gray-100  px-7 py-4 md:px-10  w-full h-full">
-				{/*desc*/}
-				<div className="flex flex-col space-y-4 lg:space-y-3 w-1/2">
-					<p className="text-3xl lg:text-6xl text-gray-800">THE NEW <span>STANDARD</span></p>
-					<p className="text-sm text-gray-800">UNDER FAVOURABLE SMART WATCHES FROM</p>
-					<p className="text-2xl lg:text-5xl font-bold text-gray-800">Ksh. 740.99</p>
-					<button className="bg-yellow-400 font-bold text-sm px-8 py-3 my-4 rounded-md w-fit cursor-pointer">Buy Now</button>
-				</div>
-				<div className="flex h-fit w-fit">
-					<img src="https://electrox.arenacommerce.com/cdn/shop/files/slider-img-h4-1.png?v=1650005832&width=338" alt="" />
+			<div className="col-span-12 lg:col-span-9 relative overflow-hidden bg-gray-100 w-full h-full">
+				{/* Carousel Slides */}
+				{slides.map((slide, index) => (
+					<div
+						key={slide.id}
+						className={`absolute inset-0 flex justify-between items-center px-7 py-4 md:px-10 transition-all duration-700 ease-in-out ${
+							index === currentSlide
+								? 'opacity-100 translate-x-0'
+								: index < currentSlide
+								? 'opacity-0 -translate-x-full'
+								: 'opacity-0 translate-x-full'
+						}`}
+					>
+						{/*desc*/}
+						<div className="flex flex-col space-y-4 lg:space-y-3 w-1/2">
+							<p className="text-3xl lg:text-6xl text-gray-800">{slide.title} <span>{slide.subtitle}</span></p>
+							<p className="text-sm text-gray-800">{slide.description}</p>
+							<p className="text-2xl lg:text-5xl font-bold text-gray-800">{slide.price}</p>
+							<button className="bg-yellow-400 font-bold text-sm px-8 py-3 my-4 rounded-md w-fit cursor-pointer">Buy Now</button>
+						</div>
+						<div className="flex h-full w-full">
+							<img className="object-cover" src={slide.image} alt="" />
+						</div>
+					</div>
+				))}
+
+				{/* Navigation Arrows */}
+				<button
+					onClick={prevSlide}
+					className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+					aria-label="Previous slide"
+				>
+					<ChevronLeft className="w-6 h-6 text-gray-900" />
+				</button>
+				<button
+					onClick={nextSlide}
+					className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+					aria-label="Next slide"
+				>
+					<ChevronRight className="w-6 h-6 text-gray-900" />
+				</button>
+
+				{/* Dots Navigation */}
+				<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+					{slides.map((_, index) => (
+						<button
+							key={index}
+							onClick={() => goToSlide(index)}
+							className={`transition-all ${
+								index === currentSlide
+									? 'w-8 bg-yellow-400'
+									: 'w-2 bg-gray-400 hover:bg-gray-600'
+							} h-2 rounded-full`}
+							aria-label={`Go to slide ${index + 1}`}
+						/>
+					))}
 				</div>
 			</div>
+
+			{/* side profile */}
 			<div className="flex col-span-12 grid grid-cols-3 lg:grid-cols-1 lg:col-span-3 flex justify-between items-center gap-x-2 lg:gap-x-0 lg:gap-y-2">
 				<div className="xs:flex-col lg:flex justify-between space-x-.5 lg:space-x-3 items-center bg-gray-100 rounded-sm p-3 lg:p-3">
 					<img className="cursor-pointer h-20 w-20 " src="https://electrox.arenacommerce.com/cdn/shop/files/slider-img-h4-1.png?v=1650005832&width=338" alt="" />
@@ -24,7 +104,7 @@ const ShowcaseSection = () => {
 						<div className="flex items-center space-x-2 mt-2">
 							<p className="text-sm font-semibold">Buy now</p>
 							<span className="flex items-center space-x-3 justify-center bg-yellow-400 h-5 w-5 rounded-full">
-								<MdChevronRight className="items-center" />
+								<ChevronRight className="items-center w-4 h-4" />
 							</span>
 						</div>
 					</div>
@@ -36,7 +116,7 @@ const ShowcaseSection = () => {
 						<div className="flex items-center space-x-2 mt-2">
 							<p className="text-sm font-semibold">Buy now</p>
 							<span className="flex items-center space-x-3 justify-center bg-yellow-400 h-5 w-5 rounded-full">
-								<MdChevronRight className="items-center" />
+								<ChevronRight className="items-center w-4 h-4" />
 							</span>
 						</div>
 					</div>
@@ -48,7 +128,7 @@ const ShowcaseSection = () => {
 						<div className="flex items-center space-x-2 mt-2">
 							<p className="text-sm font-semibold">Buy now</p>
 							<span className="flex items-center space-x-3 justify-center bg-yellow-400 h-5 w-5 rounded-full">
-								<MdChevronRight className="items-center" />
+								<ChevronRight className="items-center w-4 h-4" />
 							</span>
 						</div>
 					</div>
@@ -57,5 +137,4 @@ const ShowcaseSection = () => {
 		</div>
 	)
 }
-
 export default ShowcaseSection
