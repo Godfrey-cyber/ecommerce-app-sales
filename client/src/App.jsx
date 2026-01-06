@@ -1,35 +1,29 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
+import './App.css';
 import viteLogo from '/vite.svg'
-import Header from "./components/Header.jsx"
-import SmallHeader from "./components/SmallHeader.jsx"
-import ShowcaseSection from "./components/ShowcaseSection.jsx"
-import ProductsCat from "./components/ProductsCat.jsx"
-import MoreProducts from "./components/MoreProducts.jsx"
-import BestSellers from "./components/BestSellers.jsx"
-import NewArrivals from "./components/NewArrivals.jsx"
-import ProfiledProducts from "./components/ProfiledProducts.jsx"
-import EmailSignUp from "./components/EmailSignUp.jsx"
-import Footer from "./components/Footer.jsx"
-import Test from "./components/Test.jsx"
-
-import './App.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+// Pages
+import HomePage from "./pages/HomePage.jsx"
+import CartPage from "./pages/CartPage.jsx"
+import CheckoutPage from "./pages/CheckoutPage.jsx"
+import HeroCarousel from "./pages/LoginPage.jsx"
 
 function App() {
     return (
-        <div className="flex-col font-['Nunito']">
-            <Header />
-            <SmallHeader />
-            <ShowcaseSection />
-            <ProductsCat />
-            <MoreProducts />
-            <BestSellers />
-            <NewArrivals />
-            <ProfiledProducts />
-            <EmailSignUp />
-            <Footer />
-            {/*<Test /> />*/}
-        </div>
+        <section className="min-h-screen font-['Nunito'] scroll-smooth w-full overflow-x-hidden">
+            <ToastContainer />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/items/cart" element={<CartPage />} />
+                    <Route path="/cart/checkout" element={<CheckoutPage />} />
+                    <Route path="/home/demo" element={<HeroCarousel />} />
+                </Routes>
+            </BrowserRouter>
+        </section>
     )
 }
 

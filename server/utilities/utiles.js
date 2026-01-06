@@ -2,13 +2,16 @@ import jwt from "jsonwebtoken";
 
 //Create Access Token
 export const createAccessToken = (userId) => {
-	return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" })
+	return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY })
 }
 
 //Create Refresh Token
 export const createRefreshToken = (userId) => {
-	return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" })
+	return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRY })
 }
+
+// Rate Limit
+
 
 // Validate email
 export const validateEmail = (email) => {
@@ -25,5 +28,13 @@ export const validatePassword = (password) => {
 
 	if (!password.match(passValid)) {
 	    throw new Error("🚫 Password must be between 8 to 15 characters containing at least one lowercase letter, one uppercase letter, one numeric digit, and one special character" )
+	}
+}
+
+export const allowedUpdates = (product, requestObject, allowedfields) => {
+	for(const key of allowedfields) {
+		if (requestObject[key] !== undefined) {
+			product[key] = requestObject[key]
+		}
 	}
 }
