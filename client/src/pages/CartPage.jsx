@@ -34,7 +34,7 @@ const CartPage = () => {
 					</div>
 					{/*  */}
 					{cartItems.map(item => (
-						<div key={item.title} className="flex gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
+						<div key={item.title} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
 					      <div className="flex-shrink-0">
 					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
 					          <img 
@@ -63,7 +63,7 @@ const CartPage = () => {
 					          </div>
 					          
 					          <div className="flex items-center gap-4">
-					            <span className="text-xl font-bold text-gray-600">Ksh. {item.price}</span>
+					            <span className="text-lg md:text-xl font-bold text-gray-600">Ksh. {item.price}</span>
 					            <button className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
 					              <Trash2 className="text-red-600 w-6 h-6" />
 					            </button>
