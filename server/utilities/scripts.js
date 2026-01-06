@@ -36,15 +36,4 @@ async function dropIndex() {
 
 dropIndex();
 
-import mongoose from 'mongoose'
-
-export const connectDb = async () => {
-  try {
-
-  } catch (error) {
-    console.error('MongoDb connnection error:', error.message, error)
-    process.exit(1)
-  }
-}
-
 // Dropped username_1 index  run node utilities/scripts.js

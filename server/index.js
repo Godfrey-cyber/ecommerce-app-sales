@@ -31,7 +31,7 @@ app.use(cors({
     credentials: true
 }))
 
-connectDb()
+connectDb() // MONGODB_URL
 
 app.use((req, res) => {
   console.log(`${req.method} ${req.originalUrl}`);
