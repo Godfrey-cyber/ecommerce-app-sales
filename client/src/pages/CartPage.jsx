@@ -1,11 +1,11 @@
 import React from 'react'
 import { GoChevronLeft } from "react-icons/go";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
+import { Plus, Minus, Trash2 } from 'lucide-react';
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCcAmex } from "react-icons/fa";
 import { FaTag, FaLock, FaCcVisa, FaCcMastercard } from "react-icons/fa6";
 import Header from "../components/Header.jsx"
+import  { cartItems } from "../utilities/assets.js"
 import { Link } from "react-router-dom"
 
 const CartPage = () => {
@@ -24,8 +24,8 @@ const CartPage = () => {
 				</div>
 				</Link>
 			</div>
-			<div className="grid grid-cols-12 gap-6 px-5 mf:px-10 lg:px-20 my-5">
-				<div className="flex col-span-8 h-fit  flex-col bg-white shadow-lg rounded-md">
+			<div className="grid grid-cols-12 gap-6 px-3 md:px-10 lg:px-20 my-5">
+				<div className="flex col-span-12 lg:col-span-8 h-fit  flex-col bg-white shadow-lg rounded-md">
 					<div className="flex items-center justify-between">
 						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items (4).</p>
 						<button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
@@ -33,36 +33,45 @@ const CartPage = () => {
 					    </button>
 					</div>
 					{/*  */}
-					<div className="grid grid-cols-12 gap-4 px-6 my-4">
-						<div className="flex col-span-2 h-62 flex-col">
-							<div className="flex-shrink-0 w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
-		                        <img src="" alt="" className="w-full h-full object-cover"/>
-		                    </div>
-						</div>
-						<div className="flex col-span-10 h-62 flex-col justify-between">
-							<span className="flex flex-col space-y-2">
-								<p className="text-lg font-semibold text-gray-800">The Mid Night Train.</p>
-								<p className="text-sm font-semibold text-gray-600">Matt Haig.</p>
-							</span>
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-3">
-								    <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
-								      	<CiCirclePlus className="text-gray-800 text-2xl" />
-								    </button>
-								    <span className="font-semibold text-slate-900 w-8 text-center">4</span>
-								    <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
-								      	<CiCircleMinus className="text-gray-800 text-2xl" />
-								    </button>
-								</div>
-								<div className="flex items-center gap-4">
-								    <span className="text-xl font-bold text-blue-600">Ksh. 30</span>
-								    <button className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
-								      <MdOutlineDeleteOutline className="text-red-600 text-3xl" />
-								    </button>
-								  </div>
-							</div>
-						</div>
-					</div>
+					{cartItems.map(item => (
+						<div key={item.title} className="flex gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
+					      <div className="flex-shrink-0">
+					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
+					          <img 
+					            src={item.image} 
+					            alt={item.title} 
+					            className="w-full h-full object-cover"
+					          />
+					        </div>
+					      </div>
+					      
+					      <div className="flex-1 flex flex-col justify-between">
+					        <div className="flex flex-col space-y-2 mb-3">
+					          <p className="text-lg font-semibold text-gray-800">{item.title}.</p>
+					          <p className="text-sm font-semibold text-gray-600">{item.author}.</p>
+					        </div>
+					        
+					        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+					          <div className="flex items-center gap-3">
+					            <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
+					              <Plus className="text-gray-800 w-5 h-5" />
+					            </button>
+					            <span className="font-semibold text-slate-900 w-8 text-center">{item.quantity}</span>
+					            <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
+					              <Minus className="text-gray-800 w-5 h-5" />
+					            </button>
+					          </div>
+					          
+					          <div className="flex items-center gap-4">
+					            <span className="text-xl font-bold text-gray-600">Ksh. {item.price}</span>
+					            <button className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
+					              <Trash2 className="text-red-600 w-6 h-6" />
+					            </button>
+					          </div>
+					        </div>
+					      </div>
+					    </div>
+					))}
 					{/*  */}
 				</div>
 				<div className="col-span-12 lg:col-span-4">
@@ -71,7 +80,7 @@ const CartPage = () => {
                 
                 		{/* Promo Code */}
 		                <div className="mb-6">
-		                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+		                  <label className="block text-lg md:text-sm font-semibold text-slate-700 mb-2">
 		                    Promo Code
 		                  </label>
 		                  <div className="flex gap-2">
@@ -82,7 +91,7 @@ const CartPage = () => {
 		                        // value={promoCode}
 		                        // onChange={(e) => setPromoCode(e.target.value)}
 		                        placeholder="Enter code"
-		                        className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-sm focus:border-blue-500 focus:outline-none"
+		                        className="w-full pl-12 pr-6 py-3 lg:pl-10 lg:pr-4 lg:py-2 border border-slate-300 rounded-sm focus:border-blue-500 focus:outline-none"
 		                      />
 		                    </div>
 		                    <button
