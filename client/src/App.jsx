@@ -9,7 +9,8 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from "./pages/HomePage.jsx"
 import CartPage from "./pages/CartPage.jsx"
 import CheckoutPage from "./pages/CheckoutPage.jsx"
-import HeroCarousel from "./pages/LoginPage.jsx"
+// import HeroCarousel from "./pages/LoginPage.jsx"
+import RegisterForm from "./pages/RegisterForm.jsx"
 
 function App() {
     return (
@@ -20,7 +21,8 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/items/cart" element={<CartPage />} />
                     <Route path="/cart/checkout" element={<CheckoutPage />} />
-                    <Route path="/home/demo" element={<HeroCarousel />} />
+                    {/*<Route path="/home/demo" element={<HeroCarousel />} />*/}
+                    <Route path="/auth/register" element={<RegisterForm />} />
                 </Routes>
             </BrowserRouter>
         </section>

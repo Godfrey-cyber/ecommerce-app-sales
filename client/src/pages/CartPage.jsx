@@ -62,7 +62,7 @@ const CartPage = () => {
 					            </button>
 					          </div>
 					          
-					          <div className="flex items-center gap-4">
+					          <div className="flex items-center justify-between w-full gap-4">
 					            <span className="text-lg md:text-xl font-bold text-gray-600">Ksh. {item.price}</span>
 					            <button className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
 					              <Trash2 className="text-red-600 w-6 h-6" />
