@@ -71,7 +71,7 @@ const LoginForm = () => {
 				<LogIn className=""/>	
 	    		<p className="">Login</p>
 	      	</span>
-	      	<p className="text-center text-sm font-semibold text-gray-400">Registering for this site allows you to access your order status and history. Just fill in the fields below, and you will get a new account set up for you in no time. We will only ask you for information necessary to make the purchase process faster and easier.</p>
+	      	<p className="text-center text-sm font-semibold text-gray-400">Loging in this site allows you to access your order status and history. Just fill in the fields below, and you will get a new account set up for you in no time. We will only ask you for information necessary to make the purchase process faster and easier.</p>
 	      	<button className="w-fit bg-amber-400 text-white font-semibold py-3 px-6 rounded-sm hover:bg-amber-600 transition duration-200 mt-6">
 	          Register
 	    	</button>

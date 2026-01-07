@@ -1,25 +1,42 @@
 import { slides } from "../utilities/assets.js"
 import React, { useState, useEffect } from 'react'
 import { ChevronRight, ChevronLeft, LogIn, User } from "lucide-react";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+// files
+import { signUpUser } from "../redux/thunk/authThunk.js"
 
 const RegisterForm = () => {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const [formData, setFormData] = useState({
-	    firstName: '',
-	    lastName: '',
+	    firstname: '',
+	    lastname: '',
 	    email: '',
 	    password: ''
   	});
+  	const [toggle, setToggle] = useState(false);
+  	const { email, password, lastname, firstname } = formData;
+  	const [showPassword, setShowPassword] = useState(false);
+  	const [focusedField, setFocusedField] = useState(null);
+  	const [errors, setErrors] = useState({});
+
+  	const { user, loading, error, accessToken } = useSelector(state => state.auth);
   	const handleChange = (event) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value
     });
+    // setErrors({ ...errors, [event.target.name]: "" });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your registration logic here
+    dispatch(signUpUser(formData, navigate, toast));
+	    setFormData({ email: "", password: "", firstname: "", lastname: "" });
+	    // setErrors({});
   };
 
   return (
@@ -32,14 +49,14 @@ const RegisterForm = () => {
 	      
 	      <div className="space-y-4">
 	        <div className="w-full">
-	          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+	          <label htmlFor="firstname" className="block text-sm font-medium text-gray-700 mb-1">
 	            First Name
 	          </label>
 	          <input
 	            type="text"
-	            name="firstName"
-	            id="firstName"
-	            value={formData.firstName}
+	            name="firstname"
+	            id="firstname"
+	            value={formData.firstname}
 	            onChange={handleChange}
 	            autoFocus
 	            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
@@ -47,14 +64,14 @@ const RegisterForm = () => {
 	        </div>
 
 	        <div className="w-full">
-	          <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+	          <label htmlFor="lastname" className="block text-sm font-medium text-gray-700 mb-1">
 	            Last Name
 	          </label>
 	          <input
 	            type="text"
-	            name="lastName"
-	            id="lastName"
-	            value={formData.lastName}
+	            name="lastname"
+	            id="lastname"
+	            value={formData.lastname}
 	            onChange={handleChange}
 	            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
 	          />

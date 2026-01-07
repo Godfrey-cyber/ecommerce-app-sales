@@ -1,14 +1,20 @@
-import { axiosInstance } from "../utilities/utiles.js";
+import { axiosInstance } from "../../utilities/apiCalls.js";
+import { logout, loginStart, loginSuccess, loginFailure, getCurrentUserStart, getCurrentUserSuccess, getCurrentUserFailure, signUpStart, signUpSuccess, signUpFailure } from "../slices/authSlice.js";
 
-// @Register User
-export const registerUser = async (signupData) => {
+// @User register
+export const signUpUser = (formData, navigate, toast) => async dispatch => {
+  dispatch(signUpStart());
   try {
-    const res = await axiosInstance.post("/auth/signup-user", signupData);
-    if (res.status === 200 || res.statusText === "OK") {
-      return res.data; // return only what you need
+    const res = await axiosInstance.post("/users/register-user", formData);
+
+    if (res.status === 201 || res.statusText === "OK") {
+      dispatch(signUpSuccess(res.data));
+      navigate("/auth/login");
+      toast.success("Account Successfully Created 🥇");
     }
   } catch (error) {
-    throw error?.response?.data?.msg || "Login failed"; // throw meaningful error
+    dispatch(signUpFailure(error?.response?.data?.msg || "Signup failed"));
+    toast.error(error?.response?.data?.msg || "Signup failed");
   }
 };
 
