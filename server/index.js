@@ -40,7 +40,7 @@ app.use((req, res) => {
 app.use("/v1/api/users", userRoutes);
 app.use("/v1/api/products", productRoutes);
 app.use("/v1/api/categories", categoryRoutes);
-
+console.log(process.env.CLIENT_URL)
 app.use((req, res) => {
   res.status(404).json({ msg: "Route not found" });
 });
