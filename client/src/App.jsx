@@ -11,6 +11,7 @@ import CartPage from "./pages/CartPage.jsx"
 import CheckoutPage from "./pages/CheckoutPage.jsx"
 // import HeroCarousel from "./pages/LoginPage.jsx"
 import RegisterForm from "./pages/RegisterForm.jsx"
+import LoginForm from "./pages/LoginForm.jsx"
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/cart/checkout" element={<CheckoutPage />} />
                     {/*<Route path="/home/demo" element={<HeroCarousel />} />*/}
                     <Route path="/auth/register" element={<RegisterForm />} />
+                    <Route path="/auth/login" element={<LoginForm />} />
                 </Routes>
             </BrowserRouter>
         </section>
