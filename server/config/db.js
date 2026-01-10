@@ -6,7 +6,6 @@ export const connectDb = async () => {
 		if (!process.env.MONGO_URL) {
 	      throw new Error('MONGO_URL is not defined');
 	    }
-
 		// Check if already connected
 		if (mongoose.connection.readyState === 1) {
 			console.log('MongoDb already connected');
