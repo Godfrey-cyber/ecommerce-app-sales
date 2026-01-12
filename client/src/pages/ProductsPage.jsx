@@ -59,7 +59,7 @@ const ProductsPage = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+            <h1 className="text-lg md:text-2xl lg:3xl font-bold text-gray-900 leading-tight">
               {product.name}
             </h1>
 
@@ -82,13 +82,15 @@ const ProductsPage = () => {
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-bold text-gray-900">
-                Ksh. {product.price.toLocaleString()}
-              </span>
-              <span className="text-xl text-gray-400 line-through">
-                Ksh. {product.originalPrice.toLocaleString()}
-              </span>
+            <div className="flex lg:flex-row flex-col items-baseline gap-4">
+            	<div className="flex items-center space-x-4">
+	              <span className="text-lg md:text-2xl lg:3xl font-bold text-gray-900">
+	                Ksh. {product.price.toLocaleString()}
+	              </span>
+	              <span className="text-lg md:text-2xl lg:3xl text-gray-400 line-through">
+	                Ksh. {product.originalPrice.toLocaleString()}
+	              </span>
+              </div>
               <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-bold">
                 Save {product.discount}%
               </span>
