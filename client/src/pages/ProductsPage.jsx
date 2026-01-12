@@ -3,6 +3,7 @@ import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Check } fr
 import { products, product, categories, featuredProduct } from "../assets/products.js"	
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
+import CartTabContent from "../components/cart/CartTabContent.jsx"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
@@ -156,13 +157,13 @@ const ProductsPage = () => {
         </div>
 
         {/* Tabs Section */}
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-md sm:shadow md:shadow shadow-lg border border-gray-100 overflow-hidden">
           	{/* Tab Headers */}
-        	<CartTabHeaders />
+        	<CartTabHeaders activeTab={activeTab} setActiveTab={setActiveTab} />
           {/* Tab Content */}
           
         </div>
-
+        <CartTabContent activeTab={activeTab} />
       </div>
     </div>
 	)
