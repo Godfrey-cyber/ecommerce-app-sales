@@ -13,7 +13,7 @@ const CartTabHeaders = ({ activeTab, setActiveTab }) => {
             : 'text-gray-600 hover:bg-gray-50'
         }`}
       >
-        Product Details
+        Details
       </button>
       <button
         onClick={() => setActiveTab('specs')}
@@ -33,7 +33,7 @@ const CartTabHeaders = ({ activeTab, setActiveTab }) => {
             : 'text-gray-600 hover:bg-gray-50'
         }`}
       >
-        Customer Reviews ({product.totalReviews})
+        Reviews ({product.totalReviews})
       </button>
     </div>
 	)
