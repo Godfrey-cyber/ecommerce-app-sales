@@ -1,89 +1,194 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import { BsArrowsFullscreen } from "react-icons/bs";
-import { products, categories } from "../assets/products.js"
+import { ShoppingCart, Star, Heart } from 'lucide-react';
+import { products, categories, featuredProduct } from "../assets/products.js"
+import { Link } from "react-router-dom"
 
 const MoreProducts = () => {
 	// const name = products.slice(0,2).map(item => item)
+	const [activeCategory, setActiveCategory] = useState('Best Deals');
 	return (
-		<section className="w-full h-fit flex flex-col space-y-3 mb-5 px-4 lg:px-10">
-			<div className="flex space-x-5 justify-center px-30 my-2 border-b border-gray-300 py-2 w-full overflow-x-scroll scrollbar-hide mx-auto h-10">
-				{categories.map(cat => (
-					<span key={cat} className="flex text-sm font-normal active:border-2 hover:rounded-xl py-.5 px-2 hover:border-yellow-400 w-fit cursor-pointer traansition-all delay-200">{cat}</span>
-				))}
-				<hr className="border-b-2 border-gray-500" />
-			</div>
-			{/*products*/}
-			<div className="grid grid-cols-12 gap-x-1">
-				{/*two prods*/}
-				<div className="col-span-12 lg:col-span-4 flex flex-col space-x-2 items-center">
-					<div className="grid grid-cols-2 gap-2 divide-x">
-						{products.slice(2, 6).map(item => (
-							<div key={item.id} className="flex flex-col space-y-2 w-52  h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
-								<p className="text-xs text-gray-500">{item.category}</p>
-								<p className="text-sm text-blue-600 font-medium">{item.name.length > 19 ? item.name.slice(0,18) : item.name}</p>
-								<img className="h-32 min-w-40 cursor-pointer object-cover" src={item.image} alt="" />
-								<span className="flex items-center justify-between w-full">
-									<p className="text-sm font-normal text-lg text-gray-800">{item.price}</p>
-									<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
-										<MdOutlineAddShoppingCart className="items-center" />
-									</span>
-								</span>
-							</div>
-						))}
-					</div>
-				</div>
-				{/*one product*/}
-				<div className="col-span-12 lg:col-span-4 flex-col">
-					<div className="flex flex-col space-y-2 rounded-sm hover:shadow-3xl h-full justify-center items-center shadow-gray-800 items-center relative hover:border hover:border-gray-300">
-						<span className="flex flex-col items-center justify-center space-x-1 absolute top-20 right-4 bg-yellow-400 rounded-full h-16 w-16">
-								<p className="text-sm font-light text-black">Save</p>
-								<p className="text-xl font-bold text-black">10%</p>
-						</span>
-						<p className="text-lg text-gray-500">Donna Karan</p>
-						<p className="text-sm text-blue-600 font-medium">Vivo Y03 2024</p>
-						<img className="h-80 w-80 cursor-pointer" src="https://electrox.arenacommerce.com/cdn/shop/products/1.png?v=1649393409&width=540" alt="" />
-						<div className="flex space-x-3 items-center">
-							<span className="h-12 w-12 border border-gray-300 hover:border-b-2 hover:border-b-yellow-400 items-center flex">
-								<img className="h-10 w-10 cursor-pointer items-center" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
-							</span>
-							<span className="h-12 w-12 border border-gray-300 items-center flex">
-								<img className="h-10 w-10 cursor-pointer items-center object-cover" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
-							</span>
-							<span className="h-12 w-12 border border-gray-300 items-center flex">
-								<img className="h-10 w-10 cursor-pointer items-center" src="https://electrox.arenacommerce.com/cdn/shop/products/lgphone.png?v=1649399950&width=180" alt="" />
-							</span>
-						</div>
-						<span className="flex items-center justify-between w-4/5 border-b py-2 border-gray-300 px-4">
-							<p className="text-2xl font-normal text-lg text-gray-800">Ksh. 12,500</p>
-							<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
-								<MdOutlineAddShoppingCart className="items-center" />
-							</span>
-						</span>
-					</div>
+		<section className="w-full min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 lg:px-10">
+      {/* Categories */}
+      <div className="mb-12">
+        <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                activeCategory === cat
+                  ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 shadow-lg scale-105'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
 
-				</div>
-				{/*two prods*/}
-				<div className="col-span-12 lg:col-span-4 flex flex-col space-x-2 items-center">
-					<div className="grid grid-cols-2 gap-2 divide-x">
-						{products.slice(0, 4).map(item => (
-							<div key={item.id} className="flex flex-col space-y-2 w-52 h-72 p-4 rounded-sm hover:shadow-2xl shadow-gray-800 items-center">
-								<p className="text-xs text-gray-500">{item.category}</p>
-								<p className="text-sm text-blue-600 font-medium">{item.name.length > 19 ? item.name.slice(0,18) : item.name}</p>
-								<img className="h-32 min-w-40 cursor-pointer object-cover" src={item.image} alt="" />
-								<span className="flex items-center justify-between w-full">
-									<p className="text-sm font-normal text-lg text-gray-800">{item.price}</p>
-									<span className="flex items-center space-x-3 justify-center cursor-pointer bg-yellow-400 h-8 w-8 rounded-full">
-										<MdOutlineAddShoppingCart className="items-center" />
-									</span>
-								</span>
-							</div>
-						))}
-					</div>
-				</div>
-			</div>
-		</section>
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
+        
+        {/* Left Column - 4 Products Grid */}
+        <div className="lg:col-span-4">
+          <div className="grid grid-cols-2 gap-4">
+            {products.slice(0, 4).map(item => (
+            	<Link to={`/${item.id}`}>
+              <div
+                key={item.id}
+                className="bg-white rounded-md shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-yellow-400"
+              >
+                <div className="relative mb-3">
+                  <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-bold z-10">
+                    -{item.discount}%
+                  </div>
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-tr-md rounded-tl-md h-32 flex items-center justify-center overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 object-cover"
+                    />
+                  </div>
+                </div>
+                
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 px-3">{item.category}</p>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2 min-h-10 px-3">
+                  {item.name}
+                </h3>
+                
+                <div className="flex items-center gap-1 mb-3 px-3">
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-xs text-gray-600">{item.rating}</span>
+                </div>
+                
+                <div className="flex items-center justify-between px-3 pb-3">
+                  <div className="flex flex-col">
+                    <span className="text-lg font-bold text-gray-900">Ksh. {item.price.toLocaleString()}</span>
+                  </div>
+                  <button className="bg-yellow-400 hover:bg-yellow-500 p-2 rounded-full transition-all duration-200 hover:scale-110">
+                    <ShoppingCart className="w-4 h-4 text-gray-900" />
+                  </button>
+                </div>
+              </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Center Column - Featured Product */}
+        <div className="lg:col-span-4">
+          <div className="bg-white rounded-md p-4 shadow-lg hover:shadow-2xl transition-all duration-300 h-full border border-gray-100 relative overflow-hidden">
+            {/* Decorative Background */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-yellow-200/30 to-transparent rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10">
+              {/* Discount Badge */}
+              <div className="absolute top-0 right-0 flex flex-col items-center justify-center bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full h-20 w-20 shadow-xl">
+                <p className="text-xs font-semibold text-gray-900">Save</p>
+                <p className="text-2xl font-bold text-gray-900">{featuredProduct.discount}%</p>
+              </div>
+
+              <div className="flex flex-col items-start mb-6 mt-4">
+                <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">{featuredProduct.brand}</p>
+                <h2 className="text-xl font-bold text-gray-900 text-center">{featuredProduct.name}</h2>
+                
+                <div className="flex items-center gap-1 mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                  <span className="text-sm text-gray-600 ml-1">({featuredProduct.rating})</span>
+                </div>
+              </div>
+
+              {/* Main Image */}
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl mb-6">
+                <img
+                  src={featuredProduct.image}
+                  alt={featuredProduct.name}
+                  className="w-full h-64 object-contain hover:scale-105 transition-transform duration-500 object-cover"
+                />
+              </div>
+
+              {/* Thumbnails */}
+              <div className="flex gap-3 justify-center mb-6">
+                {featuredProduct.thumbnails.map((thumb, index) => (
+                  <div
+                    key={index}
+                    className="h-16 w-16 border-2 border-gray-200 hover:border-yellow-400 rounded-lg cursor-pointer transition-all duration-200 overflow-hidden"
+                  >
+                    <img src={thumb} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Price and CTA */}
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                <div className="flex flex-col">
+                  <span className="text-3xl font-bold text-gray-900">
+                    Ksh. {featuredProduct.price.toLocaleString()}
+                  </span>
+                  <span className="text-sm text-gray-400 line-through">
+                    Ksh. {Math.round(featuredProduct.price / (1 - featuredProduct.discount / 100)).toLocaleString()}
+                  </span>
+                </div>
+                <button className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 p-3 rounded-full transition-all duration-200 hover:scale-110 shadow-lg">
+                  <ShoppingCart className="w-6 h-6 text-gray-900" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - 4 Products Grid */}
+        <div className="lg:col-span-4">
+          <div className="grid grid-cols-2 gap-4">
+            {products.slice(2, 6).map(item => (
+              <div
+                key={item.id}
+                className="bg-white rounded-md shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-yellow-400"
+              >
+                <div className="relative mb-3">
+                  <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-bold z-10">
+                    -{item.discount}%
+                  </div>
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-tr-md rounded-tl-md h-32 flex items-center justify-center overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 object-cover"
+                    />
+                  </div>
+                </div>
+                
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 px-3">{item.category}</p>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2 min-h-10 px-3">
+                  {item.name}
+                </h3>
+                
+                <div className="flex items-center gap-1 mb-3 px-3">
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-xs text-gray-600">{item.rating}</span>
+                </div>
+                
+                <div className="flex items-center justify-between px-3 pb-3">
+                  <div className="flex flex-col">
+                    <span className="text-lg font-bold text-gray-900">Ksh. {item.price.toLocaleString()}</span>
+                  </div>
+                  <button className="bg-yellow-400 hover:bg-yellow-500 p-2 rounded-full transition-all duration-200 hover:scale-110">
+                    <ShoppingCart className="w-4 h-4 text-gray-900" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          </div>
+
+      </div>
+    </section>
 	)
 }
 

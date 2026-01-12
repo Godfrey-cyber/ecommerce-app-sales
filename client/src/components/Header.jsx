@@ -2,18 +2,18 @@ import React from 'react'
 import { BsBasket3Fill } from "react-icons/bs";
 import { IoSearchOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
-import { CiMenuFries, CiUser } from "react-icons/ci";
-import { FaRegUser } from "react-icons/fa6";
 import { Link } from "react-router-dom" 
-import { ChevronDown, ShoppingCart, Search, Star, Menu, X, Home } from 'lucide-react';
+import { useSelector } from "react-redux"
+import { ShoppingCart, Search, Menu, User, UserRoundCheck, Heart } from 'lucide-react';
 
 const Header = () => {
+	const { user } = useSelector(state => state.auth);
 	return (
 		<header className="bg-yellow-400 h-16 w-full lg:px-20 px-5 overflow-x-hidden">
 			<div className="flex justify-between items-center h-full">
 				<div className="flex items-center space-x-3">
 					<span className="md:hidden text-gray-800 cursor-pointer">
-						<CiMenuFries className="text-2xl" />
+						<Menu className="text-2xl" />
 					</span>
 					<div className="flex cursor-pointer">
 						<p className="text-4xl font-bold flex text-gray-800">electro</p>
@@ -27,7 +27,7 @@ const Header = () => {
 					</span>
 					<span className="flex justify-center rounded-tr-3xl w-12 h-10 hover:bg-gray-700 rounded-br-3xl bg-gray-800 flex items-center px-1 cursor-pointer">
 						<span className="text-sm items-center text-white text-2xl">
-							<IoSearchOutline className="text-white text-xl" />
+							<Search className="text-white text-xl" />
 						</span>
 					</span>
 				</div>
@@ -35,17 +35,17 @@ const Header = () => {
 				<div className="flex justify-between space-x-4 items-center text-sm font-bold">
 					<div className="flex items-center space-x-2 hover:cursor-pointer ">
 						<span className="md:hidden md:text-gray-800">
-							<IoSearchOutline className="text-2xl" />
+							<Search className="text-2xl" />
 						</span>
 						<span className="md:text-gray-800"> 
-							<FaRegUser className="text-xl"/>
+							{user ? <UserRoundCheck className="text-xl"/> : <User className="text-xl" />}
 						</span>
 					</div>
 					{/* ==================== cart & wishlist ================================ */}
 					<div className="flex items-center justify-center space-x-3 md:space-x-4 hover:cursor-pointer">
 						<div className="flex space-x-4 items-center relative">
 							<span className="hidden md:flex text-gray-800"> 
-								<FaRegHeart className="text-xl"/>
+								<Heart className="text-xl"/>
 							</span>
 							<span className="hidden md:flex bg-black absolute bottom-2 left-.5 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
 								<p className="text-xs items-center">0</p>

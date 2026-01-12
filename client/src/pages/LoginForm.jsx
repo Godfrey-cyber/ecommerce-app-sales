@@ -2,23 +2,38 @@ import { slides } from "../utilities/assets.js"
 import React, { useState, useEffect } from 'react'
 import { ChevronRight, ChevronLeft, LogIn, User } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom"
+import { ToastContainer, toast } from 'react-toastify';
+import { loginUser } from "../redux/thunk/authThunk.js"
+import { useDispatch, useSelector } from 'react-redux';
 
 const LoginForm = () => {
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
+	const [focusedField, setFocusedField] = useState(null);
 	const [formData, setFormData] = useState({
 	    email: '',
 	    password: ''
   	});
-  	const handleChange = (event) => {
+
+	const { email, password  } = formData;
+	const isFormValid = email.trim() !== '' && password.trim() !== '';
+	const { user, loading, error, accessToken } = useSelector(state => state.auth);
+
+  const handleChange = (event) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value
     });
   };
-
+  const resetForm = () => setFormData({ email: "", password: "" });
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your registration logic here
+    if (email && password && isFormValid) {
+		  dispatch(loginUser({ email, password }, navigate, toast));
+		  resetForm();
+	  } else {
+	    	toast.error("Sorry! Cannot log you without credentials");
+	  }
   };
 
   return (
@@ -38,7 +53,7 @@ const LoginForm = () => {
 	            type="email"
 	            name="email"
 	            id="email"
-	            value={formData.email}
+	            value={email}
 	            onChange={handleChange}
 	            required
 	            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
@@ -53,7 +68,7 @@ const LoginForm = () => {
 	            type="password"
 	            name="password"
 	            id="password"
-	            value={formData.password}
+	            value={password}
 	            onChange={handleChange}
 	            required
 	            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"

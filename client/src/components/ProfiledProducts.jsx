@@ -1,5 +1,6 @@
 import React from 'react'
 import { products } from "../assets/products.js"
+import { Link } from "react-router-dom"
 
 const ProfiledProducts = () => {
 	return (
@@ -11,6 +12,7 @@ const ProfiledProducts = () => {
 						<div className="border-b border-gray-300 w-full h-1"></div>
 					</span>
 					{products.slice(0,3).map(item => (
+						<Link to={`/${item.id}`}>
 						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
 							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
 							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
@@ -21,6 +23,7 @@ const ProfiledProducts = () => {
 								</span>
 							</div>
 						</div>
+						</Link>
 					))}
 				</div>
 				<div className="col-span-12 lg:col-span-3 flex-col space-y-4 h-fit w-full">
@@ -29,6 +32,7 @@ const ProfiledProducts = () => {
 						<div className="border-b border-gray-300 w-full h-1"></div>
 					</span>
 					{products.slice(0,3).map(item => (
+						<Link to={`/${item.id}`}>
 						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
 							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
 							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
@@ -39,6 +43,7 @@ const ProfiledProducts = () => {
 								</span>
 							</div>
 						</div>
+						</Link>
 					))}
 				</div>
 				<div className="col-span-12 lg:col-span-3 flex-col space-y-4 h-fit w-full">
@@ -47,6 +52,7 @@ const ProfiledProducts = () => {
 						<div className="border-b border-gray-300 w-full h-1"></div>
 					</span>
 					{products.slice(0,3).map(item => (
+						<Link to={`/${item.id}`}>
 						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
 							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
 							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
@@ -57,6 +63,7 @@ const ProfiledProducts = () => {
 								</span>
 							</div>
 						</div>
+						</Link>
 					))}
 				</div>
 				<div className="col-span-12 lg:col-span-3 h-fit w-full cursor-pointer">

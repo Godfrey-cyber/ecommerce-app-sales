@@ -3,6 +3,7 @@ import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import { BsArrowsFullscreen } from "react-icons/bs";
 import { products } from "../assets/products.js"
+import { Link } from "react-router-dom"
 
 const ProductsCat = () => {
 	return (
@@ -15,6 +16,7 @@ const ProductsCat = () => {
 			<div className="grid grid-cols-2 lg:grid-cols-6 items-center my-8 divide-x">
 				{/*products*/}
 				{products.map(item => (
+					<Link to={`/${item.id}`}>
 					<div key={item.id} className="flex flex-col w-50 h-80 p-4 rounded-sm hover:shadow-lg shadow-gray-500 items-center group">
 				        <span className="flex flex-col space-y-4">
 							<p className="text-xs text-gray-500">{item.category}</p>
@@ -38,6 +40,7 @@ const ProductsCat = () => {
 							</span>
 						</div>
 					</div>
+					</Link>
 				))}
 			</div>	
 		</div>
