@@ -11,8 +11,12 @@ import EmailSignUp from "../components/EmailSignUp.jsx"
 import Footer from "../components/Footer.jsx"
 import Test from "../components/Test.jsx"
 import HelloPage from "../pages/HelloPage.jsx"
+import { useSelector } from "react-redux"
 
 const HomePage = () => {
+    const { user } = useSelector(state => state.auth);
+    console.log(user)
+
 	return (
 		<div className="flex-col">
             <Header />

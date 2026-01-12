@@ -3,6 +3,7 @@ import { products } from "../assets/products.js"
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { BsArrowsFullscreen } from "react-icons/bs";
 import { FaRegHeart } from "react-icons/fa";
+import { Link } from "react-router-dom"
 
 const NewArrivals = () => {
 	return (
@@ -13,8 +14,9 @@ const NewArrivals = () => {
 				</span>
 				<div className="flex justify-between items-center lg:gap-x-3 divide-x overflow-x-scroll w-full scroll-smooth snap-x">						
 				{products.map(item => (
-					<div key={item.id} className="flex-col min-w-48 lg:w-48 min-h-80 lg:h-80 p-4 rounded-sm hover:shadow-lg shadow-gray-500 items-center group scroll-ml-6 lg:scroll-ml-8 snap-start">
-					       <span className="flex flex-col space-y-3">
+					<Link to={`/${item.id}`}>
+				<div key={item.id} className="flex-col min-w-48 lg:w-48 min-h-80 lg:h-80 p-4 rounded-sm hover:shadow-lg shadow-gray-500 items-center group scroll-ml-6 lg:scroll-ml-8 snap-start">
+					<span className="flex flex-col space-y-3">
 								<p className="text-xs text-gray-500">{item.category}</p>
 								<p className="text-sm text-blue-600 font-bold">{`${item.name.length > 19 ? item.name.slice(0,18) : item.name}...`}</p>
 								<img className="h-32 w-32 cursor-pointer" src={item.image} alt="" />
@@ -36,6 +38,7 @@ const NewArrivals = () => {
 								</span>
 							</div>
 						</div>
+						</Link>
 					))}
 				</div>
 			</div>

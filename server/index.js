@@ -14,6 +14,7 @@ import categoryRoutes from "./routes/category.js"
 // import authRoutes from "./routes/user.js"
 
 const app = express()
+const PORT = process.env.PORT || 8080;
 // app.use(authMiddleware)
 app.use(express.json());
 app.use(cookieParser())
@@ -33,8 +34,9 @@ app.use(cors({
 
 connectDb() // MONGODB_URL
 
-app.use((req, res) => {
-  console.log(`${req.method} ${req.originalUrl}`);
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
 });
 
 app.use("/v1/api/users", userRoutes);
@@ -52,6 +54,6 @@ app.use((req, res) => {
 //   }, 10000);
 // }
 
-app.listen(process.env.PORT, "0.0.0.0", () => {
-    console.log(`Success 💯! Database running on port: ${process.env.PORT} 👍`)
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Success 💯! Server running on port: ${PORT} 👍`)
 })
