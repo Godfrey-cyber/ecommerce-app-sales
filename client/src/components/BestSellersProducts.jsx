@@ -8,9 +8,9 @@ const BestSellersProducts = () => {
 		<div className="w-full my-12 px-4 md:px-8">
 	      <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
 	        {products.map(item => (
-	        	<Link to={`/${item.id}`}>
+	        	<Link key={item.id} to={`/${item.id}`}>
 	          <div 
-	            key={item.id} 
+	             
 	            className="flex-shrink-0 w-72 bg-white rounded-md overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer snap-start border border-gray-100"
 	          >
 	            {/* Image Container */}

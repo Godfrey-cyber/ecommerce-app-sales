@@ -9,16 +9,18 @@ import { ShoppingCart, Search, Menu, User, UserRoundCheck, Heart } from 'lucide-
 const Header = () => {
 	const { user } = useSelector(state => state.auth);
 	return (
-		<header className="bg-yellow-400 h-16 w-full lg:px-20 px-5 overflow-x-hidden">
+		<header className="fixed top-0 z-50 bg-yellow-400 h-16 w-full lg:px-20 px-5 overflow-x-hidden">
 			<div className="flex justify-between items-center h-full">
 				<div className="flex items-center space-x-3">
 					<span className="md:hidden text-gray-800 cursor-pointer">
 						<Menu className="text-2xl" />
 					</span>
-					<div className="flex cursor-pointer">
-						<p className="text-4xl font-bold flex text-gray-800">electro</p>
-						<span className="text-white text-4xl font-bold rounded-full">.</span>
-					</div>
+					<Link to="/">
+						<div className="flex cursor-pointer">
+							<p className="text-4xl font-bold flex text-gray-800">electro</p>
+							<span className="text-white text-4xl font-bold rounded-full">.</span>
+						</div>
+					</Link>
 				</div>
 				{/*  search */}
 				<div className="hidden lg:flex items-center">

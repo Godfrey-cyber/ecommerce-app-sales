@@ -37,9 +37,9 @@ const MoreProducts = () => {
         <div className="lg:col-span-4">
           <div className="grid grid-cols-2 gap-4">
             {products.slice(0, 4).map(item => (
-            	<Link to={`/${item.id}`}>
+            	<Link key={item.id} to={`/${item.id}`}>
               <div
-                key={item.id}
+                
                 className="bg-white rounded-md shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-yellow-400"
               >
                 <div className="relative mb-3">
@@ -147,8 +147,8 @@ const MoreProducts = () => {
         <div className="lg:col-span-4">
           <div className="grid grid-cols-2 gap-4">
             {products.slice(2, 6).map(item => (
+              <Link key={item.id} to={`/${item.id}`}>
               <div
-                key={item.id}
                 className="bg-white rounded-md shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-yellow-400"
               >
                 <div className="relative mb-3">
@@ -183,6 +183,7 @@ const MoreProducts = () => {
                   </button>
                 </div>
               </div>
+              </Link>
             ))}
           </div>
           </div>

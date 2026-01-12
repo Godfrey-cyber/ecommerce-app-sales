@@ -40,9 +40,9 @@ const authSlice = createSlice({
     },
     getCurrentUserSuccess: (state, action) => {
       state.loading = false;
-      const { user, accessToken } = action.payload;
+      const { user, newAccessToken } = action.payload;
       state.user = user;
-      state.accessToken = accessToken;
+      state.accessToken = newAccessToken;
       state.isAuthenticated = true;
       state.error = null;
     },

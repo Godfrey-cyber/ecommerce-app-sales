@@ -4,6 +4,7 @@ import { products, product, categories, featuredProduct } from "../assets/produc
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
 import CartTabContent from "../components/cart/CartTabContent.jsx"
+import Header from "../components/Header.jsx"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
@@ -13,8 +14,8 @@ const ProductsPage = () => {
   	
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
-        
+		<Header />
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12 mt-12">
         {/* Main Product Section */}  
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           
