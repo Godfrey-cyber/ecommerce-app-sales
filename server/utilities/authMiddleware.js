@@ -44,3 +44,35 @@ export const restrictTo = (...roles) => {
 		}
 	}
 }
+
+// export const rateLimit = async (req, res, next) => {
+// 	try {
+// 		const ip = req.ip || req.headers['x-forwarded-for']?.split(',')[0] || req.headers['x-real-ip'] || req.socket.remoteAddress;
+// 		const routeLimits = {
+// 	      '/users/login-users': process.env.NODE_ENV === 'production' ? 10 : 100,      // 10 login attempts per minute
+// 	      '/users/signup-users': process.env.NODE_ENV === 'production' ? 5 : 100,       // 5 signup attempts per minute
+// 	      '/users/token_refresh': process.env.NODE_ENV === 'production' ? 60 : 100,     // 60 refresh attempts per minute
+// 	      'default': 30
+// 	    };
+
+// 	const route = req.path;
+//     const limit = routeLimits[route] || routeLimits.default;
+
+//     const key = `ratelimit:${ip}:${route}`;
+
+//     if (requests > limit) {
+// 	    console.log(`❌ Rate limit exceeded for ${ip} on ${route}`);
+// 	    return res.status(429).json({ 
+// 	        error: "Too many requests, slow down!",
+// 	        retryAfter: 60,
+// 	        requestCount: requests,
+// 	        limit: limit
+// 	    });
+//     }
+//     next();
+
+// 	} catch (error) {
+// 		console.error("Rate Limit Error:", error)
+//     	next();
+// 	}
+// }
