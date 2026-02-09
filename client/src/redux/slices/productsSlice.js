@@ -9,23 +9,23 @@ const initialState = {
 };
 
 // Slice
-const productSlice = createSlice({
-	name: 'product',
+const productsSlice = createSlice({
+	name: 'products',
 	initialState,
 	reducers: {
-		productStart: state => {
+		productsStart: state => {
 			state.isError = null;
 			state.isLoading = true;
 			state.success = false;
 			state.products = null;
 		},
-		productSuccess: (state, action) => {
+		productsSuccess: (state, action) => {
 			state.isError = false;
 			state.isLoading = false;
 			state.success = true;
 			state.products = action.payload;
 		},
-		productFailure: (state, action) => {
+		productsFailure: (state, action) => {
 			state.isError = true;
 			state.isLoading = false;
 			state.success = false;
@@ -51,8 +51,8 @@ const productSlice = createSlice({
 	},
 });
 
-export const { productStart, productSuccess, productFailure } =
-	productSlice.actions;
-export const selectProduct = state => state.product.product;
+export const { productsStart, productsSuccess, productsFailure, createProductStart, createProductSuccess, createProductFailure } =
+	productsSlice.actions;
+export const selectProduct = state => state.products.products;
 
-export default productSlice.reducer;
+export default productsSlice.reducer;
