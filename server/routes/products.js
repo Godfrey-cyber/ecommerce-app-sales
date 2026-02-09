@@ -8,8 +8,6 @@ router.get("/get-products", getAllProducts);
 router.get("/get-product/:id", getProduct);
 // @My products
 router.get("/get-my-products", authenticate, myProducts);
-// @Authentication
-
 // @Create
 router.post("/create-product", authenticate, createProduct);
 // @Delete
