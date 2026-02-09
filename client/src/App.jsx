@@ -18,6 +18,7 @@ import RegisterForm from "./pages/RegisterForm.jsx"
 import LoginForm from "./pages/LoginForm.jsx"
 import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
+import Product from "./pages/Product.jsx"
 
 function App() {
     const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function App() {
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
                     <Route path="/:id" element={<ProductsPage />} />
+                    <Route path="/product" element={<Product />} />
                 </Routes>
             </BrowserRouter>
         </section>
