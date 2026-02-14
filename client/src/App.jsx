@@ -40,7 +40,7 @@ function App() {
                     <Route path="/auth/register" element={<RegisterForm />} />
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
-                    <Route path="/:id" element={<ProductsPage />} />
+                    <Route path="/:slug/:id" element={<ProductsPage />} />
                     <Route path="/product" element={<Product />} />
                 </Routes>
             </BrowserRouter>

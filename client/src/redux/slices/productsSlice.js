@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // Initial state
 const initialState = {
 	products: [],
+	product: null,
 	isLoading: false,
 	success: false,
 	isError: null,
@@ -17,7 +18,7 @@ const productsSlice = createSlice({
 			state.isError = null;
 			state.isLoading = true;
 			state.success = false;
-			state.products = null;
+			state.products = [];
 		},
 		productsSuccess: (state, action) => {
 			state.isError = false;
@@ -26,6 +27,25 @@ const productsSlice = createSlice({
 			state.products = action.payload;
 		},
 		productsFailure: (state, action) => {
+			state.isError = true;
+			state.isLoading = false;
+			state.success = false;
+			// state.products = action.payload;
+		},
+		// product
+		productStart: state => {
+			state.isError = null;
+			state.isLoading = true;
+			state.success = false;
+			state.product = null;
+		},
+		productSuccess: (state, action) => {
+			state.isError = false;
+			state.isLoading = false;
+			state.success = true;
+			state.product = action.payload;
+		},
+		productFailure: (state, action) => {
 			state.isError = true;
 			state.isLoading = false;
 			state.success = false;
@@ -51,7 +71,7 @@ const productsSlice = createSlice({
 	},
 });
 
-export const { productsStart, productsSuccess, productsFailure, createProductStart, createProductSuccess, createProductFailure } =
+export const { productStart, productSuccess, productFailure, productsStart, productsSuccess, productsFailure, createProductStart, createProductSuccess, createProductFailure } =
 	productsSlice.actions;
 export const selectProduct = state => state.products.products;
 
