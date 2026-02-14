@@ -99,16 +99,16 @@ const ProductsPage = () => {
 
                     {/*<div className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-red-500'}`} />*/}
 
-	                { product?.discount > 0 && <span className="text-lg md:text-2xl lg:3xl font-bold text-gray-900">
+	                {product?.discount > 0 && <span className="text-lg md:text-2xl lg:3xl font-bold text-gray-900">
                         Ksh. {product?.price * ((100 - product?.discount) / 100).toFixed(2)}
                     </span>}
 	              <span className={`text-lg md:text-2xl lg:3xl ${product?.discount > 0 ? 'line-through text-gray-400' : 'font-bold text-gray-900'}`}>
 	                Ksh. {product?.price} 
 	              </span>
               </div>
-              <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-bold">
+              {product?.discount > 0 && <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-bold">
                 Save {product?.discount}%
-              </span>
+              </span>}
             </div>
 
             {/* Description */}

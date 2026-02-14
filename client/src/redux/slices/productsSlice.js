@@ -27,7 +27,7 @@ const productsSlice = createSlice({
 			state.products = action.payload;
 		},
 		productsFailure: (state, action) => {
-			state.isError = true;
+			state.isError = action.payload;
 			state.isLoading = false;
 			state.success = false;
 			// state.products = action.payload;
@@ -46,10 +46,10 @@ const productsSlice = createSlice({
 			state.product = action.payload;
 		},
 		productFailure: (state, action) => {
-			state.isError = true;
+			state.isError = action.payload;
 			state.isLoading = false;
 			state.success = false;
-			// state.products = action.payload;
+			state.products = null;
 		},
 		// create blog
 		createProductStart: (state) => {
@@ -70,7 +70,6 @@ const productsSlice = createSlice({
 	    },
 	},
 });
-
 export const { productStart, productSuccess, productFailure, productsStart, productsSuccess, productsFailure, createProductStart, createProductSuccess, createProductFailure } =
 	productsSlice.actions;
 export const selectProduct = state => state.products.products;

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { MdOutlineAddShoppingCart } from "react-icons/md";
-import { FaRegHeart } from "react-icons/fa";
-import { BsArrowsFullscreen } from "react-icons/bs";
-// import { products } from "../assets/products.js"
 import { Link } from "react-router-dom"
 import { fetchProducts } from "../redux/thunk/productsThunk.js"
+import { useGetProductsQuery } from "../redux/productsApi.jsx"
 import { useDispatch, useSelector } from "react-redux"
 import { Heart, ShoppingCart, Star, TrendingUp } from 'lucide-react';
 
 const ProductsCat = () => {
-	const { products, isLoading, isError, success } = useSelector(state => state.products);
+	// const { products, isLoading, success, isError } = useSelector(state => state.products); 
+	const { data, error, isLoading } = useGetProductsQuery();
 	const dispatch = useDispatch();
 	const [isWishlisted, setIsWishlisted] = useState(false);
   	const [isHovered, setIsHovered] = useState(false);
@@ -18,9 +16,7 @@ const ProductsCat = () => {
 	    dispatch(fetchProducts())
 	    return () => controller.abort();
 	  }, []);
-	console.log(products)
-	// const discountAmount = products?.originalPrice - product.price;
-  	// const savings = Math.round((discountAmount / product?.originalPrice) * 100);
+	console.log(data?.products)
 	return (
 		<div className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-10">
 			<span className="flex items-center space-x-6 border-b border-gray-300 py-2">
@@ -30,17 +26,17 @@ const ProductsCat = () => {
 			</span>
 
 			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-8 divide-x">
-				{products?.map(product => (
-					<Link to={`/${product.slug}/${product._id}`}>
+				{data?.products?.map(product => (
+					<Link to={`/${product.slug}/${product._id}`} key={product._id}>
 					<div className="relative w-64 bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
 					  <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
 					    <TrendingUp className="w-3 h-3" />
 					    Best Seller
 					  </div>
 
-					  <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-					    -25%
-					  </div>
+					  {product.discount && <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+					    -{product.discount}
+					  </div>}
 
 					  <button onClick={() => setIsWishlisted(!isWishlisted)} className="absolute top-16 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center group/heart">
 					    <Heart className={`w-5 h-5 transition-all duration-200 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`} />
@@ -55,7 +51,7 @@ const ProductsCat = () => {
 						        <ShoppingCart className="w-5 h-5" />
 						        Quick Add
 						      </button>
-						    <Link>
+						    </Link>
 					    </div>
 					  </div>
 
@@ -77,8 +73,8 @@ const ProductsCat = () => {
 					    <div className="flex items-end justify-between">
 					      <div>
 					        <div className="flex items-baseline gap-2">
-					          <span className="text-2xl font-bold text-gray-900">${product.price}</span>
-					          <span className="text-sm text-gray-400 line-through">$3000</span>
+					          <span className="text-2xl font-bold text-gray-900">{product?.price * ((100 - product?.discount) / 100).toFixed(2)}</span>
+					          <span className="text-sm text-gray-400 line-through">${product.price}</span>
 					        </div>
 					        <span className="text-xs text-green-600 font-semibold">Save $200</span>
 					      </div>
