@@ -19,8 +19,9 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser())
 
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:4000"]
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_URL, "http://localhost:4000"],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowHeaders: [
         "Content-Type",
@@ -46,13 +47,6 @@ app.use("/v1/api/categories", categoryRoutes);
 app.use((req, res) => {
   res.status(404).json({ msg: "Route not found" });
 });
-
-// if (process.env.NODE_ENV === 'development') {
-//   setInterval(() => {
-//     const used = process.memoryUsage().heapUsed / 1024 / 1024;
-//     console.log(`Heap: ${used.toFixed(2)} MB`);
-//   }, 10000);
-// }
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Success 💯! Server running on port: ${PORT} 👍`)

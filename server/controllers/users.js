@@ -227,15 +227,24 @@ export const tokenRefresh = async (req, res) => {
         user.refreshTokens.push({ token: newRefreshToken });
         await user.save();
 
+        const safeUser = {
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            role: user.role,
+            verified: user.verify,
+        }
+
         // @Send refreshToken
         res.cookie("refreshToken", newRefreshToken, {
           path: "/",
           httpOnly: true,
           maxAge: 7 * 24 * 60 * 60 * 1000,
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-          secure: process.env.NODE_ENV === "production",
+          sameSite: "none",
+          secure: true,
         });
-        res.status(200).json({ accessToken: newAccessToken });
+        return res.status(200).json({ user: safeUser, newAccessToken });
     } catch (error) {
         console.log(error.message)
         return res.status(403).json({ message: error.message });

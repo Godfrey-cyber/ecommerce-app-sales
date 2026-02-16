@@ -18,34 +18,30 @@ import RegisterForm from "./pages/RegisterForm.jsx"
 import LoginForm from "./pages/LoginForm.jsx"
 import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
+import Product from "./pages/Product.jsx"
 
 function App() {
     const dispatch = useDispatch();
     const [isloading, setisLoading] = useState(true);
     const { user, loading, error, accessToken, isAuthenticated } = useSelector(state => state.auth);
-
     useEffect(() => {
     // On initial load, check if the user is authenticated
-    // if (isAuthenticated === null || isAuthenticated === undefined) {
       dispatch(refreshUser());
-      // dispatch(initializeAuth());
-      // dispatch(loginUser({ email, password }, navigate, toast));
-    // }
-  }, [dispatch]);
+    }, [dispatch]);
 
     return (
-        <section className="min-h-screen font-['Nunito'] scroll-smooth w-full overflow-x-hidden">
+        <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-full overflow-x-hidden">
             <ToastContainer />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/items/cart" element={<CartPage />} />
-                    <Route path="/cart/checkout" element={accessToken ? <CheckoutPage /> : <LoginForm />} />
-                    {/*<Route path="/home/demo" element={<HeroCarousel />} />*/}
+                    <Route path="/cart/checkout" element={(accessToken && isAuthenticated) ? <CheckoutPage /> : <LoginForm />} />
                     <Route path="/auth/register" element={<RegisterForm />} />
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
-                    <Route path="/:id" element={<ProductsPage />} />
+                    <Route path="/:slug/:id" element={<ProductsPage />} />
+                    <Route path="/dashboard" element={<Product />} />
                 </Routes>
             </BrowserRouter>
         </section>

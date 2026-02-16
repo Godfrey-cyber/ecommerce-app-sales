@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Check } from 'lucide-react';
-import { products, product, categories, featuredProduct } from "../assets/products.js"	
+// import { products, product, categories, featuredProduct } from "../assets/products.js"	
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
+import CartTabContent from "../components/cart/CartTabContent.jsx"
+import Header from "../components/Header.jsx"
+import { useSelector,useDispatch } from "react-redux"
+import { fetchOneProduct }  from "../redux/thunk/productsThunk.js"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
   	const [quantity, setQuantity] = useState(1);
   	const [activeTab, setActiveTab] = useState('details');
   	const { id, slug } = useParams();
+    const dispatch = useDispatch()
+    const { product, isLoading, isError, success } = useSelector(state => state.products);
   	
+    useEffect(() => {
+      if (!id) return;
+      dispatch(fetchOneProduct(id))
+      window.scrollTo(0, 0)
+    }, [id, dispatch]);
+    console.log(product)
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
-        
+		<Header />
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12 mt-12">
         {/* Main Product Section */}  
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           
@@ -23,16 +35,16 @@ const ProductsPage = () => {
             <div className="bg-white rounded-sm overflow-hidden ">
               <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-sm flex items-center justify-center">
                 <img
-                  src={product?.images[selectedImage]}
-                  alt={product.name}
+                  src={product?.image}
+                  alt={product?.title}
                   className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
             
             {/* Thumbnail Images */}
-            <div className="grid grid-cols-4 gap-3">
-              {product.images && product?.images.map((img, index) => (
+            {/*<div className="grid grid-cols-4 gap-3">
+              {product?.image && product?.image.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -45,7 +57,7 @@ const ProductsPage = () => {
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
-            </div>
+            </div>*/}
           </div>
 
           {/* Right - Product Info */}
@@ -53,14 +65,14 @@ const ProductsPage = () => {
             {/* Brand & Category */}
             <div className="flex items-center gap-3">
               <span className="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-semibold">
-                {product.brand}
+                {product?.brand}
               </span>
-              <span className="text-sm text-gray-500">{product.category}</span>
+              <span className="text-sm text-gray-500">{product?.condition}</span> 
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl font-bold text-gray-900 leading-tight">
-              {product.name}
+            <h1 className="text-lg md:text-2xl lg:3xl font-bold text-gray-900 leading-tight"> 
+              {product?.title}
             </h1>
 
             {/* Rating */}
@@ -70,33 +82,38 @@ const ProductsPage = () => {
                   <Star
                     key={i}
                     className={`w-5 h-5 ${
-                      i < Math.floor(product.rating)
+                      i < Math.floor(product?.rating)
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'text-gray-300'
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-sm font-semibold text-gray-900">{product.rating}</span>
-              <span className="text-sm text-gray-500">({product.totalReviews} reviews)</span>
+              {/*<span className="text-sm font-semibold text-gray-900">{product?.rating}</span>*/}
+              <span className="text-sm text-gray-500">({product?.rating} reviews)</span>
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-bold text-gray-900">
-                Ksh. {product.price.toLocaleString()}
-              </span>
-              <span className="text-xl text-gray-400 line-through">
-                Ksh. {product.originalPrice.toLocaleString()}
-              </span>
-              <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-bold">
-                Save {product.discount}%
-              </span>
+            <div className="flex lg:flex-row flex-col items-baseline gap-4">
+            	<div className="flex items-center space-x-4">
+
+                    {/*<div className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-red-500'}`} />*/}
+
+	                {product?.discount > 0 && <span className="text-lg md:text-2xl lg:3xl font-bold text-gray-900">
+                        Ksh. {product?.price * ((100 - product?.discount) / 100).toFixed(2)}
+                    </span>}
+	              <span className={`text-lg md:text-2xl lg:3xl ${product?.discount > 0 ? 'line-through text-gray-400' : 'font-bold text-gray-900'}`}>
+	                Ksh. {product?.price} 
+	              </span>
+              </div>
+              {product?.discount > 0 && <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-bold">
+                Save {product?.discount}%
+              </span>}
             </div>
 
             {/* Description */}
             <p className="text-gray-600 leading-relaxed">
-              {product.description}
+              {product?.description}
             </p>
 
             {/* Quantity & Add to Cart */}
@@ -154,13 +171,13 @@ const ProductsPage = () => {
         </div>
 
         {/* Tabs Section */}
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-md sm:shadow md:shadow shadow-lg border border-gray-100 overflow-hidden">
           	{/* Tab Headers */}
-        	<CartTabHeaders />
+        	<CartTabHeaders activeTab={activeTab} setActiveTab={setActiveTab} />
           {/* Tab Content */}
           
         </div>
-
+        <CartTabContent activeTab={activeTab} />
       </div>
     </div>
 	)

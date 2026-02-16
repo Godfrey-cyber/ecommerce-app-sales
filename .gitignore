@@ -1,1 +1,6 @@
-ecommerce sales readme
+node_modules
+.env.*
+.env
+*.local
+logs
+*.log

@@ -5,6 +5,7 @@ import slugify from 'slugify'
 import mongoose from "mongoose"
 import { allowedUpdates } from "../utilities/utiles.js"
 
+// @Create - Product
 export const createProduct = async(req, res) => {
     const { title, description, price, image, stock, discount, category, brand, condition, specifications, attributes, rating, review } = req.body
 
@@ -42,15 +43,32 @@ export const createProduct = async(req, res) => {
         return res.status(500).json(error)
     }
 }
-
+// @Get - All Products
 export const getAllProducts = async(req, res) => {
     try {
-        const { search, page = 1, limit = 10, sortBy = 'createdAt', order = 'desc', minPrice, maxPrice, minRating, maxRating, brand } = req.query;
+        const { 
+            search, 
+            page = 1, 
+            limit = 10, 
+            sortBy = 'createdAt', 
+            order = 'desc', 
+            minPrice, 
+            maxPrice, 
+            minRating, 
+            maxRating, 
+            brand,
+            discount,
+            specifications,
+            image, 
+            finalPrice,
+            discountAmount,
+        } = req.query;
+       
         // @Initialize pipeline
         const pipeline = []
-
-        // @Search filter. console
-        if (search) { // searchTerm
+        
+        // @Search filter
+        if (search) {
             const regex = new RegExp(search, 'i')
             pipeline.push({
                 $match: {
@@ -60,11 +78,11 @@ export const getAllProducts = async(req, res) => {
                         { category: regex },
                         { brand: regex },
                         { condition: regex },
-                        // { 'location.country': regex },
                     ],
                 },
             })
         }
+        
         // Brand filter
         if (brand) {
             const regex = new RegExp(brand, 'i')
@@ -74,7 +92,14 @@ export const getAllProducts = async(req, res) => {
                 }
             })
         }
-
+        
+        // Discount filter
+        if (discount) {
+            pipeline.push({
+                $match: { discount: Number(discount) }
+            });
+        }
+        
         // Price range filter
         if (minPrice || maxPrice) {
             pipeline.push({
@@ -86,12 +111,12 @@ export const getAllProducts = async(req, res) => {
                 },
             })
         }
-
+        
         // Rating range filter
         if (minRating || maxRating) {
             pipeline.push({
                 $match: {
-                    averageRating: {
+                    rating: {  // Fixed: was averageRating
                         ...(minRating ? { $gte: Number(minRating) } : {}),
                         ...(maxRating ? { $lte: Number(maxRating) } : {}),
                     },
@@ -99,10 +124,49 @@ export const getAllProducts = async(req, res) => {
             })
         }
 
+        pipeline.push({
+          $addFields: {
+            safeDiscount: { $ifNull: ["$discount", 0] },
+          }
+        });
+
+        pipeline.push({
+          $addFields: {
+            discountAmount: {
+              $round: [
+                { 
+                  $multiply: [
+                    "$price", 
+                    { $divide: ["$safeDiscount", 100] }
+                  ] 
+                },
+                2
+              ]
+            },
+            finalPrice: {
+              $round: [
+                {
+                  $subtract: [
+                    "$price",
+                    {
+                      $multiply: [
+                        "$price",
+                        { $divide: ["$safeDiscount", 100] }
+                      ]
+                    }
+                  ]
+                },
+                2
+              ]
+            }
+          }
+        });
+
+        
         // Sorting
         const sortOrder = order === 'asc' ? 1 : -1
         pipeline.push({ $sort: { [sortBy]: sortOrder } })
-
+        
         // Pagination
         const skip = (parseInt(page) - 1) * parseInt(limit)
         pipeline.push({ $skip: skip })
@@ -120,16 +184,35 @@ export const getAllProducts = async(req, res) => {
                 createdAt: 1,
                 slug: 1,
                 user: 1,
+                discount: 1,
+                image: 1,
+                condition: 1,
+                specifications: 1,
+                image: 1,
+                finalPrice: 1,
+                discountAmount: 1,
+                safeDiscount: 0,
             },
         })
-
+        
         const products = await Products.aggregate(pipeline)
-
-        const countPipeline = pipeline.filter((stage) => !('$skip' in stage) && !('$limit' in stage) && !('$project' in stage))
-        countPipeline.push({ $count: 'total' })
+        
+        const countPipeline = [];
+        pipeline.forEach(stage => {
+          if (stage.$match) countPipeline.push(stage);
+        });
+        // const countPipeline = pipeline.filter((stage) => 
+        //     !('$skip' in stage) && 
+        //     !('$limit' in stage) && 
+        //     !('$project' in stage)
+        // )
+        countPipeline.push({ $count: 'total' });
+        
         const countResult = await Products.aggregate(countPipeline)
         const total = countResult[0]?.total || 0
 
+        console.log('First product keys:', Object.keys(products[0] || {}));
+        
         res.status(200).json({
             success: true,
             count: products.length,
@@ -140,9 +223,13 @@ export const getAllProducts = async(req, res) => {
         })
     } catch (error) {
         console.error(error)
-        return res.status(401).json(error)
+        return res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        })
     }
 }
+
 // @Single Product
 export const getProduct = async (req, res) => {
     const { id } = req.params

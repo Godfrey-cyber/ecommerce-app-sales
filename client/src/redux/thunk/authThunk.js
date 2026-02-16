@@ -40,10 +40,12 @@ export const refreshUser = () => async dispatch => {
     const response = await axiosInstance.get("/users/refresh_token", {
       withCredentials: true,
     });
-
-    dispatch(getCurrentUserSuccess(response.data));
+    if (response.status === 200) {
+      dispatch(getCurrentUserSuccess(response.data));
+      // console.log(response.data)
+    }
   } catch (error) {
-    dispatch(getCurrentUserFailure("Session expired. Please log in again."));
+    dispatch(getCurrentUserFailure(null));
   }
 };
 

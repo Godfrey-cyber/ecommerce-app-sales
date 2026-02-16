@@ -38,9 +38,9 @@ axiosInstance.interceptors.response.use(
     
     // Auth endpoints that should NEVER trigger refresh
     const isAuthEndpoint = 
-      originalRequest.url?.includes('/users/login') || 
-      originalRequest.url?.includes('/users/signup') ||
-      originalRequest.url?.includes('/users/refresh');
+      originalRequest.url?.includes('/users/login-user') || 
+      originalRequest.url?.includes('/users/signup-user') ||
+      originalRequest.url?.includes('/users/refresh_token');
     
     // CRITICAL: Don't retry rate-limited requests
     if (error.response?.status === 429) {
@@ -71,7 +71,7 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshResponse = await axiosInstance.get("/users/refresh");
+        const refreshResponse = await axiosInstance.get("/users/refresh_tokens");
         const { accessToken } = refreshResponse.data;
         
         console.log('✅ Token refreshed successfully');

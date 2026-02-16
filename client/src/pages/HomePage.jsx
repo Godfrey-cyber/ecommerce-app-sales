@@ -14,8 +14,7 @@ import HelloPage from "../pages/HelloPage.jsx"
 import { useSelector } from "react-redux"
 
 const HomePage = () => {
-    const { user } = useSelector(state => state.auth);
-    console.log(user)
+    const { user, accessToken } = useSelector(state => state.auth);
 
 	return (
 		<div className="flex-col">
