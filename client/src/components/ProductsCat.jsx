@@ -25,17 +25,17 @@ const ProductsCat = () => {
 				<p className="text-lg font-light active:border-b active:border-yellow-400 cursor-pointer">On sale</p>
 			</span>
 
-			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-8 divide-x">
+			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-8">
 				{data?.products?.map(product => (
 					<Link to={`/${product.slug}/${product._id}`} key={product._id}>
-					<div className="relative w-64 bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+					<div className="flex flex-col justify-between relative w-72 h-[500px] bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
 					  <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
 					    <TrendingUp className="w-3 h-3" />
 					    Best Seller
 					  </div>
 
-					  {product.discount && <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-					    -{product.discount}
+					  {product.discount > 0 && <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+					    -{product.discount}%
 					  </div>}
 
 					  <button onClick={() => setIsWishlisted(!isWishlisted)} className="absolute top-16 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center group/heart">
@@ -56,7 +56,7 @@ const ProductsCat = () => {
 					  </div>
 
 					  <div className="p-5">
-					    <div className="flex items-center gap-2 mb-1">
+					    <div className="flex items-center gap-2 mb-.5">
 					      <div className="flex items-center gap-1">
 					        {[...Array(5)].map((_, i) => (
 					          <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-400' : i < product.rating ? 'fill-amber-400 text-amber-400 opacity-50' : 'fill-gray-200 text-gray-200'}`} />
@@ -66,20 +66,20 @@ const ProductsCat = () => {
 					      <span className="text-sm text-gray-500">({product.rating})</span>
 					    </div>
 
-					    <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{product.title}</h3>
+					    <h3 className="text-lg font-bold text-gray-900 mb-.5 line-clamp-1">{product.title}</h3>
 
-					    <p className="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">{product.description}</p>
+					    <p className="text-xs text-gray-600 mb-1 line-clamp-2 leading-relaxed">{product.description}</p>
 
 					    <div className="flex items-end justify-between">
 					      <div>
-					        <div className="flex items-baseline gap-2">
-					          <span className="text-2xl font-bold text-gray-900">{product?.price * ((100 - product?.discount) / 100).toFixed(2)}</span>
-					          <span className="text-sm text-gray-400 line-through">${product.price}</span>
+					        <div className="flex flex-col items-baseline">
+					          <span className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.price * ((100 - product?.discount) / 100).toFixed(1))}</span>
+					          {product.discount > 0 && <span className="text-sm text-gray-400 line-through">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price)}</span>}
 					        </div>
-					        <span className="text-xs text-green-600 font-semibold">Save $200</span>
+					        <span className="text-xs text-green-600 font-semibold">Save {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price - product?.price * ((100 - product?.discount) / 100).toFixed(2))}</span>
 					      </div>
 
-					      <div className="flex items-center gap-1">
+					      <div className="flex items-center space-x-1 justify-between">
 					        <div className={`w-2 h-2 rounded-full ${product.stock ? 'bg-green-500' : 'bg-red-500'}`} />
 					        <span className={`text-xs font-medium ${product.stock ? 'text-green-600' : 'text-red-600'}`}>
 					          {product.stock ? 'In Stock' : 'Out of Stock'}

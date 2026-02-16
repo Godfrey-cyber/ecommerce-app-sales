@@ -25,8 +25,8 @@ const BestSellersProducts = () => {
 					    Best Seller
 					  </div>
 
-					  {product.discount && <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-					    -{product.discount}
+					  {product.discount > 0 && <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+					    -{product.discount}%
 					  </div>}
 
 					  <button onClick={() => setIsWishlisted(!isWishlisted)} className="absolute top-16 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center group/heart">
@@ -64,10 +64,10 @@ const BestSellersProducts = () => {
 					    <div className="flex items-end justify-between">
 					      <div>
 					        <div className="flex items-baseline gap-2">
-					          <span className="text-2xl font-bold text-gray-900">{product?.price * ((100 - product?.discount) / 100).toFixed(2)}</span>
-					          <span className="text-sm text-gray-400 line-through">${product.price}</span>
+					          <span className="text-2xl font-bold text-gray-900">{product?.price * ((100 - product?.discount) / 100).toFixed(1)}</span>
+					          {product.discount > 0 && <span className="text-sm text-gray-400 line-through">${product.price}</span>}
 					        </div>
-					        <span className="text-xs text-green-600 font-semibold">Save $200</span>
+					        <span className="text-xs text-green-600 font-semibold">Save ${product.price - product?.price * ((100 - product?.discount) / 100).toFixed(2)}</span>
 					      </div>
 
 					      <div className="flex items-center gap-1">
