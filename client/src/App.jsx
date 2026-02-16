@@ -41,7 +41,7 @@ function App() {
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
                     <Route path="/:slug/:id" element={<ProductsPage />} />
-                    <Route path="/product" element={<Product />} />
+                    <Route path="/dashboard" element={<Product />} />
                 </Routes>
             </BrowserRouter>
         </section>
