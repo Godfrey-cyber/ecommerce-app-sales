@@ -61,6 +61,17 @@ const ProductSchema = new mongoose.Schema({
 	}
 }, { timestamps: true } )
 
+// Calculate Discount
+ProductSchema.virtual('finalPrice').get(function () {
+	const discountAmount = (this.price * this.discount) / 100;
+	return Number((this.price - discountAmount).toFixed(2))
+})
+
+ProductSchema.virtual('discountAmount').get(function () {
+	return Number(((this.price * this.discount) / 100).toFixed(2))
+})
+ProductSchema.set('toJSON', { virtuals: true })
+ProductSchema.set('toObject', { virtuals: true })
 // Indexes
 ProductSchema.index({ category: 1 });
 ProductSchema.index({ parentCategory: 1 });
