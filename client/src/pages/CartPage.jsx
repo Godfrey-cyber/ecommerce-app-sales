@@ -5,12 +5,16 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCcAmex } from "react-icons/fa";
 import { FaTag, FaLock, FaCcVisa, FaCcMastercard } from "react-icons/fa6";
 import Header from "../components/Header.jsx"
-import  { cartItems } from "../utilities/assets.js"
+// import  { cartItems } from "../utilities/assets.js"
+import { useAddToCartMutation, useGetCartQuery } from "../redux/cartApi.jsx"
 import { Link } from "react-router-dom"
 
 const CartPage = () => {
 	const appliedPromo = true
 	const subtotal = true
+	const { data, error } = useGetCartQuery();
+	const cartItems = data.cart[0].items
+	console.log(cartItems)
 	return (
 		<div className="flex flex-col bg-gray-50 w-full min-h-screen text-sm font-bold">
 			<Header />
@@ -27,14 +31,14 @@ const CartPage = () => {
 			<div className="grid grid-cols-12 gap-6 px-3 md:px-10 lg:px-20 my-5">
 				<div className="flex col-span-12 lg:col-span-8 h-fit  flex-col bg-white shadow-lg rounded-md">
 					<div className="flex items-center justify-between">
-						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items (4).</p>
+						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items ({cartItems.length}).</p>
 						<button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
 					      	<BsThreeDotsVertical className="text-gray-800 text-2xl" />
 					    </button>
 					</div>
 					{/*  */}
 					{cartItems.map(item => (
-						<div key={item.title} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
+						<div key={item.product} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
 					      <div className="flex-shrink-0">
 					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
 					          <img 
