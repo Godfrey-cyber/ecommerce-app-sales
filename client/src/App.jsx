@@ -18,7 +18,7 @@ import RegisterForm from "./pages/RegisterForm.jsx"
 import LoginForm from "./pages/LoginForm.jsx"
 import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
-import Product from "./pages/Product.jsx"
+// import Product from "./pages/Product.jsx"
 
 function App() {
     const dispatch = useDispatch();
@@ -41,7 +41,8 @@ function App() {
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
                     <Route path="/:slug/:id" element={<ProductsPage />} />
-                    <Route path="/dashboard" element={<Product />} />
+                    {/*<Route path="/dashboard" element={<Dashboard />} />*/}
+                    {/*<Route path="/twiter" element={<Twiter />} />*/}
                 </Routes>
             </BrowserRouter>
         </section>
@@ -49,3 +50,16 @@ function App() {
 }
 
 export default App
+
+
+// docker run -d \
+//   --name mysql-container \
+//   -e MYSQL_ROOT_PASSWORD=godfrey0860 \
+//   -e MYSQL_DATABASE=chat-app \
+//   -e MYSQL_USER=godfrey \
+//   -e MYSQL_PASSWORD=chat-godfrey \
+//   -p 3306:3306 \
+//   -v mysql57-data:/var/lib/mysql \
+//   mysql:5.7
+
+
