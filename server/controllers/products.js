@@ -60,8 +60,6 @@ export const getAllProducts = async(req, res) => {
             discount,
             specifications,
             image, 
-            finalPrice,
-            discountAmount,
         } = req.query;
        
         // @Initialize pipeline
@@ -126,47 +124,28 @@ export const getAllProducts = async(req, res) => {
 
         pipeline.push({
           $addFields: {
-            safeDiscount: { $ifNull: ["$discount", 0] },
-          }
-        });
-
-        pipeline.push({
-          $addFields: {
-            discountAmount: {
-              $round: [
-                { 
-                  $multiply: [
-                    "$price", 
-                    { $divide: ["$safeDiscount", 100] }
-                  ] 
-                },
-                2
-              ]
+            discountAmount: { 
+              $round: [{ $multiply: ["$price", { $divide: ["$discount", 100] }] }, 2] 
             },
-            finalPrice: {
-              $round: [
-                {
-                  $subtract: [
-                    "$price",
-                    {
-                      $multiply: [
-                        "$price",
-                        { $divide: ["$safeDiscount", 100] }
-                      ]
-                    }
-                  ]
-                },
-                2
-              ]
-            }
-          }
+            finalPrice: { 
+              $round: [{ $subtract: ["$price", { $multiply: ["$price", { $divide: ["$discount", 100] }] }] }, 2] 
+            },
+          },
         });
-
+        
+        // Remove the problematic safeDiscount field if it exists
+        pipeline.push({
+          $unset: "safeDiscount"
+        });
         
         // Sorting
         const sortOrder = order === 'asc' ? 1 : -1
         pipeline.push({ $sort: { [sortBy]: sortOrder } })
         
+        // Count before pagination
+        const countPipeline = [...pipeline];
+        countPipeline.push({ $count: 'total' });
+
         // Pagination
         const skip = (parseInt(page) - 1) * parseInt(limit)
         pipeline.push({ $skip: skip })
@@ -188,30 +167,14 @@ export const getAllProducts = async(req, res) => {
                 image: 1,
                 condition: 1,
                 specifications: 1,
-                image: 1,
                 finalPrice: 1,
                 discountAmount: 1,
-                safeDiscount: 0,
             },
         })
         
         const products = await Products.aggregate(pipeline)
-        
-        const countPipeline = [];
-        pipeline.forEach(stage => {
-          if (stage.$match) countPipeline.push(stage);
-        });
-        // const countPipeline = pipeline.filter((stage) => 
-        //     !('$skip' in stage) && 
-        //     !('$limit' in stage) && 
-        //     !('$project' in stage)
-        // )
-        countPipeline.push({ $count: 'total' });
-        
         const countResult = await Products.aggregate(countPipeline)
         const total = countResult[0]?.total || 0
-
-        console.log('First product keys:', Object.keys(products[0] || {}));
         
         res.status(200).json({
             success: true,
