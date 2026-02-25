@@ -6,15 +6,46 @@ import { FaCcAmex } from "react-icons/fa";
 import { FaTag, FaLock, FaCcVisa, FaCcMastercard } from "react-icons/fa6";
 import Header from "../components/Header.jsx"
 // import  { cartItems } from "../utilities/assets.js"
-import { useAddToCartMutation, useGetCartQuery } from "../redux/cartApi.jsx"
+import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
 import { Link } from "react-router-dom"
 
 const CartPage = () => {
 	const appliedPromo = true
 	const subtotal = true
 	const { data, error } = useGetCartQuery();
-	const cartItems = data.cart[0].items
-	console.log(cartItems)
+	const [updateCartItem, { isLoading }] = useUpdateCartItemMutation();
+	const [removeFromCart] = useRemoveFromCartMutation();
+	const cartItems = data?.cart[0]?.items
+	const cartItems2 = data?.cart[0]
+	// console.log("cartitems --", cartItems)
+	// console.log("cartitems2 --", cartItems2)
+
+	// update cartitem qty
+    const handleQtyUpdate = async (item, delta) => {
+		const newQuantity = item.quantity + delta;
+		
+		if (newQuantity === 0) {
+			// Remove item if quantity becomes 0
+			try {
+				await removeFromCart(item.product).unwrap();
+			} catch (error) {
+				console.error('Failed to remove item:', error);
+			}
+		} else if (newQuantity > 0) {
+			// Update quantity
+			console.log(item.product)
+			console.log(newQuantity)
+			try {
+				await updateCartItem({
+					itemId: item.product,        // Cart item ID
+					quantity: newQuantity,   // New calculated quantity
+				}).unwrap();
+			} catch (error) {
+				console.error('Failed to update quantity:', error);
+			}
+		}
+	};
+
 	return (
 		<div className="flex flex-col bg-gray-50 w-full min-h-screen text-sm font-bold">
 			<Header />
@@ -31,13 +62,13 @@ const CartPage = () => {
 			<div className="grid grid-cols-12 gap-6 px-3 md:px-10 lg:px-20 my-5">
 				<div className="flex col-span-12 lg:col-span-8 h-fit  flex-col bg-white shadow-lg rounded-md">
 					<div className="flex items-center justify-between">
-						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items ({cartItems.length}).</p>
+						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items ({cartItems2?.totalItems}).</p>
 						<button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
 					      	<BsThreeDotsVertical className="text-gray-800 text-2xl" />
 					    </button>
 					</div>
 					{/*  */}
-					{cartItems.map(item => (
+					{cartItems?.map(item => (
 						<div key={item.product} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
 					      <div className="flex-shrink-0">
 					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
@@ -56,12 +87,13 @@ const CartPage = () => {
 					        </div>
 					        
 					        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+					        	{/*@Cart Quantity Update*/}
 					          <div className="flex items-center gap-3">
-					            <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
+					            <button onClick={() => handleQtyUpdate(item, +1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
 					              <Plus className="text-gray-800 w-5 h-5" />
 					            </button>
 					            <span className="font-semibold text-slate-900 w-8 text-center">{item.quantity}</span>
-					            <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
+					            <button onClick={() => handleQtyUpdate(item, -1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
 					              <Minus className="text-gray-800 w-5 h-5" />
 					            </button>
 					          </div>
@@ -122,7 +154,7 @@ const CartPage = () => {
 		                  {appliedPromo && (
 		                    <div className="flex justify-between text-green-600">
 		                      <span>Discount (BOOK20)</span>
-		                      <span className="font-semibold">-$20</span>
+		                      <span className="font-semibold">- KSH. {cartItems2?.discount}</span>
 		                    </div>
 		                  )}
 		                  <div className="flex justify-between text-slate-700">
@@ -133,12 +165,12 @@ const CartPage = () => {
 		                  </div>
 		                  <div className="flex justify-between text-slate-700">
 		                    <span>Tax (8%)</span>
-		                    <span className="font-semibold">$34</span>
+		                    <span className="font-semibold">KSH. {cartItems2?.tax}</span>
 		                  </div>
 		                </div>
 		                <div className="flex justify-between items-center mb-4">
 		                  <span className="text-xl font-bold text-slate-900">Total</span>
-		                  <span className="text-3xl font-bold text-gray-600">$30</span>
+		                  <span className="text-3xl font-bold text-gray-600">{cartItems2?.totalAmount}</span>
 		                </div>
 
 		                {subtotal < 50 && (

@@ -46,7 +46,7 @@ export const cartApi = createApi({
         const patchResult = dispatch(
           cartApi.util.updateQueryData('getCart', undefined, (draft) => {
             // Find if item already exists
-            const existingItem = draft.items.find(
+            const existingItem = draft?.items?.find(
               item => item.productId === productId && item.variantId === variantId
             );
             
@@ -81,7 +81,7 @@ export const cartApi = createApi({
     // ======================= UPDATE CART ITEM - Change quantity =============================
     updateCartItem: builder.mutation({
       query: ({ itemId, quantity }) => ({
-        url: `/cart/items/${itemId}`,
+        url: `/carts/update-cart-item/${itemId}`,
         method: 'PUT',
         body: { quantity },
       }),
@@ -92,7 +92,7 @@ export const cartApi = createApi({
       async onQueryStarted({ itemId, quantity }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           cartApi.util.updateQueryData('getCart', undefined, (draft) => {
-            const item = draft.items.find(item => item.id === itemId);
+            const item = draft?.items?.find(item => item.id === itemId);
             if (item) {
               item.quantity = quantity;
               // Recalculate total
