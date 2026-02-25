@@ -57,9 +57,11 @@ export const addToCart = async (req, res) => {
                 product: product._id,
                 name: product.title,
                 price: product.price,
+                finalPrice: product.finalPrice,
+                discountAmount: product.discountAmount,
                 image: product.image,
                 quantity,
-                subTotal,
+                // subTotal,
             });
         }
 
@@ -99,15 +101,26 @@ export const updateCartItem = async (req, res, next) => {
       });
     }
 
-    console.log(cart)
+    // ✅ STEP 1: Get the cart item using cart item ID
+    const cartItem = cart.items.id(itemId);
+    
+    if (!cartItem) {
+        return res.status(404).json({
+            success: false,
+            message: 'Item not found in cart',
+        });
+    }
 
     // Check stock
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-    console.log({itemId})
-    const product = await Product.findById(cart.product);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-    console.log({product})
-    
+    const product = await Product.findById(cartItem.product);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
     if (product.stock < quantity) {
       return res.status(400).json({
         success: false,
@@ -145,6 +158,16 @@ export const getOne = async (req, res) => {
     try {
         const product = await Products.findOne({ status: "active" })
         return res.status(200).json({ message: "Product fetch successfull🥇", product })
+    } catch (error) {
+        return res.status(401).json(error)
+    }
+}
+
+export const deleteCart = async (req, res) => {
+    try {
+        // const cart = await Cart.findOne({ user: req.userId });
+        await Cart.deleteMany({})
+        return res.status(200).json({ message: "Product fetch successfull🥇" })
     } catch (error) {
         return res.status(401).json(error)
     }

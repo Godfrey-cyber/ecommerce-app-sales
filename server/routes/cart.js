@@ -5,6 +5,8 @@ const router = express.Router()
 
 router.post("/add-to-cart", addToCart);
 router.put("/update-cart-item/:itemId", updateCartItem);
+// router.delete("/remove-from-cart/:itemId", updateCartItem);
+// router.delete("/delete-cart/:itemId", updateCartItem);
 router.get("/get-cart", getCart);
 router.get("/get-one", getOne);
 
