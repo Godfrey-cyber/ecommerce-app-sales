@@ -15,7 +15,7 @@ export const addToCart = async (req, res) => {
 
         // @Get the product
         const product = await Product.findById(productId);
-
+        // console.log(product)
         if (!product) {
             return res.status(404).json({
                 success: false,
@@ -99,8 +99,14 @@ export const updateCartItem = async (req, res, next) => {
       });
     }
 
+    console.log(cart)
+
     // Check stock
-    const product = await Product.findById(item.productId);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+    console.log({itemId})
+    const product = await Product.findById(cart.product);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+    console.log({product})
     
     if (product.stock < quantity) {
       return res.status(400).json({

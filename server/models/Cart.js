@@ -231,6 +231,11 @@ CartSchema.virtual('itemCount').get(function() {
   return this.items.reduce((count, item) => count + item.quantity, 0);
 });
 
+// Get discount count
+// CartSchema.virtual('totalDiscount').get(function() {
+//   return this.items.reduce((discount, item) => count + item.discount, 0);
+// });
+
 CartSchema.set('toJSON', { virtuals: true });
 CartSchema.set('toObject', { virtuals: true });
 
