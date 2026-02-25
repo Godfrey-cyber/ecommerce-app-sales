@@ -13,12 +13,11 @@ const CartPage = () => {
 	const appliedPromo = true
 	const subtotal = true
 	const { data, error } = useGetCartQuery();
-	const [updateCartItem, { isLoading }] = useUpdateCartItemMutation();
-	const [removeFromCart] = useRemoveFromCartMutation();
+	const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
+	const [removeFromCart, {isLoading}] = useRemoveFromCartMutation();
 	const cartItems = data?.cart[0]?.items
 	const cartItems2 = data?.cart[0]
-	// console.log("cartitems --", cartItems)
-	// console.log("cartitems2 --", cartItems2)
+	console.log(cartItems2)
 
 	// update cartitem qty
     const handleQtyUpdate = async (item, delta) => {
@@ -33,11 +32,11 @@ const CartPage = () => {
 			}
 		} else if (newQuantity > 0) {
 			// Update quantity
-			console.log(item.product)
+			console.log("item.product", item.product)
 			console.log(newQuantity)
 			try {
 				await updateCartItem({
-					itemId: item.product,        // Cart item ID
+					itemId: item._id,        // Cart item ID
 					quantity: newQuantity,   // New calculated quantity
 				}).unwrap();
 			} catch (error) {
@@ -81,8 +80,8 @@ const CartPage = () => {
 					      </div>
 					      
 					      <div className="flex-1 flex flex-col justify-between">
-					        <div className="flex flex-col space-y-2 mb-3">
-					          <p className="text-lg font-semibold text-gray-800">{item.title}.</p>
+					        <div className="flex flex-col p-2 space-y-2 mb-3">
+					          <p className="text-sm font-semibold text-gray-800">{item.name}.</p>
 					          <p className="text-sm font-semibold text-gray-600">{item.author}.</p>
 					        </div>
 					        
@@ -99,7 +98,7 @@ const CartPage = () => {
 					          </div>
 					          
 					          <div className="flex items-center justify-between w-full gap-4">
-					            <span className="text-lg md:text-xl font-bold text-gray-600">Ksh. {item.price}</span>
+					            <span className="text-sm md:text-lg font-bold text-gray-600">Ksh. {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item.finalPrice)}</span>
 					            <button className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
 					              <Trash2 className="text-red-600 w-6 h-6" />
 					            </button>
@@ -154,23 +153,23 @@ const CartPage = () => {
 		                  {appliedPromo && (
 		                    <div className="flex justify-between text-green-600">
 		                      <span>Discount (BOOK20)</span>
-		                      <span className="font-semibold">- KSH. {cartItems2?.discount}</span>
+		                      <span className="font-semibold">- {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartItems2?.discount)}</span>
 		                    </div>
 		                  )}
 		                  <div className="flex justify-between text-slate-700">
 		                    <span>Shipping</span>
 		                    <span className="font-semibold">
-		                      FREE
+		                      {cartItems2?.shipping === 0 ? "FREE" : cartItems2?.shipping }
 		                    </span>
 		                  </div>
 		                  <div className="flex justify-between text-slate-700">
 		                    <span>Tax (8%)</span>
-		                    <span className="font-semibold">KSH. {cartItems2?.tax}</span>
+		                    <span className="font-semibold">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartItems2?.tax)}</span>
 		                  </div>
 		                </div>
 		                <div className="flex justify-between items-center mb-4">
 		                  <span className="text-xl font-bold text-slate-900">Total</span>
-		                  <span className="text-3xl font-bold text-gray-600">{cartItems2?.totalAmount}</span>
+		                  <span className="text-2xl font-semibold text-gray-600">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartItems2?.finalAmount)}</span>
 		                </div>
 
 		                {subtotal < 50 && (

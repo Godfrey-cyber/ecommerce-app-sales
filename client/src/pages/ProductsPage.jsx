@@ -31,10 +31,7 @@ const ProductsPage = () => {
     const handleAdd = async () => {
         await addToCart({
             productId: product._id,
-            quantity: 1, 
-            // name: product?.title,
-            // subtotal,
-            // price: product?.price
+            quantity: 1,
         });
     };
 
@@ -151,7 +148,6 @@ const ProductsPage = () => {
                   +
                 </button>
               </div>
-
               <button onClick={handleAdd} disabled={isLoading} className="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
                 <ShoppingCart className="w-6 h-6" />
                 Add to Cart
