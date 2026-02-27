@@ -24,7 +24,7 @@ export const cartApi = createApi({
             providesTags: ['Cart'],
             transformResponse: (response) => ({
                 ...response,
-                itemCount:
+                totalItems:
                     response.items?.reduce(
                         (sum, item) => sum + item.quantity,
                         0
