@@ -4,10 +4,12 @@ import { IoSearchOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom" 
 import { useSelector } from "react-redux"
+import { useGetCartQuery } from "../redux/cartApi.jsx"
 import { ShoppingCart, Search, Menu, User, UserRoundCheck, Heart } from 'lucide-react';
 
 const Header = () => {
 	const { user } = useSelector(state => state.auth);
+	const { data, error } = useGetCartQuery();
 	return (
 		<header className="fixed top-0 z-50 bg-yellow-400 h-16 w-full lg:px-20 px-5 overflow-x-hidden">
 			<div className="flex justify-between items-center h-full">
@@ -60,10 +62,10 @@ const Header = () => {
 									<ShoppingCart size={24} />
 								</span>
 								<span className="bg-black absolute bottom-3 left-.5 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
-									<p className="text-xs items-center">0</p>
+									<p className="text-xs items-center">{data?.cart[0]?.totalItems}</p>
 								</span>
-								<span className="text-gray-800 pl-2 hidden lg:flex">Ksh. 10,250.00 </span>
-							</div>
+								<span className="text-gray-800 pl-2 hidden lg:flex">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(data?.cart[0]?.finalAmount)}</span>
+							</div> 
 						</Link>
 					</div>
 				</div>

@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Check } from 'lucide-react';
-// import { products, product, categories, featuredProduct } from "../assets/products.js"	
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
 import CartTabContent from "../components/cart/CartTabContent.jsx"
 import Header from "../components/Header.jsx"
 import { useSelector,useDispatch } from "react-redux"
+import { useGetProductByIdQuery } from "../redux/productsApi.jsx"
+import { useAddToCartMutation, useGetCartQuery } from "../redux/cartApi.jsx"
 import { fetchOneProduct }  from "../redux/thunk/productsThunk.js"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
+    const { id, slug } = useParams();
+    const { data, error } = useGetProductByIdQuery(id);
+    // const { data, error } = useGetCartQuery(id);
+    const [addToCart, { isLoading }] = useAddToCartMutation();
   	const [quantity, setQuantity] = useState(1);
   	const [activeTab, setActiveTab] = useState('details');
-  	const { id, slug } = useParams();
     const dispatch = useDispatch()
-    const { product, isLoading, isError, success } = useSelector(state => state.products);
   	
     useEffect(() => {
       if (!id) return;
       dispatch(fetchOneProduct(id))
       window.scrollTo(0, 0)
     }, [id, dispatch]);
-    console.log(product)
+    // const { product } = data
+    const product = data?.product
+
+    // @Add to cart
+    const handleAdd = async () => {
+        await addToCart({
+            productId: product._id,
+            quantity: 1,
+        });
+    };
+
+    // console.log(product._id)
+
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 		<Header />
@@ -100,10 +115,10 @@ const ProductsPage = () => {
                     {/*<div className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-red-500'}`} />*/}
 
 	                {product?.discount > 0 && <span className="text-lg md:text-2xl lg:3xl font-bold text-gray-900">
-                        Ksh. {product?.price * ((100 - product?.discount) / 100).toFixed(2)}
+                        {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.price * ((100 - product?.discount) / 100).toFixed(1))}
                     </span>}
-	              <span className={`text-lg md:text-2xl lg:3xl ${product?.discount > 0 ? 'line-through text-gray-400' : 'font-bold text-gray-900'}`}>
-	                Ksh. {product?.price} 
+	              <span className={`text-lg md:text-xl lg:2xl ${product?.discount > 0 ? 'line-through text-gray-400' : 'font-bold text-gray-900'}`}>
+	                {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.price)} 
 	              </span>
               </div>
               {product?.discount > 0 && <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-bold">
@@ -127,14 +142,13 @@ const ProductsPage = () => {
                 </button>
                 <span className="w-12 text-center font-semibold text-lg">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => setQuantity(Math.max(1, quantity + 1))}
                   className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
                 >
                   +
                 </button>
               </div>
-
-              <button className="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+              <button onClick={handleAdd} disabled={isLoading} className="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
                 <ShoppingCart className="w-6 h-6" />
                 Add to Cart
               </button>

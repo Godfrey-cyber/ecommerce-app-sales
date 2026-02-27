@@ -10,6 +10,7 @@ import { connectDb } from "./config/db.js"
 import userRoutes from "./routes/users.js"
 import productRoutes from "./routes/products.js"
 import categoryRoutes from "./routes/category.js"
+import cartRoutes from "./routes/cart.js"
 
 // import authRoutes from "./routes/user.js"
 
@@ -35,17 +36,27 @@ app.use(cors({
 
 connectDb() // MONGODB_URL
 
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    timestamp: new Date().toISOString() 
+  });
+});
+
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.originalUrl}`);
     next();
 });
 
 app.use("/v1/api/users", userRoutes);
+app.use("/v1/api/carts", cartRoutes);
 app.use("/v1/api/products", productRoutes);
 app.use("/v1/api/categories", categoryRoutes);
 
-app.use((req, res) => {
-  res.status(404).json({ msg: "Route not found" });
+app.use("*", (req, res) => {
+  res.status(404).json({ success: false, msg: "Routes not found" });
 });
 
 app.listen(PORT, "0.0.0.0", () => {
