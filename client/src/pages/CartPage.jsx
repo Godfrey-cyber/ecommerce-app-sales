@@ -23,14 +23,14 @@ const CartPage = () => {
     const handleQtyUpdate = async (item, delta) => {
 		const newQuantity = item.quantity + delta;
 		
-		if (newQuantity === 0) {
-			// Remove item if quantity becomes 0
-			try {
-				await removeFromCart(item.product).unwrap();
-			} catch (error) {
-				console.error('Failed to remove item:', error);
-			}
-		} else if (newQuantity > 0) {
+		// if (newQuantity === 0) {
+		// 	// Remove item if quantity becomes 0
+		// 	try {
+		// 		await removeFromCart(item.product).unwrap();
+		// 	} catch (error) {
+		// 		console.error('Failed to remove item:', error);
+		// 	}
+		// } else if (newQuantity > 0) {
 			// Update quantity
 			console.log("item.product", item.product)
 			console.log(newQuantity)
@@ -42,7 +42,7 @@ const CartPage = () => {
 			} catch (error) {
 				console.error('Failed to update quantity:', error);
 			}
-		}
+		// }
 	};
 
 	return (
