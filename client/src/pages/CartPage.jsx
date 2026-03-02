@@ -68,12 +68,12 @@ const CartPage = () => {
 					</div>
 					{/*  */}
 					{cartItems?.map(item => (
-						<div key={item.product} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
+						<div key={item?.product} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
 					      <div className="flex-shrink-0">
 					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
 					          <img 
-					            src={item.image} 
-					            alt={item.title} 
+					            src={item?.image} 
+					            alt={item?.title} 
 					            className="w-full h-full object-cover"
 					          />
 					        </div>
@@ -82,7 +82,7 @@ const CartPage = () => {
 					      <div className="flex-1 flex flex-col justify-between">
 					        <div className="flex flex-col p-2 space-y-2 mb-3">
 					          <p className="text-sm font-semibold text-gray-800">{item.name}.</p>
-					          <p className="text-sm font-semibold text-gray-600">{item.author}.</p>
+					          {/*<p className="text-sm font-semibold text-gray-600">{item.author}.</p>*/}
 					        </div>
 					        
 					        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
