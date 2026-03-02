@@ -81,67 +81,93 @@ export const addToCart = async (req, res) => {
 }
 
 export const updateCartItem = async (req, res, next) => {
-  try {
-    const { quantity } = req.body;
-    const { itemId } = req.params;
+    const session = await mongoose.startSession();
+    session.startTransaction();
     
-    if (!quantity || quantity < 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid quantity',
-      });
-    }
-    
-    const cart = await Cart.findOne({ user: req.userId });
-    
-    if (!cart) {
-      return res.status(404).json({
-        success: false,
-        message: 'Cart not found',
-      });
-    }
+    try {
+        const { quantity } = req.body;
+        const { itemId } = req.params;
 
-    // ✅ STEP 1: Get the cart item using cart item ID
-    const cartItem = cart.items.id(itemId);
-    
-    if (!cartItem) {
-        return res.status(404).json({
+        if (!quantity || quantity < 0) {
+          return res.status(400).json({
             success: false,
-            message: 'Item not found in cart',
+            message: 'Invalid quantity',
+          });
+        }
+        
+        const cart = await Cart.findOne({ user: req.userId });
+        
+        if (!cart) {
+            await session.abortTransaction();
+            return res.status(404).json({
+                success: false,
+                message: 'Cart not found',
+            });
+        }
+
+        // ✅ STEP 1: Get the cart item using cart item ID
+        const cartItem = cart.items.id(itemId);
+        
+        if (!cartItem) {
+            await session.abortTransaction();
+            return res.status(404).json({
+                success: false,
+                message: 'Item not found in cart',
+            });
+        }
+
+        // Check stock
+        const product = await Product.findById(cartItem.product).session(session);
+
+        if (!product) {
+            await session.abortTransaction();
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+
+        // Calculate stock difference
+        const currentQuantity = cartItem.quantity || 0;
+        const quantityDiff = quantity - currentQuantity;
+
+        if (quantityDiff > 0 && product.stock < quantityDiff) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                success: false,
+                message: `Can't add item! Only ${product.stock} items available in stock`,
+            });
+        }
+        
+        // Update quantity
+        await cart.updateItemQuantity(itemId, quantity);
+        await cart.save({ session });
+
+        // ✅ ATOMIC: Update product stock
+        if (quantityDiff !== 0) {
+            await Product.findByIdAndUpdate(
+                product._id,
+                { $inc: { stock: -quantityDiff } },
+                { session }
+            );
+        }
+
+        await session.commitTransaction()
+        
+        // Populate and return
+        await cart.populate('items.product', 'title price images stock');
+        
+        res.json({
+            success: true,
+            message: 'Cart updated',
+            cart,
         });
+    } catch (error) {
+        await session.abortTransaction()
+        next(errror)
+    } finally {
+        session.endSession()
     }
-
-    // Check stock
-    const product = await Product.findById(cartItem.product);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found',
-      });
-    }
-
-    if (product.stock < quantity) {
-      return res.status(400).json({
-        success: false,
-        message: `Only ${product.stock} items available in stock`,
-      });
-    }
-    
-    // Update quantity
-    await cart.updateItemQuantity(itemId, quantity);
-    
-    // Populate and return
-    await cart.populate('items.product', 'title price images stock');
-    
-    res.json({
-      success: true,
-      message: 'Cart updated',
-      cart,
-    });
-  } catch (error) {
-    next(error);
-  }
 };
 
 export const getCart = async (req, res) => {
