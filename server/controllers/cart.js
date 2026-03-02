@@ -131,6 +131,37 @@ export const updateCartItem = async (req, res, next) => {
         const currentQuantity = cartItem.quantity || 0;
         const quantityDiff = quantity - currentQuantity;
 
+        if (quantity === 0) {
+            // Return stock to product (give back all items)
+            await Product.findByIdAndUpdate(
+                product._id,
+                { $inc: { stock: currentQuantity } },  // Add back current quantity
+                { session }
+            );
+
+            // Remove item from cart
+            cart.items.pull(itemId);
+
+            // Recalculate totals
+            cart.calculateTotals();
+
+            // Save cart
+            await cart.save({ session });
+          
+            // Commit transaction
+            await session.commitTransaction();
+          
+            // Populate and return
+            await cart.populate('items.product', 'title price image stock');
+          
+            return res.json({
+                success: true,
+                message: 'Item removed from cart',
+                cart,
+            });
+        }
+
+        // Check stock (only if increasing quantity)
         if (quantityDiff > 0 && product.stock < quantityDiff) {
             await session.abortTransaction();
             return res.status(400).json({
