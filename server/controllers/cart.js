@@ -66,10 +66,12 @@ export const addToCart = async (req, res) => {
         }
 
         // Recalculate total
-        cart.totalAmount = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        // cart.totalAmount = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-        cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
-
+        // cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+         // Recalculate totals
+        cart.calculateTotals();
+        
         await cart.save();
         console.log(cart)
         return res.status(200).json(cart);
@@ -88,12 +90,12 @@ export const updateCartItem = async (req, res, next) => {
         const { quantity } = req.body;
         const { itemId } = req.params;
 
-        if (!quantity || quantity < 0) {
-          return res.status(400).json({
-            success: false,
-            message: 'Invalid quantity',
-          });
-        }
+        // if (!quantity || quantity < 0) {
+        //   return res.status(400).json({
+        //     success: false,
+        //     message: 'Invalid quantity',
+        //   });
+        // }
         
         const cart = await Cart.findOne({ user: req.userId });
         
@@ -195,7 +197,7 @@ export const updateCartItem = async (req, res, next) => {
         });
     } catch (error) {
         await session.abortTransaction()
-        next(errror)
+        next(error)
     } finally {
         session.endSession()
     }
