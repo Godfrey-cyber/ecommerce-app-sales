@@ -62,7 +62,7 @@ const Header = () => {
 									<ShoppingCart size={24} />
 								</span>
 								<span className="bg-black absolute bottom-3 left-.5 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
-									<p className="text-xs items-center">{data?.cart[0]?.totalItems}</p>
+									<p className="text-xs items-center">{data?.cart[0]?.totalItems || 0}</p>
 								</span>
 								<span className="text-gray-800 pl-2 hidden lg:flex">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(data?.cart[0]?.finalAmount)}</span>
 							</div> 
