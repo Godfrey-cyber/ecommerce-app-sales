@@ -203,6 +203,39 @@ export const updateCartItem = async (req, res, next) => {
     }
 };
 
+export const removeCartItem = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+  
+    try {
+        const { itemId } = req.params;
+        const cart = await Cart.findOne({ user: req.userId }).session(session);
+        const cartItem = cart.items.id(itemId);
+        
+        // Return stock to product
+        await Product.findByIdAndUpdate(
+            cartItem.product,
+            { $inc: { stock: cartItem.quantity } },
+            { session }
+        );
+
+        
+        // Remove item
+        cart.items.pull(itemId);
+        cart.calculateTotals();
+        await cart.save({ session });
+        
+        await session.commitTransaction();
+        
+        res.json({ success: true, message: 'Item removed', cart });
+    } catch (error) {
+        await session.abortTransaction();
+        next(error);
+    } finally {
+        session.endSession();
+    }
+};
+
 export const getCart = async (req, res) => {
   try {
     	const cart = await Cart.find()
