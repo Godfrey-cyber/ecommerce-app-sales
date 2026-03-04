@@ -15,9 +15,11 @@ const CartPage = () => {
 	const { data, error } = useGetCartQuery();
 	const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
 	const [removeFromCart, {isLoading}] = useRemoveFromCartMutation();
-	const cartItems = data?.cart[0]?.items
-	const cartItems2 = data?.cart[0]
-	console.log(cartItems2)
+
+	const cartItems = data?.cart[0]?.items || [];
+	const cartSummary = data?.cart[0];
+
+	console.log(cartSummary)
 
 	// update cartitem qty
     const handleQtyUpdate = async (item, delta) => {
@@ -45,6 +47,15 @@ const CartPage = () => {
 		// }
 	};
 
+	// @Remove item from cart
+	const handleItemRemove = async (itemId) => {
+		try {
+	    	await removeFromCart(itemId).unwrap();
+	  	} catch (error) {
+	    	console.error('Error:', error);
+	  	}
+	}
+
 	return (
 		<div className="flex flex-col bg-gray-50 w-full min-h-screen text-sm font-bold">
 			<Header />
@@ -61,14 +72,14 @@ const CartPage = () => {
 			<div className="grid grid-cols-12 gap-6 px-3 md:px-10 lg:px-20 my-5">
 				<div className="flex col-span-12 lg:col-span-8 h-fit  flex-col bg-white shadow-lg rounded-md">
 					<div className="flex items-center justify-between">
-						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items ({cartItems2?.totalItems}).</p>
+						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items ({cartSummary?.totalItems}).</p>
 						<button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
 					      	<BsThreeDotsVertical className="text-gray-800 text-2xl" />
 					    </button>
 					</div>
 					{/*  */}
 					{cartItems?.map(item => (
-						<div key={item?.product} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
+						<div key={item?._id} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
 					      <div className="flex-shrink-0">
 					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
 					          <img 
@@ -99,7 +110,7 @@ const CartPage = () => {
 					          
 					          <div className="flex items-center justify-between w-full gap-4">
 					            <span className="text-sm md:text-lg font-bold text-gray-600">Ksh. {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item.finalPrice)}</span>
-					            <button className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
+					            <button onClick={() => handleItemRemove(item._id)} disabled={isLoading} title="Remove item" className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
 					              <Trash2 className="text-red-600 w-6 h-6" />
 					            </button>
 					          </div>
@@ -153,23 +164,23 @@ const CartPage = () => {
 		                  {appliedPromo && (
 		                    <div className="flex justify-between text-green-600">
 		                      <span>Discount (BOOK20)</span>
-		                      <span className="font-semibold">- {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartItems2?.discount)}</span>
+		                      <span className="font-semibold">- {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.discount)}</span>
 		                    </div>
 		                  )}
 		                  <div className="flex justify-between text-slate-700">
 		                    <span>Shipping</span>
 		                    <span className="font-semibold">
-		                      {cartItems2?.shipping === 0 ? "FREE" : cartItems2?.shipping }
+		                      {cartSummary?.shipping === 0 ? "FREE" : cartSummary?.shipping }
 		                    </span>
 		                  </div>
 		                  <div className="flex justify-between text-slate-700">
 		                    <span>Tax (8%)</span>
-		                    <span className="font-semibold">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartItems2?.tax)}</span>
+		                    <span className="font-semibold">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.tax)}</span>
 		                  </div>
 		                </div>
 		                <div className="flex justify-between items-center mb-4">
 		                  <span className="text-xl font-bold text-slate-900">Total</span>
-		                  <span className="text-2xl font-semibold text-gray-600">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartItems2?.finalAmount)}</span>
+		                  <span className="text-2xl font-semibold text-gray-600">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.finalAmount)}</span>
 		                </div>
 
 		                {subtotal < 50 && (

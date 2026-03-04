@@ -124,10 +124,10 @@ export const cartApi = createApi({
                 }
             },
         }),
-
+        // @Remove one item from cart
         removeFromCart: builder.mutation({
             query: (itemId) => ({
-                url: `/carts/remove-from-cart/${itemId}`,
+                url: `/carts/remove-cart-item/${itemId}`,
                 method: 'DELETE',
             }),
 
@@ -143,12 +143,12 @@ export const cartApi = createApi({
                         undefined,
                         (draft) => {
                             draft.items =
-                                draft.items.filter(
+                                draft?.items?.filter(
                                     (item) =>
                                         item.id !== itemId
                                 );
                             draft.totalItems =
-                                draft.items.reduce(
+                                draft?.items?.reduce(
                                     (sum, item) =>
                                         sum + item.quantity,
                                     0
