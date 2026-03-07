@@ -209,25 +209,35 @@ export const removeCartItem = async (req, res, next) => {
   
     try {
         const { itemId } = req.params;
-        const cart = await Cart.findOne({ user: req.userId }).session(session);
-        const cartItem = cart.items.id(itemId);
+        const cart = await Cart.findOne({ user: req.userId, "items._id": itemId }, { "items.$": 1 }).session(session);
+
+        if (!cart) throw new Error("Item not found");
+
+        // const cartItem = cart.items.id(itemId);
+        const cartItem = cart.items[0];
         
         // Return stock to product
-        await Product.findByIdAndUpdate(
-            cartItem.product,
+        await Product.updateOne(
+            { _id: cartItem.product },
             { $inc: { stock: cartItem.quantity } },
             { session }
         );
+        
+        // Remove item Atomically
+        const updatedCart = await Cart.findOneAndUpdate(
+            { user: req.userId },
+            { $pull: { items: { _id: itemId } } },
+            { new: true, session }
+        );
 
-        
-        // Remove item
-        cart.items.pull(itemId);
-        cart.calculateTotals();
-        await cart.save({ session });
-        
+        // cart.items.pull(itemId);
+        // Recalculate totals
+        await updatedCart.calculateTotals();
+        await updatedCart.save({ session });
+
         await session.commitTransaction();
         
-        res.json({ success: true, message: 'Item removed', cart });
+        res.json({ success: true, message: 'Item removed', cart: updatedCart });
     } catch (error) {
         await session.abortTransaction();
         next(error);

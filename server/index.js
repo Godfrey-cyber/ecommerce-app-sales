@@ -10,6 +10,7 @@ import { connectDb } from "./config/db.js"
 import userRoutes from "./routes/users.js"
 import productRoutes from "./routes/products.js"
 import categoryRoutes from "./routes/category.js"
+import reviewsRoutes from "./routes/reviews.js"
 import cartRoutes from "./routes/cart.js"
 
 // import authRoutes from "./routes/user.js"
@@ -54,6 +55,7 @@ app.use("/v1/api/users", userRoutes);
 app.use("/v1/api/carts", cartRoutes);
 app.use("/v1/api/products", productRoutes);
 app.use("/v1/api/categories", categoryRoutes);
+app.use("/v1/api/reviews", reviewsRoutes);
 
 app.use("*", (req, res) => {
   res.status(404).json({ success: false, msg: "Routes not found" });
