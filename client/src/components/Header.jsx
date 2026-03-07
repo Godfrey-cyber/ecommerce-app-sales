@@ -8,7 +8,7 @@ import { useGetCartQuery } from "../redux/cartApi.jsx"
 import { ShoppingCart, Search, Menu, User, UserRoundCheck, Heart } from 'lucide-react';
 
 const Header = () => {
-	const { user } = useSelector(state => state.auth);
+	const { user, isAuthenticated } = useSelector(state => state.auth);
 	const { data, error } = useGetCartQuery();
 	return (
 		<header className="fixed top-0 z-50 bg-yellow-400 h-16 w-full lg:px-20 px-5 overflow-x-hidden">
@@ -64,7 +64,7 @@ const Header = () => {
 								<span className="bg-black absolute bottom-3 left-.5 hover:animate-bounce text-white rounded-full items-center h-5 w-5 flex justify-center">
 									<p className="text-xs items-center">{data?.cart[0]?.totalItems || 0}</p>
 								</span>
-								<span className="text-gray-800 pl-2 hidden lg:flex">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(data?.cart[0]?.finalAmount)}</span>
+								<span className="text-gray-800 pl-2 hidden lg:flex">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(data?.cart[0]?.finalAmount) || 0}</span>
 							</div> 
 						</Link>
 					</div>

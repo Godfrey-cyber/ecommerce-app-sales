@@ -1,5 +1,6 @@
 import React from 'react'
-import Header from "../components/Header.jsx"
+// import Header from "../components/Header.jsx"
+import Header1 from "../components/Header1.jsx"
 import SmallHeader from "../components/SmallHeader.jsx"
 import ShowcaseSection from "../components/ShowcaseSection.jsx"
 import ProductsCat from "../components/ProductsCat.jsx"
@@ -18,7 +19,8 @@ const HomePage = () => {
 
 	return (
 		<div className="flex-col">
-            <Header />
+            {/*<Header />*/}
+            <Header1 />
             <SmallHeader />
             <ShowcaseSection />
             <ProductsCat />

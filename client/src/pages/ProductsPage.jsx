@@ -191,7 +191,7 @@ const ProductsPage = () => {
           {/* Tab Content */}
           
         </div>
-        <CartTabContent activeTab={activeTab} />
+        <CartTabContent product={product} activeTab={activeTab} />
       </div>
     </div>
 	)
