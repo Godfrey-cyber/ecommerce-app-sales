@@ -100,12 +100,24 @@ backend/
 ### Authentication
 ```
 POST   /api/auth/register           - Register new user
+Body: { name, email, password }
+
 POST   /api/auth/login              - Login user
+Body: { email, password }
+
 GET    /api/auth/me                 - Get current user
 POST   /api/auth/logout             - Logout user
+Headers: Authorization: Bearer <token>
+
 PUT    /api/auth/update-password    - Update password
+Headers: Authorization: Bearer <token>
+Body: { currentPassword, newPassword }
+
 POST   /api/auth/forgot-password    - Request password reset
+Body: { email }
+
 PUT    /api/auth/reset-password/:token - Reset password
+Body: { token, newPassword }
 ```
 
 ### Products

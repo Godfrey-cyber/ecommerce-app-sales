@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Star,  RotateCcw, Check } from 'lucide-react';
-// import { product } from "../../assets/products.js"
+import { products } from "../../assets/products.js"
 
 const CartTabContent = ({ activeTab, product }) => {
 	return (
@@ -12,7 +12,15 @@ const CartTabContent = ({ activeTab, product }) => {
                  {/*{product.features.map((feature, index) => (*/} 
                     <div className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700">{product?.description}</span>
+                        <span className="text-gray-700 font-semibold">{product?.description}</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 font-semibold">{product?.description}</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 font-semibold">{product?.description}</span>
                     </div>
                   {/*))}*/}
                 </div>
@@ -43,12 +51,12 @@ const CartTabContent = ({ activeTab, product }) => {
                 </div>
                 
                 <div className="space-y-4">
-                  {product?.reviews?.map((review, index) => (
-                    <div key={index} className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                  {products?.reviews?.map((review, index) => ( 
+                    <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-gray-900">{review.user}</span>
+                            <span className="font-semibold text-gray-900">{review?.user}</span>
                             {review.verified && (
                               <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
                                 Verified Purchase
@@ -61,7 +69,7 @@ const CartTabContent = ({ activeTab, product }) => {
                                 <Star
                                   key={i}
                                   className={`w-4 h-4 ${
-                                    i < review.rating
+                                    i < item?.rating
                                       ? 'fill-yellow-400 text-yellow-400'
                                       : 'text-gray-300'
                                   }`}
@@ -74,7 +82,7 @@ const CartTabContent = ({ activeTab, product }) => {
                       </div>
                       <p className="text-gray-700 leading-relaxed">{review.comment}</p>
                     </div>
-                  ))}
+                   ))}
                 </div>
               </div>
             )}

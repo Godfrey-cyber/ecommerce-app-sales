@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import HeaderModal from "../components/header/HeaderModal.jsx"
+import { useLogoutMutation } from "../redux/authApi.jsx"
 import CategoriesModal from "../components/header/CategoriesModal.jsx"
 import { 
   Search, 
@@ -21,16 +23,14 @@ const Header1 = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const menuRef = useRef(null);
   const { data, error } = useGetCartQuery();
-  const { user, isAuthenticated } = useSelector(state => state.auth);
+  const [logout, { isLoading }] = useLogoutMutation();
+  // const { user, isAuthenticated } = useSelector(state => state.auth);
 
-console.log("isAuthenticated", isAuthenticated)
 console.log("user", user)
   // ✅ Get auth state from Redux
-  // const { user, isAuthenticated } = useSelector((state) => state.auth);
   
   // ✅ Get cart and wishlist counts from Redux
   const cartItems = useSelector((state) => state.cart?.items || []);
@@ -50,13 +50,14 @@ console.log("user", user)
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle logout
-  const handleLogout = () => {
-    // Dispatch logout action (replace with your actual logout action)
-    // dispatch(logout());
-    
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+ // @Logout User
+  const handleLogout = async () => {    
+    try {
+        await logout().unwrap();
+        navigate('/');
+    } catch (error) {
+        toast.error("You have Successfully logged out!");
+    }
     setShowUserMenu(false);
     navigate('/login');
   };
@@ -69,7 +70,7 @@ console.log("user", user)
     }
   };
 
-  return (
+    return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
@@ -84,7 +85,6 @@ console.log("user", user)
             </span>
           </Link>
 
-          <CategoriesModal isOpen={isOpen} setIsOpen={setIsOpen} />
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
@@ -133,7 +133,7 @@ console.log("user", user)
 
             {/* User Menu */}
             <div className="relative" ref={menuRef}>
-              {isAuthenticated ? (
+              {user ? (
                 // ✅ LOGGED IN - Show user info with checkmark
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -189,12 +189,12 @@ console.log("user", user)
               )}
 
               {/* ✅ Dropdown Menu */}
-              {isAuthenticated && showUserMenu && (
-                <HeaderModal showUserMenu={showUserMenu} setShowUserMenu={setShowUserMenu} handleLogout={handleLogout} />
+              {user && showUserMenu && (
+                <HeaderModal showUserMenu={showUserMenu} isLoading={isLoading} setShowUserMenu={setShowUserMenu} handleLogout={handleLogout} />
               )}
             </div>
             <span className="hidden md:flex">
-                <p className="font-bold text-xs text-gray-800 ">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(data?.cart[0]?.finalAmount) || 0}</p>
+                <p className="font-bold text-xs text-gray-800 ">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(data?.cart[0]?.finalAmount || 0)}</p>
             </span>
           </div>
         </div>

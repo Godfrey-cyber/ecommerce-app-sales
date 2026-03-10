@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { product } from "../../assets/products.js"
+import { item } from "../../assets/products.js"
 
-const CartTabHeaders = ({ activeTab, setActiveTab }) => {
+const CartTabHeaders = ({ activeTab, setActiveTab, product }) => {
 	return (
 		<div className="flex border-b border-gray-200">
       <button
@@ -33,7 +33,7 @@ const CartTabHeaders = ({ activeTab, setActiveTab }) => {
             : 'text-gray-600 hover:bg-gray-50'
         }`}
       >
-        Reviews ({product.totalReviews})
+        Reviews ({product?.rating})
       </button>
     </div>
 	)

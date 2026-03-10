@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
 import CartTabContent from "../components/cart/CartTabContent.jsx"
 import Header from "../components/Header.jsx"
+import Header1 from "../components/Header1.jsx"
 import { useSelector,useDispatch } from "react-redux"
 import { useGetProductByIdQuery } from "../redux/productsApi.jsx"
 import { useAddToCartMutation, useGetCartQuery } from "../redux/cartApi.jsx"
@@ -39,7 +40,8 @@ const ProductsPage = () => {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-		<Header />
+		{/*<Header />*/}
+    <Header1 />
       <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12 mt-12">
         {/* Main Product Section */}  
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
@@ -187,7 +189,7 @@ const ProductsPage = () => {
         {/* Tabs Section */}
         <div className="bg-white rounded-md sm:shadow md:shadow shadow-lg border border-gray-100 overflow-hidden">
           	{/* Tab Headers */}
-        	<CartTabHeaders activeTab={activeTab} setActiveTab={setActiveTab} />
+        	<CartTabHeaders activeTab={activeTab} product={product} setActiveTab={setActiveTab} />
           {/* Tab Content */}
           
         </div>

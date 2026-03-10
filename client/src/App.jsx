@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess, getCurrentUserSuccess, loginFailure, logout } from "./redux/slices/authSlice.js"
 import { refreshUser, initializeAuth } from "./redux/thunk/authThunk.js"
+import { useGetMeQuery} from "./redux/authApi.jsx"
 import { axiosInstance } from './utilities/apiCalls.js';
 // Pages
 import HomePage from "./pages/HomePage.jsx"
@@ -23,11 +24,17 @@ import ProductsPage from "./pages/ProductsPage.jsx"
 function App() {
     const dispatch = useDispatch();
     const [isloading, setisLoading] = useState(true);
-    const { user, loading, error, accessToken, isAuthenticated } = useSelector(state => state.auth);
+    const { user, loading, accessToken, isAuthenticated } = useSelector(state => state.auth);
     useEffect(() => {
     // On initial load, check if the user is authenticated
       dispatch(refreshUser());
     }, [dispatch]);
+
+    const { data, isLoading, error } = useGetMeQuery(undefined, {
+        skip: !token, // Only run if token exists
+    });
+
+    console.log(data)
 
     return (
         <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-full overflow-x-hidden">

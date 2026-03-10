@@ -5,6 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCcAmex } from "react-icons/fa";
 import { FaTag, FaLock, FaCcVisa, FaCcMastercard } from "react-icons/fa6";
 import Header from "../components/Header.jsx"
+import Header1 from "../components/Header1.jsx"
 // import  { cartItems } from "../utilities/assets.js"
 import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
 import { Link } from "react-router-dom"
@@ -58,7 +59,8 @@ const CartPage = () => {
 
 	return (
 		<div className="flex flex-col bg-gray-50 w-full min-h-screen text-sm font-bold">
-			<Header />
+			{/*<Header />*/}
+			<Header1 />
 			<div className="flex items-center space-x-3 h-12 px-5 group-hover mt-16">
 				<Link to="/">
 					<div className="flex items-center space-x-4 hover:bg-amber-100 hover:rounded-md cursor-pointer px-3">

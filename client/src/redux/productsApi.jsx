@@ -74,56 +74,63 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const productsApi = createApi({
-  reducerPath: 'productsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/v1/api' }),
-  tagTypes: ['Product', 'Products'],
+    reducerPath: 'productsApi',
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/v1/api' }),
+    prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth.token;
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+        return headers;
+    },
+    tagTypes: ['Product', 'Products'],
   
-  endpoints: (builder) => ({
+    endpoints: (builder) => ({
     
-    // Get all products
-    getProducts: builder.query({
-      query: () => 
-        '/products/get-products',
-      providesTags: ['Products'],
-    }),
-    
-    // Get one product
-    getProductById: builder.query({
-      query: (id) => `/products/get-product/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Product', id }],
-    }),
-    
-    // Create product
-    createProduct: builder.mutation({
-      query: (newProduct) => ({
-        url: '/products/create-product',
-        method: 'POST',
-        body: newProduct,
-      }),
-      invalidatesTags: ['Products'],
-    }),
-    
-    // Update product
-    updateProduct: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/products/update-product/${id}`,
-        method: 'PUT',
-        body: data,
-      }),
-      invalidatesTags: (result, error, { id }) => [
-        { type: 'Product', id },
-        'Products',
-      ],
-    }),
-    
-    // Delete product
-    deleteProduct: builder.mutation({
-      query: (id) => ({
-        url: `/products/delete-product/${id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Products'],
-    }),
+        // Get all products
+        getProducts: builder.query({
+          query: () => 
+            '/products/get-products',
+          providesTags: ['Products'],
+        }),
+        
+        // Get one product
+        getProductById: builder.query({
+          query: (id) => `/products/get-product/${id}`,
+          providesTags: (result, error, id) => [{ type: 'Product', id }],
+        }),
+        
+        // Create product
+        createProduct: builder.mutation({
+          query: (newProduct) => ({
+            url: '/products/create-product',
+            method: 'POST',
+            body: newProduct,
+          }),
+          invalidatesTags: ['Products'],
+        }),
+        
+        // Update product
+        updateProduct: builder.mutation({
+          query: ({ id, ...data }) => ({
+            url: `/products/update-product/${id}`,
+            method: 'PUT',
+            body: data,
+          }),
+          invalidatesTags: (result, error, { id }) => [
+            { type: 'Product', id },
+            'Products',
+          ],
+        }),
+        
+        // Delete product
+        deleteProduct: builder.mutation({
+          query: (id) => ({
+            url: `/products/delete-product/${id}`,
+            method: 'DELETE',
+          }),
+          invalidatesTags: ['Products'],
+        }),
     
   }),
 });

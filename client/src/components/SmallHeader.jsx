@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { IoChevronDownSharp } from "react-icons/io5";
 
 const SmallHeader = () => {
+	const [isOpen, setIsOpen] = useState(true);
 	return (
 		<div className="flex justify-center items-center bg-white h-9 px-20 border-b border-gray-300 w-full px-5 overflow-x-hidden">
 			<span className="hidden lg:flex justify-center items-center space-x-1 hover:cursor-pointer w-full">
 				<p className="text-sm font-semibold text-black">All Departments</p>
 				<IoChevronDownSharp className="text-black "/>
 			</span>
+
+			{isOpen && (
+                <CategoriesModal isOpen={isOpen} setIsOpen={setIsOpen} />
+              )}
 			{/* middle div*/}
 			<div className="flex justify-center  items-center space-x-3 w-full">
 				<span className="flex items-center space-x-1">

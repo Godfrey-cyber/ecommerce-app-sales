@@ -4,37 +4,44 @@ import { ChevronRight, ChevronLeft, LogIn, User } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
 import { loginUser } from "../redux/thunk/authThunk.js"
+import { useLoginMutation } from "../redux/authApi.jsx"
 import { useDispatch, useSelector } from 'react-redux';
 
 const LoginForm = () => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const [login, { isLoading, error }] = useLoginMutation();
 	const [focusedField, setFocusedField] = useState(null);
 	const [formData, setFormData] = useState({
-	    email: '',
-	    password: ''
-  	});
+	  	email: '',
+	  	password: ''
+  });
 
 	const { email, password  } = formData;
 	const isFormValid = email.trim() !== '' && password.trim() !== '';
-	const { user, loading, error, accessToken } = useSelector(state => state.auth);
+	// const { user, loading, error, accessToken } = useSelector(state => state.auth);
 
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value
-    });
-  };
-  const resetForm = () => setFormData({ email: "", password: "" });
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (email && password && isFormValid) {
-		  dispatch(loginUser({ email, password }, navigate, toast));
-		  resetForm();
-	  } else {
-	    	toast.error("Sorry! Cannot log you without credentials");
-	  }
-  };
+  	const handleChange = (event) => {
+	    setFormData({
+	      ...formData,
+	      [event.target.name]: event.target.value
+	    });
+  	};
+  	const resetForm = () => setFormData({ email: "", password: "" });
+
+  	const handleSubmit = async (event) => {
+    	event.preventDefault();
+    	if (email && password && isFormValid) {
+	    	try {
+	    		await login({ email, password }).unwrap();
+	    		resetForm();
+	    		navigate('/');
+	    	} catch (error) {
+	    		resetForm();
+	    		toast.error("Sorry! Cannot log you without credentials");
+	    	}
+		}	
+  	};
 
   return (
   	<div className="lg:flex lg:flex-row flex-col w-full min-h-screen bg-white divide-gray-200 divide-x py-8">
@@ -77,8 +84,9 @@ const LoginForm = () => {
 
 	        <button
 	          onClick={handleSubmit}
+	          disabled={isLoading}
 	          className="w-full bg-amber-400 text-white font-semibold py-3 px-4 rounded-sm hover:bg-amber-600 transition duration-200 my-10">
-	          Login
+	          {isLoading ? 'Signing in...' : 'Login'}
 	        </button>
 	      </div>
 	    </div>

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useGetCartQuery } from "../../redux/cartApi.jsx"
 
-const HeaderModal = ({ showUserMenu, setShowUserMenu, handleLogout }) => {
+const HeaderModal = ({ showUserMenu, setShowUserMenu, handleLogout, isLoading }) => {
 
   	const { user } = useSelector(state => state.auth);
 	const { data, error } = useGetCartQuery();
@@ -108,10 +108,11 @@ const HeaderModal = ({ showUserMenu, setShowUserMenu, handleLogout }) => {
                 <div className="border-t border-gray-200 pt-2">
                     <button
                       onClick={handleLogout}
+                      disabled={isLoading}
                       className="flex items-center space-x-3 px-4 py-3 hover:bg-red-50 transition-colors w-full text-left group"
                     >
                       <LogOut className="w-5 h-5 text-red-600" />
-                    <span className="text-sm text-red-600 font-semibold">Logout</span>
+                    <span className="text-sm text-red-600 font-semibold">{isLoading ? 'Logging Out...' : 'Logout'}</span>
                 </button>
             </div>
     	</div>

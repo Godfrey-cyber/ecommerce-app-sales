@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice.js';
 import productsReducer from './slices/productsSlice.js';
 import { productsApi } from './productsApi.jsx';
 import { cartApi } from './cartApi.jsx';
+import { authApi } from './authApi.jsx';
 
 export const store = configureStore({
 	reducer: {
@@ -10,9 +11,11 @@ export const store = configureStore({
 		products: productsReducer,
 		[productsApi.reducerPath]: productsApi.reducer,
 		[cartApi.reducerPath]: cartApi.reducer,
+		[authApi.reducerPath]: authApi.reducer,
 	},
 	middleware: (getDefaultMiddleware) => 
 		getDefaultMiddleware()
 		.concat(productsApi.middleware)
 		.concat(cartApi.middleware)
+		.concat(authApi.middleware)
 });

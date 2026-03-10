@@ -377,7 +377,7 @@ export const featuredProduct = {
     ]
   };
 
-  export const product = {
+  export const item = {
     id: "1",
     name: "Apple iPhone 14 Pro",
     brand: "Apple",
