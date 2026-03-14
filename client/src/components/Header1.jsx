@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import HeaderModal from "../components/header/HeaderModal.jsx"
-import { useLogoutMutation } from "../redux/authApi.jsx"
+import { useLogoutMutation, useGetMeQuery } from "../redux/authApi.jsx"
 import CategoriesModal from "../components/header/CategoriesModal.jsx"
 import { 
   Search, 
@@ -27,9 +27,8 @@ const Header1 = () => {
   const menuRef = useRef(null);
   const { data, error } = useGetCartQuery();
   const [logout, { isLoading }] = useLogoutMutation();
-  // const { user, isAuthenticated } = useSelector(state => state.auth);
-
-console.log("user", user)
+  const { data:userData } = useGetMeQuery(); // isLoading, isSuccess, isError, error
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   // ✅ Get auth state from Redux
   
   // ✅ Get cart and wishlist counts from Redux
@@ -37,7 +36,8 @@ console.log("user", user)
   const wishlistItems = useSelector((state) => state.wishlist?.items || []);
   const cartCount = cartItems.length;
   const wishlistCount = wishlistItems.length;
-
+  console.log("userData", userData?.user)
+  console.log("user", user)
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,15 +53,14 @@ console.log("user", user)
  // @Logout User
   const handleLogout = async () => {    
     try {
-        await logout().unwrap();
-        navigate('/');
+      await logout().unwrap();
+      navigate('/');
     } catch (error) {
-        toast.error("You have Successfully logged out!");
+      toast.error("You have Successfully logged out!");
     }
     setShowUserMenu(false);
-    navigate('/login');
+    navigate('/auth/login');
   };
-
   // Handle search
   const handleSearch = (e) => {
     e.preventDefault();
@@ -133,7 +132,7 @@ console.log("user", user)
 
             {/* User Menu */}
             <div className="relative" ref={menuRef}>
-              {user ? (
+              {userData?.user ? (
                 // ✅ LOGGED IN - Show user info with checkmark
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -141,16 +140,16 @@ console.log("user", user)
                 >
                   <div className="relative">
                     {/* User Avatar or Icon */}
-                    {user?.avatar ? (
+                    {userData?.user?.avatar ? (
                       <img 
-                        src={user.avatar} 
-                        alt={user.name} 
+                        src={userData?.user.avatar} 
+                        alt={userData?.user.name} 
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
                       <div className="w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center">
                         <span className="text-sm font-bold text-gray-800">
-                          {user?.firstname?.charAt(0).toUpperCase()}
+                          {userData?.user?.firstname?.charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
@@ -165,7 +164,7 @@ console.log("user", user)
                   <div className="hidden md:flex flex-col items-start">
                     <span className="text-xs text-gray-500">Hello,</span>
                     <span className="text-sm font-semibold text-gray-800 max-w-[100px] truncate">
-                      {user?.firstname?.split(' ')[0] || 'User'}
+                      {userData?.user?.firstname?.split(' ')[0] || 'User'}
                     </span>
                   </div>
                   
@@ -178,7 +177,7 @@ console.log("user", user)
               ) : (
                 // ✅ NOT LOGGED IN - Show login button
                 <Link
-                  to="/login"
+                  to="/auth/login"
                   className="flex items-center space-x-2 px-4 py-2 bg-amber-400 hover:bg-amber-500 rounded-lg transition"
                 >
                   <User className="w-5 h-5 text-gray-800" />
@@ -189,8 +188,8 @@ console.log("user", user)
               )}
 
               {/* ✅ Dropdown Menu */}
-              {user && showUserMenu && (
-                <HeaderModal showUserMenu={showUserMenu} isLoading={isLoading} setShowUserMenu={setShowUserMenu} handleLogout={handleLogout} />
+              {userData?.user && showUserMenu && (
+                <HeaderModal currentUser={userData?.user} showUserMenu={showUserMenu} isLoading={isLoading} setShowUserMenu={setShowUserMenu} handleLogout={handleLogout} />
               )}
             </div>
             <span className="hidden md:flex">

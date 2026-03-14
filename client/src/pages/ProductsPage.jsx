@@ -8,24 +8,18 @@ import Header1 from "../components/Header1.jsx"
 import { useSelector,useDispatch } from "react-redux"
 import { useGetProductByIdQuery } from "../redux/productsApi.jsx"
 import { useAddToCartMutation, useGetCartQuery } from "../redux/cartApi.jsx"
-import { fetchOneProduct }  from "../redux/thunk/productsThunk.js"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
     const { id, slug } = useParams();
     const { data, error } = useGetProductByIdQuery(id);
-    // const { data, error } = useGetCartQuery(id);
+    const { data:cartData, error:cartError } = useGetCartQuery(id);
     const [addToCart, { isLoading }] = useAddToCartMutation();
   	const [quantity, setQuantity] = useState(1);
   	const [activeTab, setActiveTab] = useState('details');
     const dispatch = useDispatch()
   	
-    useEffect(() => {
-      if (!id) return;
-      dispatch(fetchOneProduct(id))
-      window.scrollTo(0, 0)
-    }, [id, dispatch]);
-    // const { product } = data
+  
     const product = data?.product
 
     // @Add to cart
@@ -42,9 +36,9 @@ const ProductsPage = () => {
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 		{/*<Header />*/}
     <Header1 />
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12 mt-12">
+      <div className="max-w-7xl mx-auto px-4 py-2 lg:py-6 mt-4">
         {/* Main Product Section */}  
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-2">
           
           {/* Left - Images */}
           <div className="space-y-4">

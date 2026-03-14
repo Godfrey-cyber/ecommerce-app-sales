@@ -14,7 +14,7 @@ const NewArrivals = () => {
 				</span>
 				<div className="flex justify-between items-center lg:gap-x-3 divide-x overflow-x-scroll w-full scroll-smooth snap-x">						
 				{products.map(item => (
-					<Link to={`/${item.id}`}>
+					<Link to={`/${item.id}`} key={item.id}>
 				<div key={item.id} className="flex-col min-w-48 lg:w-48 min-h-80 lg:h-80 p-4 rounded-sm hover:shadow-lg shadow-gray-500 items-center group scroll-ml-6 lg:scroll-ml-8 snap-start">
 					<span className="flex flex-col space-y-3">
 								<p className="text-xs text-gray-500">{item.category}</p>

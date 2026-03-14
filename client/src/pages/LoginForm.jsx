@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { ChevronRight, ChevronLeft, LogIn, User } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
-import { loginUser } from "../redux/thunk/authThunk.js"
 import { useLoginMutation } from "../redux/authApi.jsx"
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -38,7 +37,8 @@ const LoginForm = () => {
 	    		navigate('/');
 	    	} catch (error) {
 	    		resetForm();
-	    		toast.error("Sorry! Cannot log you without credentials");
+	    		toast.error(error.data.msg);
+	    		console.log(error.data)
 	    	}
 		}	
   	};

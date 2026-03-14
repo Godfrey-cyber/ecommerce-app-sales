@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, Link } from "react-router-dom"
 // files
-import { signUpUser } from "../redux/thunk/authThunk.js"
+import { useRegisterMutation } from "../redux/authApi.jsx"
 
 const RegisterForm = () => {
 	const navigate = useNavigate();
@@ -17,14 +17,15 @@ const RegisterForm = () => {
 	    email: '',
 	    password: ''
   	});
-  	const [toggle, setToggle] = useState(false);
-  	const { email, password, lastname, firstname } = formData;
-  	const [showPassword, setShowPassword] = useState(false);
-  	const [focusedField, setFocusedField] = useState(null);
-  	const [errors, setErrors] = useState({});
+	const [register, { isLoading, error }] = useRegisterMutation();
+	const [toggle, setToggle] = useState(false);
+	const { email, password, lastname, firstname } = formData;
+	const [showPassword, setShowPassword] = useState(false);
+	const [focusedField, setFocusedField] = useState(null);
+	const [errors, setErrors] = useState({});
 
-  	const { user, loading, error, accessToken } = useSelector(state => state.auth);
-  	const handleChange = (event) => {
+	// const { user, loading, error, accessToken } = useSelector(state => state.auth);
+  const handleChange = (event) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value
@@ -32,10 +33,15 @@ const RegisterForm = () => {
     // setErrors({ ...errors, [event.target.name]: "" });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(signUpUser(formData, navigate, toast));
-	    setFormData({ email: "", password: "", firstname: "", lastname: "" });
+    try {
+	    await register(formData).unwrap();
+	  } catch (error) {
+	    console.error(error.data);
+	    toast.error(error.data.message);
+	  }
+	  setFormData({ email: "", password: "", firstname: "", lastname: "" });
 	    // setErrors({});
   };
 

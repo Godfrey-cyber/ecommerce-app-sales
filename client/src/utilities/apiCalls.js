@@ -1,7 +1,7 @@
 import axios from 'axios';
 // an axios instance 
 import { store } from "../redux/store.js"
-import { logout } from "../redux/slices/authSlice.js"
+import { logoutUser } from "../redux/slices/authSlice.js"
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -92,7 +92,7 @@ axiosInstance.interceptors.response.use(
         
         // Only logout on actual auth failures, not rate limits
         if (refreshError.response?.status !== 429) {
-          store.dispatch(logout());
+          store.dispatch(logoutUser());
         }
         
         return Promise.reject(refreshError);

@@ -12,7 +12,7 @@ const ProfiledProducts = () => {
 						<div className="border-b border-gray-300 w-full h-1"></div>
 					</span>
 					{products.slice(0,3).map(item => (
-						<Link to={`/${item.id}`}>
+						<Link to={`/${item.id}`} key={item.id}>
 						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
 							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
 							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
@@ -32,7 +32,7 @@ const ProfiledProducts = () => {
 						<div className="border-b border-gray-300 w-full h-1"></div>
 					</span>
 					{products.slice(0,3).map(item => (
-						<Link to={`/${item.id}`}>
+						<Link to={`/${item.id}`} key={item.id}>
 						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
 							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
 							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
@@ -52,7 +52,7 @@ const ProfiledProducts = () => {
 						<div className="border-b border-gray-300 w-full h-1"></div>
 					</span>
 					{products.slice(0,3).map(item => (
-						<Link to={`/${item.id}`}>
+						<Link to={`/${item.id}`} key={item.id}>
 						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
 							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
 							<div className="flex flex-col lg:space-y-1 lg:space-y-2">

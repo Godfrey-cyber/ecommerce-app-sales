@@ -5,14 +5,15 @@ export const cartApi = createApi({
 
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8080/v1/api',
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
+        prepareHeaders: (headers, { getState }) => {
+            const token = getState().auth.token;
             if (token) {
-                headers.set('authorization', `Bearer ${token}`);
+                headers.set('Authorization', `Bearer ${token}`);
             }
             return headers;
         },
     }),
+    // console.log(token)
 
     tagTypes: ['Cart', 'CartItems'],
 
@@ -26,9 +27,7 @@ export const cartApi = createApi({
                 ...response,
                 totalItems:
                     response.items?.reduce(
-                        (sum, item) => sum + item.quantity,
-                        0
-                    ) || 0,
+                        (sum, item) => sum + item.quantity, 0) || 0,
             }),
         }),
 
@@ -54,8 +53,8 @@ export const cartApi = createApi({
                             const existingItem =
                                 draft?.items?.find(
                                     (item) =>
-                                        item.productId === productId &&
-                                        item.variantId === variantId
+                                        item?.productId === productId &&
+                                        item?.variantId === variantId
                                 );
 
                             if (existingItem) {
@@ -67,8 +66,7 @@ export const cartApi = createApi({
                                     quantity,
                                 });
                             }
-
-                            draft.totalItems = draft?.items?.reduce((sum, item) => sum + item.quantity, 0);
+                            draft.totalItems = draft?.items?.reduce((sum, item) => sum + item?.quantity, 0);
                         }
                     )
                 );

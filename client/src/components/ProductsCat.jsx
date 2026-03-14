@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom"
-import { fetchProducts } from "../redux/thunk/productsThunk.js"
+import { Link, useNavigate } from "react-router-dom"
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
 import { useDispatch, useSelector } from "react-redux"
 import { Heart, ShoppingCart, Star, TrendingUp } from 'lucide-react';
@@ -9,14 +8,10 @@ const ProductsCat = () => {
 	// const { products, isLoading, success, isError } = useSelector(state => state.products); 
 	const { data, error, isLoading } = useGetProductsQuery();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [isWishlisted, setIsWishlisted] = useState(false);
-  	const [isHovered, setIsHovered] = useState(false);
-	useEffect(() => {
-	    const controller = new AbortController();
-	    dispatch(fetchProducts())
-	    return () => controller.abort();
-	  }, []);
-	console.log(data?.products)
+  	const [isHovered, setIsHovered] = useState(false); 
+	
 	return (
 		<div className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-10">
 			<span className="flex items-center space-x-6 border-b border-gray-300 py-2">
@@ -46,12 +41,12 @@ const ProductsCat = () => {
 					    {/*<img src={product.image} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />*/}
 					    <img src={product?.image} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
 					    <div className={`absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity duration-300 flex items-center justify-center ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-					    	<Link to={`/${product.slug}/${product._id}`}>
+					    	<div onClick={() => navigate(`/${product.slug}/${product._id}`)}>
 						      <button className="bg-white text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200 flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0">
 						        <ShoppingCart className="w-5 h-5" />
 						        Quick Add
 						      </button>
-						    </Link>
+						    </div>
 					    </div>
 					  </div>
 

@@ -9,7 +9,7 @@ import Header1 from "../components/Header1.jsx"
 // import  { cartItems } from "../utilities/assets.js"
 import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
 import { Link } from "react-router-dom"
-
+// useUpdateCartItemMutation
 const CartPage = () => {
 	const appliedPromo = true
 	const subtotal = true

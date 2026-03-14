@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { IoChevronDownSharp } from "react-icons/io5";
+import CategoriesModal from "./header/CategoriesModal.jsx"
 
 const SmallHeader = () => {
 	const [isOpen, setIsOpen] = useState(true);

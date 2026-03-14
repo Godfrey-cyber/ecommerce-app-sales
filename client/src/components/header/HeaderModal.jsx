@@ -12,42 +12,46 @@ import {
   Check,
   ChevronDown
 } from 'lucide-react';
+import { useGetMeQuery } from "../../redux/authApi.jsx"
 import { useGetCartQuery } from "../../redux/cartApi.jsx"
 
-const HeaderModal = ({ showUserMenu, setShowUserMenu, handleLogout, isLoading }) => {
+const HeaderModal = ({ showUserMenu, setShowUserMenu, handleLogout, isLoading, currentUser }) => {
 
   	const { user } = useSelector(state => state.auth);
 	const { data, error } = useGetCartQuery();
+	const { data:userData } = useGetMeQuery(); 
 
   	const cartItems = useSelector((state) => state.cart?.items || []);
   	const wishlistItems = useSelector((state) => state.wishlist?.items || []);
   	const cartCount = cartItems.length;
   	const wishlistCount = wishlistItems.length;
 
+  	console.log(userData?.user)
+  	console.log(currentUser)
 	return (
 		<div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 animate-fadeIn">
             {/* User Info Header */}
             <div className="px-4 py-3 border-b border-gray-200">
                 <div className="flex items-center space-x-3">
-                    {user?.avatar ? (
+                    {userData?.user?.avatar ? (
                         <img 
-          	              src={user.avatar} 
-                          alt={user.firstname} 
+          	              src={userData?.user.avatar} 
+                          alt={userData?.user.firstname} 
                           className="w-12 h-12 rounded-full object-cover"
                         />
                       ) : (
                         <div className="w-12 h-12 bg-amber-400 rounded-full flex items-center justify-center">
                           	<span className="text-xl font-bold text-gray-800">
-	                            {user?.firstname?.charAt(0).toUpperCase()}
+	                            {userData?.user?.firstname?.charAt(0).toUpperCase()}
 	                        </span>
                         </div>
                       	)}
                       	<div className="flex-1 min-w-0">
                         	<p className="text-xs font-semibold text-gray-800 truncate">
-                          	{user?.firstname || 'User'}
+                          	{userData?.user?.firstname || 'User'}
                         	</p>
                         	<p className="text-xs text-gray-500 truncate">
-                          	{user?.email || ''}
+                          	{userData?.user?.email || ''}
                         	</p>
                       	</div>
                 </div>

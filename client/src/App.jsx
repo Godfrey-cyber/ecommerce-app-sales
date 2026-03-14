@@ -6,8 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, getCurrentUserSuccess, loginFailure, logout } from "./redux/slices/authSlice.js"
-import { refreshUser, initializeAuth } from "./redux/thunk/authThunk.js"
 import { useGetMeQuery} from "./redux/authApi.jsx"
 import { axiosInstance } from './utilities/apiCalls.js';
 // Pages
@@ -19,22 +17,14 @@ import RegisterForm from "./pages/RegisterForm.jsx"
 import LoginForm from "./pages/LoginForm.jsx"
 import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
+import { setUser } from "./redux/slices/authSlice.js"
 // import Product from "./pages/Product.jsx"
 
 function App() {
     const dispatch = useDispatch();
-    const [isloading, setisLoading] = useState(true);
-    const { user, loading, accessToken, isAuthenticated } = useSelector(state => state.auth);
-    useEffect(() => {
-    // On initial load, check if the user is authenticated
-      dispatch(refreshUser());
-    }, [dispatch]);
-
-    const { data, isLoading, error } = useGetMeQuery(undefined, {
-        skip: !token, // Only run if token exists
-    });
-
-    console.log(data)
+    // const { data:me, isSuccess } = useGetMeQuery();
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const { data, isLoading, isSuccess, isError, error } = useGetMeQuery();
 
     return (
         <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-full overflow-x-hidden">
@@ -43,7 +33,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/items/cart" element={<CartPage />} />
-                    <Route path="/cart/checkout" element={(accessToken && isAuthenticated) ? <CheckoutPage /> : <LoginForm />} />
+                    <Route path="/cart/checkout" element={(user && isAuthenticated) ? <CheckoutPage /> : <LoginForm />} />
                     <Route path="/auth/register" element={<RegisterForm />} />
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
@@ -63,7 +53,7 @@ export default App
 //   --name mysql-container \
 //   -e MYSQL_ROOT_PASSWORD=godfrey0860 \
 //   -e MYSQL_DATABASE=chat-app \
-//   -e MYSQL_USER=godfrey \
+//   -e MYSQL_token=godfrey \
 //   -e MYSQL_PASSWORD=chat-godfrey \
 //   -p 3306:3306 \
 //   -v mysql57-data:/var/lib/mysql \
