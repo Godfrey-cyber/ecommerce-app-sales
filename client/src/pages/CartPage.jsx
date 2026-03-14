@@ -161,7 +161,7 @@ const CartPage = () => {
 		                <div className="space-y-3 mb-6 pb-6 border-b-2 border-slate-100">
 		                  <div className="flex justify-between text-slate-800 font-semibold">
 		                    <span>Subtotal</span>
-		                    <span className="font-semibold">23,500</span>
+		                    <span className="font-semibold">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.totalAmount)}</span>
 		                  </div>
 		                  {appliedPromo && (
 		                    <div className="flex justify-between text-green-600">
@@ -190,7 +190,7 @@ const CartPage = () => {
 		                    <p className="font-semibold">Add $50 more for free shipping!</p>
 		                  </div>
 		                )}
-		                <Link to="/cart/checkout/payment-method">
+		                <Link to="/checkout/select-payment">
 			                <button className="w-full bg-amber-400 text-gray-800 py-4 rounded-xl font-bold text-lg hover:bg-amber-400 transition shadow-lg hover:shadow-xl mb-3">
 			                  Proceed to Checkout
 			                </button>

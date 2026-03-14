@@ -11,6 +11,7 @@ import { axiosInstance } from './utilities/apiCalls.js';
 // Pages
 import HomePage from "./pages/HomePage.jsx"
 import CartPage from "./pages/CartPage.jsx"
+import CheckoutPage1 from "./pages/CheckoutPage1.jsx"
 import CheckoutPage from "./pages/CheckoutPage.jsx"
 // import HeroCarousel from "./pages/LoginPage.jsx"
 import RegisterForm from "./pages/RegisterForm.jsx"
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
                     <Route path="/:slug/:id" element={<ProductsPage />} />
+                    <Route path="/checkout/select-payment" element={<CheckoutPage1 />} />
                     {/*<Route path="/dashboard" element={<Dashboard />} />*/}
                     {/*<Route path="/twiter" element={<Twiter />} />*/}
                 </Routes>
