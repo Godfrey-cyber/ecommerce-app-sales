@@ -32,10 +32,8 @@ export const registerUser = async (req, res) => {
         //Create user
         const user = new User({ lastname, firstname, email, password });
         await user.save()
-        console.log("new registered user", user)
         return res.status(201).json({ msg: "User Registration successfull🥇" })
     } catch(error) {
-        console.log(error)
         return res.status(500).json({ message: error.message })
     }
 }
@@ -85,8 +83,15 @@ export const loginUser = async(req, res) => {
             lastname: user.lastname,
             email: user.email,
             role: user.role,
-            verified: user.verify,
+            verified: user.verified,
         }
+
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000, // 15 minutes
+        });
 
         // Send refresh token to the front-end
         res.cookie('refreshToken', refreshToken, {
@@ -97,7 +102,17 @@ export const loginUser = async(req, res) => {
             secure: process.env.NODE_ENV === 'production',
         })
         
-        return res.status(200).json({ user: safeUser, accessToken });
+        res.status(200).json({ 
+            success: true,
+            user: { 
+                _id: user._id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email,
+                role: user.role,
+                verified: user.verified,
+            }
+        });
     }catch(error) {
         console.log(error.message)
         return res.status(500).json({ message: error.message })
@@ -248,5 +263,21 @@ export const tokenRefresh = async (req, res) => {
     } catch (error) {
         console.log(error.message)
         return res.status(403).json({ message: error.message });
+    }
+}
+
+export const getMe = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select("_id firstname lastname email role verified");
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        return res.status(200).json({ user })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ msg: error.message })
     }
 }

@@ -249,7 +249,7 @@ export const removeCartItem = async (req, res, next) => {
 export const getCart = async (req, res) => {
   try {
     	const cart = await Cart.find()
-        return res.status(200).json({ message: "Product fetch successfull🥇", cart })
+        return res.status(200).json({ message: "Cart fetched successfull🥇", cart })
     } catch (error) {
     	return res.status(401).json(error)
     }

@@ -184,7 +184,7 @@ CartSchema.methods.calculateTotals = function() {
   const taxableAmount = discountedSubtotal - couponDiscount;
   
   // Calculate tax (8% example - adjust based on your needs)
-  const taxRate = 0.08;
+  const taxRate = 0.04;
   this.tax = taxableAmount * taxRate;
   
   // Calculate shipping (free shipping if totalAmount > $50, else $10)

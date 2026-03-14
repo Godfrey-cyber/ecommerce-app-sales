@@ -4,7 +4,9 @@ const ProfileSchema = new mongoose.Schema({
 	image: { type: String },
     desc: { type: String },
 	country: { type: String, required: true },
-    city: { type: String },
+    county: { type: String },
+    subCounty: { type: String },
+    station: { type: String },
     address: { type: String }
 }, { timestamps: true })
 
