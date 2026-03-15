@@ -4,7 +4,7 @@ export const cartApi = createApi({
     reducerPath: 'cartApi',
 
     baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8080/v1/api',
+        baseUrl: import.meta.env.VITE_API_URL,
         prepareHeaders: (headers, { getState }) => {
             const token = getState().auth.token;
             if (token) {
