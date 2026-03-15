@@ -210,6 +210,15 @@ export const logoutUser = async (req, res) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             secure: process.env.NODE_ENV === 'production',
         })
+
+        // @Clear Cookie
+        res.cookie('accessToken', "", {
+            path: "/",
+            httpOnly: true,
+            expires: new Date(0),
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: process.env.NODE_ENV === 'production',
+        })
         return res.status(200).json({ message: "User has been successfully logged out" })
     } catch(error) {
         console.log(error)
