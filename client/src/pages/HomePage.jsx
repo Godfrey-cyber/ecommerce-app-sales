@@ -30,7 +30,6 @@ const HomePage = () => {
             <ProfiledProducts />
             <EmailSignUp />
             <Footer />
-            <HelloPage />
         </div>
 	)
 }
