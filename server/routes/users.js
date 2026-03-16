@@ -9,6 +9,6 @@ router.post("/logout-user", authenticate, logoutUser)
 router.get("/get-users", getAllUsers)
 router.get("/get-me", authenticate, getMe)
 router.post("/change-password", changePassword)
-router.get("/refresh-token", tokenRefresh)
+router.post("/refresh-token", tokenRefresh)
 
 export default router
