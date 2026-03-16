@@ -90,7 +90,7 @@ export const loginUser = async(req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 15 * 60 * 1000, // 15 minutes
+            maxAge: process.env.NODE_ENV === 'production' ? 60 * 60 * 1000 : 1440 * 60 * 1000, // 60 minutes in prod and 1440 minutes in dev
         });
 
         // Send refresh token to the front-end
@@ -264,7 +264,7 @@ export const tokenRefresh = async (req, res) => {
         res.cookie("refreshToken", newRefreshToken, {
           path: "/",
           httpOnly: true,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
+          maxAge: 7 * 60 * 60 * 1000,
           sameSite: "none",
           secure: true,
         });

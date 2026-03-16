@@ -74,7 +74,7 @@ export const addToCart = async (req, res) => {
         
         await cart.save();
         console.log(cart)
-        return res.status(200).json(cart);
+        return res.status(200).json({ message: "successfull🥇 added items in cart", cart: cart });
 
     } catch (error) {
         console.log(error)
@@ -237,7 +237,7 @@ export const removeCartItem = async (req, res, next) => {
 
         await session.commitTransaction();
         
-        res.json({ success: true, message: 'Item removed', cart: updatedCart });
+        res.json({ success: true, message: 'Item successfull🥇 removed', cart: updatedCart });
     } catch (error) {
         await session.abortTransaction();
         next(error);

@@ -3,6 +3,7 @@ import { GoChevronLeft } from "react-icons/go";
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCcAmex } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify';
 import { FaTag, FaLock, FaCcVisa, FaCcMastercard } from "react-icons/fa6";
 import Header from "../components/Header.jsx"
 import Header1 from "../components/Header1.jsx"
@@ -42,7 +43,10 @@ const CartPage = () => {
 					itemId: item._id,        // Cart item ID
 					quantity: newQuantity,   // New calculated quantity
 				}).unwrap();
+				toast.success(data.message);
 			} catch (error) {
+				// toast.error(error.data.message);
+				console.log(error.data.message);
 				console.error('Failed to update quantity:', error);
 			}
 		// }
@@ -52,7 +56,9 @@ const CartPage = () => {
 	const handleItemRemove = async (itemId) => {
 		try {
 	    	await removeFromCart(itemId).unwrap();
+	    	toast.succes("Items successfully removed");
 	  	} catch (error) {
+	  		toast.error(error.message);
 	    	console.error('Error:', error);
 	  	}
 	}
@@ -61,7 +67,7 @@ const CartPage = () => {
 		<div className="flex flex-col bg-gray-50 w-full min-h-screen text-sm font-bold">
 			{/*<Header />*/}
 			<Header1 />
-			<div className="flex items-center space-x-3 h-12 px-5 group-hover mt-16">
+			<div className="flex items-center space-x-3 h-12 px-5 group-hover mt-4">
 				<Link to="/">
 					<div className="flex items-center space-x-4 hover:bg-amber-100 hover:rounded-md cursor-pointer px-3">
 					<span className="text-sm items-center text-white text-2xl ">
