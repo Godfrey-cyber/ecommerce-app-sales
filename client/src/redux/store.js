@@ -4,6 +4,7 @@ import productsReducer from './slices/productsSlice.js';
 import { productsApi } from './productsApi.jsx';
 import { cartApi } from './cartApi.jsx';
 import { authApi } from './authApi.jsx';
+import { categoriesApi } from './categoriesApi.jsx';
 
 export const store = configureStore({
 	reducer: {
@@ -12,10 +13,12 @@ export const store = configureStore({
 		[productsApi.reducerPath]: productsApi.reducer,
 		[cartApi.reducerPath]: cartApi.reducer,
 		[authApi.reducerPath]: authApi.reducer,
+		[categoriesApi.reducerPath]: categoriesApi.reducer,
 	},
 	middleware: (getDefaultMiddleware) => 
 		getDefaultMiddleware()
 		.concat(productsApi.middleware)
 		.concat(cartApi.middleware)
 		.concat(authApi.middleware)
+		.concat(categoriesApi.middleware)
 });
