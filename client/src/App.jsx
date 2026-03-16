@@ -19,7 +19,7 @@ import LoginForm from "./pages/LoginForm.jsx"
 import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
 import { setUser } from "./redux/slices/authSlice.js"
-// import Product from "./pages/Product.jsx"
+import Dashboard from "./pages/Dashboard.jsx"
 
 function App() {
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function App() {
     const { isAuthenticated, user } = useSelector((state) => state.auth);
     const { isLoading } = useGetMeQuery();
 
-    if (isLoading) return <div className="w-full h-full flex flex-col items center justify-center">Loading...</div>
+    if (isLoading) return <div className="w-full h-screen flex flex-col items-center justify-center bg-yellow-400">Loading...</div>
 
     return (
         <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-full overflow-x-hidden">
@@ -42,7 +42,7 @@ function App() {
                     <Route path="*" element={<NotFound404Page />} />
                     <Route path="/:slug/:id" element={<ProductsPage />} />
                     <Route path="/checkout/select-payment" element={<CheckoutPage1 />} />
-                    {/*<Route path="/dashboard" element={<Dashboard />} />*/}
+                    <Route path="/dashboard" element={<Dashboard />} />
                     {/*<Route path="/twiter" element={<Twiter />} />*/}
                 </Routes>
             </BrowserRouter>

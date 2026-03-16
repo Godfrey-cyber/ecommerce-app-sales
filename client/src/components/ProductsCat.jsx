@@ -64,11 +64,11 @@ const ProductsCat = () => {
 					    <h3 className="text-lg font-bold text-gray-900 mb-.5 line-clamp-1">{product.title}</h3>
 
 					    <p className="text-xs text-gray-600 mb-1 line-clamp-2 leading-relaxed">{product.description}</p>
-
+					    	
 					    <div className="flex items-end justify-between">
 					      <div>
 					        <div className="flex flex-col items-baseline">
-					          <span className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.price * ((100 - product?.discount) / 100).toFixed(1))}</span>
+					          <span className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.totalAmount)}</span>
 					          {product.discount > 0 && <span className="text-sm text-gray-400 line-through">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price)}</span>}
 					        </div>
 					        <span className="text-xs text-green-600 font-semibold">Save {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price - product?.price * ((100 - product?.discount) / 100).toFixed(2))}</span>
