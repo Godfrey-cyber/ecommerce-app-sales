@@ -248,7 +248,7 @@ export const removeCartItem = async (req, res, next) => {
 
 export const getCart = async (req, res) => {
   try {
-    	const cart = await Cart.find({ userId: req.user.id })
+    	const cart = await Cart.find({ user: req.userId })
 
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' })
@@ -271,7 +271,7 @@ export const getOne = async (req, res) => {
 
 export const deleteCart = async (req, res) => {
     try {
-        // const cart = await Cart.findOne({ user: req.userId });
+        const cart = await Cart.findOne({ user: req.userId });
         await Cart.deleteMany({})
         return res.status(200).json({ message: "Product fetch successfull🥇" })
     } catch (error) {
