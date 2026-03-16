@@ -248,10 +248,14 @@ export const removeCartItem = async (req, res, next) => {
 
 export const getCart = async (req, res) => {
   try {
-    	const cart = await Cart.find()
-        return res.status(200).json({ message: "Cart fetched successfull🥇", cart })
+    	const cart = await Cart.find({ userId: req.user.id })
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' })
+        }
+        return res.status(200).json({ message: "Cart fetched successfull🥇", cart, success: true })
     } catch (error) {
-    	return res.status(401).json(error)
+    	return res.status(500).json({ message: error.message, success: false })
     }
 }
 // default: "active"
