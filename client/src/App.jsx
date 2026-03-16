@@ -25,7 +25,9 @@ function App() {
     const dispatch = useDispatch();
     // const { data:me, isSuccess } = useGetMeQuery();
     const { isAuthenticated, user } = useSelector((state) => state.auth);
-    const { data, isLoading, isSuccess, isError, error } = useGetMeQuery();
+    const { isLoading } = useGetMeQuery();
+
+    if (isLoading) return <div className="w-full h-full flex flex-col items center justify-center">Loading...</div>
 
     return (
         <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-full overflow-x-hidden">
