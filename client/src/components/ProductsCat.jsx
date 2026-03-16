@@ -11,7 +11,6 @@ const ProductsCat = () => {
 	const navigate = useNavigate();
 	const [isWishlisted, setIsWishlisted] = useState(false);
   	const [isHovered, setIsHovered] = useState(false); 
-	
 	return (
 		<div className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-10">
 			<span className="flex items-center space-x-6 border-b border-gray-300 py-2">
@@ -68,10 +67,10 @@ const ProductsCat = () => {
 					    <div className="flex items-end justify-between">
 					      <div>
 					        <div className="flex flex-col items-baseline">
-					          <span className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.totalAmount)}</span>
+					          <span className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.finalPrice)}</span>
 					          {product.discount > 0 && <span className="text-sm text-gray-400 line-through">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price)}</span>}
 					        </div>
-					        <span className="text-xs text-green-600 font-semibold">Save {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price - product?.price * ((100 - product?.discount) / 100).toFixed(2))}</span>
+					        <span className="text-xs text-green-600 font-semibold">Save {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.discountAmount)}</span>
 					      </div>
 
 					      <div className="flex items-center space-x-1 justify-between">

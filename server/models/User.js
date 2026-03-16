@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       'Please provide a valid email',
     ], },
-    role: { type: String, enum: ["customer", "admin"], default: "customer" },
+    role: { type: String, enum: ["customer", "admin", "vendor"], default: "customer" },
     refreshTokens: [{ token: String, createdAt: { type: Date, default: Date.now } }],
     verified: { type: Boolean, default: false }
 }, { timestamps: true })
