@@ -25,7 +25,7 @@ const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:4000"]
 app.use(cors({
     origin: [process.env.CLIENT_URL, "http://localhost:4000"],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
-    allowHeaders: [
+    allowdHeaders: [
         "Content-Type",
         "Authorization",
         "Cache-Control",
