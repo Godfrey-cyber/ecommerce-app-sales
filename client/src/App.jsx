@@ -41,8 +41,8 @@ function App() {
                     <Route path="/auth/login" element={<LoginForm />} />
                     <Route path="*" element={<NotFound404Page />} />
                     <Route path="/:slug/:id" element={<ProductsPage />} />
-                    <Route path="/checkout/select-payment" element={<CheckoutPage1 />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/checkout/select-payment" element={(user && isAuthenticated) ? <CheckoutPage1 /> : <HomePage />} />
+                    <Route path="/dashboard" element={(user && isAuthenticated) ? <Dashboard /> : <HomePage />} />
                     {/*<Route path="/twiter" element={<Twiter />} />*/}
                 </Routes>
             </BrowserRouter>
