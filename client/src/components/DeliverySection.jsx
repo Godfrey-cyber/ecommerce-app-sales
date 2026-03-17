@@ -34,7 +34,7 @@ const DeliverySection = ({
       <div className="space-y-6">
 
         {/* Delivery Options */}
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-12 gap-2">
           <DeliveryOption
             title="Door Delivery"
             description="Delivered to your home or office"
@@ -44,7 +44,7 @@ const DeliverySection = ({
           />
 
           <DeliveryOption
-            title="Pickup Station"
+            title={`Pickup Station (KES. 540)`}
             description="Collect from a nearby pickup location"
             price={0}
             selected={selectedDelivery === "pickup"}
