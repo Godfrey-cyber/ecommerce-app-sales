@@ -1,15 +1,11 @@
 import SummaryRow from "../components/ui/SummaryRow";
 import { useGetCartQuery } from "../redux/cartApi.jsx"
 
-const OrderSummary = ({ itemsTotal, onCheckout }) => {
+const OrderSummary = ({ onCheckout }) => {
 
   const { data, error } = useGetCartQuery();
   const cartItems = data?.cart[0]?.items || [];
   const cartSummary = data?.cart[0];
-
-  const shipping = 300;
-  const tax = itemsTotal * 0.08;
-  const total = itemsTotal + shipping + tax; // {cartSummary?.shipping === 0 ? "FREE" : cartSummary?.shipping }
 
   return (
     <div className="col-span-12 lg:col-span-4 flex flex-col bg-white border rounded-sm p-6 shadow-sm h-fit space-y-6">

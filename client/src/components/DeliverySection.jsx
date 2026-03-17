@@ -9,7 +9,6 @@ const DeliverySection = ({
   toggle,
   selectedDelivery,
   setSelectedDelivery,
-  products,
   setCompletedSections
 }) => {
   const { data, error } = useGetCartQuery();

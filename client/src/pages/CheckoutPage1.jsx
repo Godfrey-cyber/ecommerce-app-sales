@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-
+import { ToastContainer, toast } from 'react-toastify';
+import { useCreateOrderMutation } from '../redux/orderApi';
+import { useGetCartQuery } from '../redux/cartApi';
 import CheckoutHeader from "../components/header/CheckoutHeader";
 import CustomerSection from "../components/CustomerSection";
 import DeliverySection from "../components/DeliverySection";
@@ -7,15 +9,30 @@ import PaymentSection from "../components/PaymentSection";
 import OrderSummary from "../components/OrderSummary";
 
 const CheckoutPage = () => {
-
+  const { data, error } = useGetCartQuery();
+  const cartItems = data?.cart[0]?.items || [];
+    const cartSummary = data?.cart[0];
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const cart = cartData?.cart?.[0];
   const [completedSections, setCompletedSections] = useState({
     customer: true,
     delivery: false,
     payment: false
   });
-
+  // Deleivery & Payment states
   const [selectedDelivery, setSelectedDelivery] = useState("door");
-  const [selectedPayment, setSelectedPayment] = useState("bank");
+  const [selectedPayment, setSelectedPayment] = useState("mpesa");
+
+  // Shipping details
+  const [shippingDetails, setShippingDetails] = useState({
+    // name: '',
+    // email: '',
+    // phone: '',
+    county: 'Nairobi',
+    subCounty: 'Westlands',
+    station: 'Sarit Centre',
+    address: '' // For door delivery
+  });
 
   const [customerData, setCustomerData] = useState({
     name: "John Doe",
@@ -26,14 +43,6 @@ const CheckoutPage = () => {
     station: "Sarit Centre"
   });
 
-  const products = [
-    { id: 1, title: "Atomic Habits", quantity: 1, price: 1200, icon: "📚" },
-    { id: 2, title: "The Psychology of Money", quantity: 2, price: 2400, icon: "📖" },
-    { id: 3, title: "Deep Work", quantity: 1, price: 1500, icon: "📕" }
-  ];
-
-  const itemsTotal = products.reduce((sum, p) => sum + p.price, 0);
-
   const toggleSection = (section) => {
     setCompletedSections(prev => ({
       ...prev,
@@ -43,13 +52,58 @@ const CheckoutPage = () => {
 
   const handleCheckout = () => {
     const allComplete = Object.values(completedSections).every(Boolean);
+    try {
+        if (!allComplete) {
+            alert("Please complete all sections before proceeding.");
+            return;
+        }
 
-    if (!allComplete) {
-      alert("Please complete all sections before proceeding.");
-      return;
+        if (!shippingDetails.county || !shippingDetails.subCounty || !shippingDetails.station || !shippingDetails.address) {
+            toast.error('Please provide country number');
+            return;
+        }
+        
+        const orderData = {
+          // Items from cart
+          items: cart.items.map(item => ({
+            product: item.product._id,
+            title: item.product.title,
+            quantity: item.quantity,
+            price: item.product.finalPrice,
+            totalPrice: item.quantity * item.product.finalPrice
+          })),
+
+          // Shipping info
+          shippingAddress: {
+            firstName: shippingDetails.name,
+            lastName: shippingDetails.name,
+            phone: shippingDetails.phone,
+            email: shippingDetails.email,
+            county: shippingDetails.county,
+            subCounty: shippingDetails.subCounty,
+            station: shippingDetails.station,
+            address: selectedDelivery === 'door-delivery' 
+              ? shippingDetails.address 
+              : '',
+          },
+
+          // Delivery method
+          deliveryMethod: selectedDelivery, // 'door-delivery' or 'pick-up-station'
+
+          // Payment method
+          paymentMethod: selectedPayment, // 'mpesa', 'bank', 'pay-on-delivery'
+
+          // Pricing
+          subtotal: cartSummary.totalAmount,
+          deliveryFee: cart.deliveryFee || 0,
+          tax: cart.tax || 0,
+          discount: cart.discount || 0,
+          totalAmount: cart.finalAmount,
+        };
+    } catch (error) {
+
     }
 
-    alert("Order completed! Proceeding to payment...");
   };
 
   return (
@@ -73,7 +127,6 @@ const CheckoutPage = () => {
             toggle={() => toggleSection("delivery")}
             selectedDelivery={selectedDelivery}
             setSelectedDelivery={setSelectedDelivery}
-            products={products}
             setCompletedSections={setCompletedSections}
           />
 
@@ -88,7 +141,6 @@ const CheckoutPage = () => {
         </div>
 
         <OrderSummary
-          itemsTotal={itemsTotal}
           onCheckout={handleCheckout}
         />
 
