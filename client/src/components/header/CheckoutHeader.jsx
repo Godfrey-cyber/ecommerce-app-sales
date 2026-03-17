@@ -15,7 +15,7 @@ const CheckoutHeader = () => {
 	return (
 		<header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
 	        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-		        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
+		        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 items-center justify-between">
 		            {/* Logo */}
 		            <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
 			            <div className="w-10 h-10 bg-amber-400 rounded-lg flex items-center justify-center">
@@ -24,17 +24,17 @@ const CheckoutHeader = () => {
 			            <span className="text-xl font-bold text-gray-800 hidden sm:block">
 			              BookStore
 			            </span>
-			          </Link>
+			        </Link>
 
 		            {/* Checkout Step */}
-		            <div className="text-center">
+		            <div className="hidden lg:flex text-center">
 		              	<h2 className="text-lg font-semibold text-gray-900 mb-2">
 		                	Select Shipping Options
 		              	</h2>
 		            </div>
 
 		            {/* Features */}
-		            <div className="hidden lg:flex items-center justify-end gap-6">
+		            <div className="flex items-center justify-end gap-6">
 			            <FeatureItem icon={<HelpCircle size={16} />} text="Need Help?" />
 			            {/*<FeatureItem icon={<Phone size={16} />} text="Contact Us" />*/}
 			            <FeatureItem icon={<RotateCcw size={16} />} text="Easy Return" />
