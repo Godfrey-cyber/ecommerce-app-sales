@@ -53,13 +53,13 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-white">
 
       <CheckoutHeader />
 
-      <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
+      <div className="w-full mx-auto px-2 py-8 grid grid-cols-12 gap-4">
 
-        <div className="lg:col-span-2 space-y-6">
+        <div className="col-span-12 lg:col-span-8 space-y-6">
 
           <CustomerSection
             completed={completedSections.customer}

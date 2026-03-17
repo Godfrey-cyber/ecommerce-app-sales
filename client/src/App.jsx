@@ -30,7 +30,7 @@ function App() {
     if (isLoading) return <div className="w-full h-screen flex flex-col items-center justify-center bg-yellow-400">Loading...</div>
 
     return (
-        <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-full overflow-x-hidden">
+        <section className="min-h-screen font-['Nunito'] relative scroll-smooth w-screen overflow-x-auto">
             <ToastContainer />
             <BrowserRouter>
                 <Routes>

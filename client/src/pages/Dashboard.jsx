@@ -26,6 +26,7 @@ export default function EcommerceDashboard() {
     { id: 1001, customer: 'John Doe', items: 3, total: 459.97, status: 'shipped', date: '2026-02-12' },
     { id: 1002, customer: 'Jane Smith', items: 1, total: 129.99, status: 'pending', date: '2026-02-13' },
     { id: 1003, customer: 'Bob Wilson', items: 2, total: 339.98, status: 'delivered', date: '2026-02-10' },
+    { id: 1003, customer: 'Smith Waren', items: 2, total: 569.98, status: 'cancelled', date: '2026-03-10' },
   ]);
   const [users] = useState([
     { id: 1, name: 'TechVendor', email: 'tech@vendor.com', role: 'customer', products: 45, joined: '2025-01-15' },
@@ -145,7 +146,7 @@ export default function EcommerceDashboard() {
 
       {/* Add Product Modal */}
       {showAddModal && (
-        <AddProductModal setShowAddModal={setShowAddModal} newProduct={setNewProduct} categories={categories} setNewProduct={setNewProduct} handleAddProduct={handleAddProduct} setShowAddModal={setShowAddModal} />
+        <AddProductModal newProduct={setNewProduct} categories={categories} setNewProduct={setNewProduct} handleAddProduct={handleAddProduct} setShowAddModal={setShowAddModal} />
       )}
     </div>
   );

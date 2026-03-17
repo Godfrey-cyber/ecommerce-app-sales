@@ -9,8 +9,7 @@ const SectionCard = ({
   children
 }) => {
   return (
-    <div className="bg-white border rounded-sm shadow-sm overflow-hidden">
-
+    <div className="w-full bg-white border rounded-sm shadow-sm overflow-hidden">
       {/* Header */}
       <div
         className="flex items-center justify-between px-6 py-4 cursor-pointer"

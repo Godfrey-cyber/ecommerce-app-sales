@@ -19,42 +19,9 @@ const CustomerSection = ({
       onToggle={toggle}
       active={completed}
     >
-      <div className="flex gap-4">
-
-        {/*<InputField
-          label="Full Name"
-          value={customerData.name}
-          onChange={(e) =>
-            setCustomerData({ ...customerData, name: e.target.value })
-          }
-        />
-
-        <InputField
-          label="Email"
-          value={customerData.email}
-          onChange={(e) =>
-            setCustomerData({ ...customerData, email: e.target.value })
-          }
-        />
-
-        <InputField
-          label="Phone"
-          value={customerData.phone}
-          onChange={(e) =>
-            setCustomerData({ ...customerData, phone: e.target.value })
-          }
-        />
-
-        <SelectField
-          label="County"
-          value={customerData.county}
-          options={["Nairobi", "Mombasa", "Kisumu"]}
-          onChange={(e) =>
-            setCustomerData({ ...customerData, county: e.target.value })
-          }
-        />*/}
+      <div className="flex gap-4 w-full">
         <div className="flex flex-col my-4">
-            <div className="flex flex-row space-x-6 items-center ">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 items-center ">
               <span className="flex flex-col">
                 <p className="text-sm font-bold text-gray-800">Name:</p>
                 <p className="text-xs font-semibold text-gray-600"> {customerData.name}</p>
