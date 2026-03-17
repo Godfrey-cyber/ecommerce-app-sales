@@ -100,8 +100,20 @@ const CheckoutPage = () => {
           discount: cart.discount || 0,
           totalAmount: cart.finalAmount,
         };
-    } catch (error) {
 
+        const result = await createOrder(orderData).unwrap();
+        toast.success('Order placed successfully!');
+
+        if (selectedPayment === 'mpesa') {
+            navigate(`/payment/mpesa/${result.order._id}`);
+        } else if (selectedPayment === 'bank') {
+            navigate(`/payment/bank/${result.order._id}`);
+        } else {
+            navigate(`/order-confirmation/${result.order._id}`);
+        }
+    } catch (error) {
+        console.log(error)
+        toast.error(error?.data?.message || 'Failed to create order')
     }
 
   };
