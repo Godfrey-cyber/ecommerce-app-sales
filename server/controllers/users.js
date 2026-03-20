@@ -87,6 +87,7 @@ export const loginUser = async(req, res) => {
         }
 
         res.cookie('accessToken', accessToken, {
+            path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
@@ -203,7 +204,7 @@ export const logoutUser = async (req, res) => {
         await user.save();
 
         // @Clear Cookie
-        res.cookie('refreshToken', "", {
+        res.clearCookie('refreshToken', "", {
             path: "/",
             httpOnly: true,
             expires: new Date(0),
@@ -212,7 +213,7 @@ export const logoutUser = async (req, res) => {
         })
 
         // @Clear Cookie
-        res.cookie('accessToken', "", {
+        res.clearCookie('accessToken', "", {
             path: "/",
             httpOnly: true,
             expires: new Date(0),

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useGetOrdersQuery } from "../redux/orderApi.jsx"
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
 import { useLogoutMutation, useGetMeQuery } from "../redux/authApi.jsx"
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from "../redux/categoriesApi.jsx"
@@ -21,13 +22,10 @@ export default function EcommerceDashboard() {
   const { data, error, isLoading } = useGetProductsQuery();
   const { data:userData } = useGetMeQuery();
   const [logout, { isLoading:loading }] = useLogoutMutation();
+  const { data:orders, isLoading:load, error:isError } = useGetOrdersQuery();
   const { data:categories, isLoading:loadingCat } = useGetCategoriesQuery();
-  const [orders] = useState([
-    { id: 1001, customer: 'John Doe', items: 3, total: 459.97, status: 'shipped', date: '2026-02-12' },
-    { id: 1002, customer: 'Jane Smith', items: 1, total: 129.99, status: 'pending', date: '2026-02-13' },
-    { id: 1003, customer: 'Bob Wilson', items: 2, total: 339.98, status: 'delivered', date: '2026-02-10' },
-    { id: 1003, customer: 'Smith Waren', items: 2, total: 569.98, status: 'cancelled', date: '2026-03-10' },
-  ]);
+
+  // const data = orders?.orders
   const [users] = useState([
     { id: 1, name: 'TechVendor', email: 'tech@vendor.com', role: 'customer', products: 45, joined: '2025-01-15' },
     { id: 2, name: 'GadgetStore', email: 'gadget@store.com', role: 'customer', products: 23, joined: '2025-03-20' },
@@ -118,7 +116,7 @@ export default function EcommerceDashboard() {
 
             {/* Orders Tab */}
             {activeTab === 'orders' && (
-              <OrdersTab orders={orders} />
+              <OrdersTab orders={orders} isError={isError} load={load} />
             )}
 
             {/* Users Tab (Admin Only) */}

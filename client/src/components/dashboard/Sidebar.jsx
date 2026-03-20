@@ -19,7 +19,7 @@ const Sidebar = ({ userData, menuItems, setUserRole, userRole, handleLogout, loa
 
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1">
-            {menuItems.map((item, index) => (
+            {menuItems?.map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
