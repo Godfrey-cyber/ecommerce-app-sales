@@ -19,12 +19,11 @@ import User from '../models/User.js'
 
 export const authenticate = async (req, res, next) => {
 	try {
-		const { accessToken } = req.cookies;
-
+		const { accessToken } = req?.cookies;
         if (!accessToken) {
             return res.status(401).json({
                 success: false,
-                message: 'Sorry! Your are not authorized. Please login.',
+                message: 'Your are not authorized! Please login.',
             });
         }
 
@@ -56,14 +55,14 @@ export const authenticate = async (req, res, next) => {
 	}
 }
 
-export const restrictTo = (...roles) => {
+export const restrictTo = (...roles) => { // restrictTo
 	return async (req, res, next) => {
 		try {
-			const token = req.headers.authorization?.split(' ')[1]
+			const { accessToken } = req?.cookies;
 
-			if (!token) return res.status(401).json("Access token required")
+			if (!accessToken) return res.status(401).json("Access token required")
 
-			jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, decoded) => {
+			jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (error, decoded) => {
 				if (error) return res.status(403).json("Access token required")
 
 				// Attach user data to request
@@ -74,6 +73,9 @@ export const restrictTo = (...roles) => {
 				
 				if (!user) return res.status(403).json("User not found")
 				// Check if user has required role
+					req.user = user;
+				console.log(req.user.role)
+        			// req.userId = user._id;
 				if (!roles.includes(user.role)) {
 					return res.status(403).json(`Access denied. You do not have the required role, you are a ${user.role}.`)
 				}

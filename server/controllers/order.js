@@ -1,14 +1,16 @@
 import Cart from "../models/Cart.js"
-import Product from "../models/Products.js"
+import Products from "../models/Products.js"
 import Order from "../models/Order.js"
 import slugify from 'slugify'
 import mongoose from 'mongoose'
 
 // @Create an order
-export const createOrder = async (req, res, next) => {
+export const createOrder = async (req, res) => {
 	const session = await mongoose.startSession();
   	session.startTransaction();
-
+  	const { accessToken } = req.cookies
+  	console.log(accessToken)
+  	console.log(req.userId)
   	try {
   		const {
 		    items,
@@ -22,28 +24,74 @@ export const createOrder = async (req, res, next) => {
 		    totalAmount,
 	    } = req.body;
 
+	    console.log("Req.body ====", req.body)
+
+    	if (!items || items.length === 0) {
+    		await session.abortTransaction();
+    		return res.status(400).json({ 
+    			success: false, 
+    			message: "No items in order" 
+    		});
+    	}
+
+    	if (!shippingAddress || !deliveryMethod || !paymentMethod) {
+	    	await session.abortTransaction();
+	    	return res.status(400).json({ 
+	    		success: false, 
+	    		message: "Missing shipping or payment information" 
+	    	});
+	    }
+
 	    // get all products
-	    const productIds = items.map(item => item.product)
-	    const products = await Products.find({ _id: { $in: productIds } }).session(session)
-
-	    //validate products
-	    const validatedProducts = items.map(item => {
-	     	const dbProduct = products.find(p => p._id.toString() === item.product)
-
-	     	if (!dbProduct) {
-		    	return res.status(401).json({ success: false, message: "No Product found" })
-		    }
-
-		    if (dbProduct.stock < item.quantity) {
-		    	return res.status(401).json({ success: false, message: `${dbProduct.name} is out of stock.`})
-		    }
-
-		    return dbProduct
+	    const productIds = items.map(item => {
+	    	if (typeof item.product === 'string') {
+	    		return new mongoose.Types.ObjectId(item.product);
+	    	}
+	    	return item.product;
 	    })
 
+	    // const productIds = items.map(item => item.product.toString())
+
+	    // console.log("items ======== ", items)
+	    // console.log("productIds ======== ", productIds)
+	    const products = await Products.find({ _id: { $in: productIds } })
+
+	    if (products.length === 0) {
+	    	await session.abortTransaction();
+	    	return res.status(404).json({ 
+	    		success: false, 
+	    		message: "No products found in database" 
+	    	});
+	    }
+	    console.log("products", products)
+	    //validate products
+	    const validatedProducts = [];
+
+	    for (const item of items) {
+	    	const itemProductId = item.product.toString();
+		    const dbProduct = products.find(p => p._id.toString() === itemProductId);
+		    
+		    if (!dbProduct) {
+		        await session.abortTransaction();
+		        return res.status(404).json({ msg: `Product ${item?.title || item?.product} not found`  });
+		    }
+		    
+		    if (dbProduct.stock < item.quantity) {
+		        await session.abortTransaction();
+		        return res.status(400).json({ message: `${dbProduct.name} is out of stock. Only ${dbProduct.stock} available.` });
+		    }
+		    
+		    validatedProducts.push(dbProduct); // ✅ Only adds valid products
+		}
+
 	    // Calculate Delivery
-	    const delivery = { door: 1040, station: 540 }
-	    const shippingPrice = delivery[deliveryMethod]
+	    const deliveryFees = { 
+		    'Door Delivery': 1040,
+		    'Pickup Station': 540
+		};
+
+		const shippingPrice = deliveryFees[deliveryMethod];
+
 	    if (!shippingPrice) {
 	    	return res.status(401).json({ success: false, message: "Invalid delivery method" })
 	    }
@@ -52,6 +100,13 @@ export const createOrder = async (req, res, next) => {
 	    // Create Order.
 	    const order = await Order.create([{
 	    	user: req.userId,
+	    	items: items.map(item => ({ // ✅ Added this
+		        product: item.product,
+		        title: item.title,
+		        quantity: item.quantity,
+		        price: item.price,
+		        totalPrice,
+		    })),
 	    	shippingAddress,
 		    deliveryMethod,
 		    paymentMethod,
@@ -60,37 +115,85 @@ export const createOrder = async (req, res, next) => {
 		    tax,
 		    discount,
 		    totalAmount: totalPrice,
-		    orderStatus: 'pending',
-      		paymentStatus: 'pending',
+		    orderStatus: 'Pending',
+      		paymentStatus: 'Pending',
 	    }], { session })
 
 	    // Atomic Stock Reduction
-	    for (const item of validatedProducts) {
-	      	const updated = await Product.findByIdAndUpdate(
-		        {_id: item.product, stock: item.quantity },
+	    for (const item of items) {
+	      	const itemProductId = typeof item.product === 'string' 
+	    		? new mongoose.Types.ObjectId(item.product)
+	    		: item.product;
+ 
+	      	const updated = await Products.findOneAndUpdate(
+		        { 
+		        	_id: itemProductId, 
+		        	stock: { $gte: item.quantity } 
+		        },
 		        { $inc: { stock: -item.quantity } },
-		        { session }
+		        { session, new: true }
 	      	);
-
+ 
 	      	if (!updated) {
-	      		return res.status(500).json({ success: false, message: "Something went wrong." })
+	      		await session.abortTransaction();
+	      		return res.status(400).json({ 
+	      			success: false, 
+	      			message: `Failed to update stock for ${item.title}. It may have been purchased by someone else.` 
+	      		});
 	      	}
 	    }
 
 	    await Cart.findOneAndUpdate(
 	      	{ user: req.userId },
-	      	{ items: [], subtotal: 0, totalItems: 0 },
+	      	{ items: [], subtotal: 0, totalItems: 0, tax: 0, discount: 0, finalAmount: 0  },
 	      	{ session }
 	    );
 
 	    await session.commitTransaction()
 
+	    const populatedOrder = await Order.findById(order[0]._id)
+	    	.populate('user', 'firstname lastname email')
+	    	.populate('items.product', 'name price images');
+
 	    return res.status(201).json({ success: true, order: order[0], message: "Order Successfully created." })
 
   	} catch (error) {
   		await session.abortTransaction();
+  		console.log(error)
   		return res.status(500).json({ success: false, message: error.message })
   	} finally {
 	    session.endSession();
+	}
+}
+
+export const getOrders = async (req, res) => {
+	try {
+		const query = {}
+		console.log(req.user.role)
+
+		if (req.user.role === "admin") {
+			query = {}
+		}
+
+		else if (req.user.role === "vendor") {
+			query = { user: req.user._id }
+		}
+
+		else {
+			return res.status(403).json({
+				status: "fail",
+				message: "Not Authorized"
+			})
+		}
+		const orders = await Order.find(query)
+	    	.populate('user', 'firstname lastname email')
+	    	
+	    if (!orders) {
+            return res.status(404).json({ message: 'No order not found!' })
+        }
+
+	    return res.status(200).json({ success: true, orders, message: "Order Fetched Successfully." })
+	} catch (error) {
+		return res.status(500).json({ success: false, message: error.message })
 	}
 }

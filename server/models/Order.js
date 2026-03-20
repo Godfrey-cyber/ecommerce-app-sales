@@ -28,13 +28,17 @@ const orderItemSchema = new mongoose.Schema({
 });
 
 const shippingAddressSchema = new mongoose.Schema({
-    fullName: {
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
         type: String,
         required: true,
     },
     phone: {
         type: String,
-        required: true,
+        // required: true,
     },
     email: {
         type: String,
@@ -89,22 +93,22 @@ const orderSchema = new mongoose.Schema(
         // ✅ Delivery method (from checkout page)
         deliveryMethod: {
             type: String,
-            enum: ['door-delivery', 'pick-up-station'],
+            enum: ['Door Delivery', 'Pickup Station'],
             required: true,
         },
         
         // ✅ Payment method (from checkout page)
         paymentMethod: {
             type: String,
-            enum: ['mpesa', 'bank', 'pay-on-delivery'],
+            enum: ['M-Pesa', 'Bank', 'Pay-On-Delivery'],
             required: true,
         },
         
         // Payment status
         paymentStatus: {
             type: String,
-            enum: ['pending', 'completed', 'failed', 'refunded'],
-            default: 'pending',
+            enum: ['Pending', 'Completed', 'Failed', 'Refunded'],
+            default: 'Pending',
             index: true,
         },
         
@@ -142,7 +146,7 @@ const orderSchema = new mongoose.Schema(
         // Order status tracking
         orderStatus: {
             type: String,
-            enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
+            enum: ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
             default: 'pending',
             index: true,
         },
