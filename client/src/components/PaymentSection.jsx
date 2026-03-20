@@ -33,22 +33,22 @@ const PaymentSection = ({
           <PaymentOption
             title="Bank Card"
             description="Pay securely using debit or credit card"
-            selected={selectedPayment === "card"}
-            onSelect={() => setSelectedPayment("card")}
+            selected={selectedPayment === "Bank"}
+            onSelect={() => setSelectedPayment("Bank")}
           />
 
           <PaymentOption
             title="Mobile Money"
             description="Pay using M-Pesa or other mobile wallets"
-            selected={selectedPayment === "mobile"}
-            onSelect={() => setSelectedPayment("mobile")}
+            selected={selectedPayment === "M-Pesa"}
+            onSelect={() => setSelectedPayment("M-Pesa")}
           />
 
           <PaymentOption
             title="Cash on Delivery"
             description="Pay when your order arrives"
-            selected={selectedPayment === "cod"}
-            onSelect={() => setSelectedPayment("cod")}
+            selected={selectedPayment === "Pay-On-Delivery"}
+            onSelect={() => setSelectedPayment("Pay-On-Delivery")}
           />
 
         </div>

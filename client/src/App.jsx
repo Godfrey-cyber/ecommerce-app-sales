@@ -20,6 +20,7 @@ import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
 import { setUser } from "./redux/slices/authSlice.js"
 import Dashboard from "./pages/Dashboard.jsx"
+import NewModal from "./pages/NewModal.jsx"
 
 function App() {
     const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
+                    <Route path="/location" element={<NewModal />} />
                     <Route path="/items/cart" element={<CartPage />} />
                     <Route path="/cart/checkout" element={(user && isAuthenticated) ? <CheckoutPage /> : <LoginForm />} />
                     <Route path="/auth/register" element={<RegisterForm />} />

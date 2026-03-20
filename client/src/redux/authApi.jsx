@@ -43,6 +43,7 @@ export const authApi = createApi({
                     const { data } = await queryFulfilled;
 
                     console.log('🔍 Backend response:', data);
+                    dispatch(logoutUser());
 
                     dispatch(
                         setCredentials({
@@ -65,8 +66,13 @@ export const authApi = createApi({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
+                    
+                }   catch (error) {
+                    console.log(error)
+                } finally {
                     dispatch(logoutUser());
-                }   catch (error) {}
+                    dispatch(authApi.util.restApiState())
+                }
             }
         }),
         // @Get Me

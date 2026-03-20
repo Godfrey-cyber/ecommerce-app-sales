@@ -8,10 +8,16 @@ const DeliverySection = ({
   completed,
   toggle,
   selectedDelivery,
+  // handleDeliveryMethodClick,
   setSelectedDelivery,
-  setCompletedSections
+  setCompletedSections,
+  setShowUserMenu,
+  showUserMenu,
+  ref,
+  userData,
+  data
 }) => {
-  const { data, error } = useGetCartQuery();
+  // const { data, error } = useGetCartQuery();
 
   const cartItems = data?.cart[0]?.items || [];
 
@@ -38,16 +44,26 @@ const DeliverySection = ({
             title="Door Delivery"
             description="Delivered to your home or office"
             price={300}
-            selected={selectedDelivery === "door"}
-            onSelect={() => setSelectedDelivery("door")}
+            selected={selectedDelivery === "Door Delivery"}
+            onSelect={() => setSelectedDelivery("Door Delivery")}
+            setShowUserMenu={setShowUserMenu}
+            showUserMenu={showUserMenu}
+            ref={ref}
+            userData={userData}
+            data={data}
           />
 
           <DeliveryOption
             title={`Pickup Station (KES. 540)`}
-            description="Collect from a nearby pickup location"
+            description="Collect from a nearby Pickup Location"
             price={0}
-            selected={selectedDelivery === "pickup"}
-            onSelect={() => setSelectedDelivery("pickup")}
+            selected={selectedDelivery === "Pickup Station"}
+            onSelect={() => setSelectedDelivery("Pickup Station")}
+            setShowUserMenu={setShowUserMenu}
+            showUserMenu={showUserMenu}
+            ref={ref}
+            userData={userData}
+            data={data}
           />
         </div>
 

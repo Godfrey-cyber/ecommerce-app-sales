@@ -105,7 +105,7 @@ const CartPage = () => {
 					        </div>
 					        
 					        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-					        	{/*@Cart Quantity Update*/}
+					        	{/* @Cart Quantity Update */}
 					          <div className="flex items-center gap-3">
 					            <button onClick={() => handleQtyUpdate(item, +1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
 					              <Plus className="text-gray-800 w-5 h-5" />

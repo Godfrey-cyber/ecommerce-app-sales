@@ -2,10 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const orderApi = createApi({
     reducerPath: 'orderApi',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-    prepareHeaders: (headers, { getState }) => {
-      return headers;
-    },
+    baseQuery: fetchBaseQuery({
+        baseUrl: import.meta.env.VITE_API_URL,
+        credentials: "include",
+        prepareHeaders: (headers, { getState }) => {
+            return headers;
+        },
+    }),
+    
     tagTypes: ['Order', 'Orders'],
   
     endpoints: (builder) => ({

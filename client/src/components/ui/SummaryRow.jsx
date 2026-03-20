@@ -3,7 +3,7 @@ const SummaryRow = ({
   label,
   value,
   labelClass = 'text-gray-600',
-  valueClass = 'text-gray-900 font-semibold'
+  valueClass = 'text-gray-900 font-semibold',
 }) => {
   return (
     <div className="flex justify-between items-center">

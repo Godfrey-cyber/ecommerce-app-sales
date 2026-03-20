@@ -1,5 +1,6 @@
 import React from "react"
 import { Plus } from 'lucide-react';
+import LocationModal from "./LocationModal.jsx"
 
 const DeliveryOption = ({
   title,
@@ -7,6 +8,11 @@ const DeliveryOption = ({
   price,
   selected,
   onSelect,
+  setShowUserMenu,
+  showUserMenu,
+  ref,
+  userData,
+  data
 }) => {
   console.log(selected)
   return (
@@ -43,11 +49,10 @@ const DeliveryOption = ({
           />
         </div>
         <div className="flex flex-row items-center space-x-1">
-          <p className="text-sm font-bold text-blue-800 hover:text-blue-600">Select Pick-up Location</p>
+          <p onClick={() => setShowUserMenu(!showUserMenu)} className="text-sm font-bold text-blue-800 hover:text-blue-600">Select Pick-up Location</p>
           <Plus className="w-3 h-3" />
         </div>
       </div>
-
     </div>  
   );
 };

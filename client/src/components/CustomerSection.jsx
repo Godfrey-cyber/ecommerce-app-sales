@@ -7,9 +7,10 @@ const CustomerSection = ({
   completed,
   toggle,
   customerData,
-  setCustomerData
+  setCustomerData,
+  userData,
 }) => {
-
+  // console.log("userData", userData?.user)
   return (
     <SectionCard
       number="1"
@@ -23,27 +24,27 @@ const CustomerSection = ({
             <div className="grid grid-cols-12 w-full my-4">
               <span className="flex flex-col col-span-6 md:col-span-4 lg:col-span-2">
                 <p className="text-sm font-bold text-gray-800">Name:</p>
-                <p className="text-xs font-semibold text-gray-600"> {customerData.name}</p>
+                <p className="text-xs font-semibold text-gray-600">{userData?.user?.firstname} {userData?.user?.lastname}</p>
               </span>
               <span className="flex flex-col col-span-6 md:col-span-4 lg:col-span-2">
                 <p className="text-sm font-bold text-gray-800">Email:</p>
-                <p className="text-xs font-semibold text-gray-600"> {customerData.email}</p>
+                <p className="text-xs font-semibold text-gray-600"> {userData?.user?.email}</p>
               </span>
               <span className="flex flex-col col-span-6 md:col-span-4 lg:col-span-2">
                 <p className="text-sm font-bold text-gray-800">Phone:</p>
-                <p className="text-xs font-semibold text-gray-600"> {customerData.phone}</p>
+                <p className="text-xs font-semibold text-gray-600"> {userData?.user?.phone}</p>
               </span>
               <span className="flex flex-col col-span-6 md:col-span-4 lg:col-span-2">
                 <p className="text-sm font-bold text-gray-800">County:</p>
-                <p className="text-xs font-semibold text-gray-600"> {customerData.county}</p>
+                <p className="text-xs font-semibold text-gray-600"> {userData?.user?.county}</p>
               </span>
               <span className="flex flex-col col-span-6 md:col-span-4 lg:col-span-2">
                 <p className="text-sm font-bold text-gray-800">Sub County:</p>
-                <p className="text-xs font-semibold text-gray-600"> {customerData.subCounty}</p>
+                <p className="text-xs font-semibold text-gray-600"> {userData?.user?.subCounty}</p>
               </span>
               <span className="flex flex-col col-span-6 md:col-span-4 lg:col-span-2">
                 <p className="text-sm font-bold text-gray-800">Station:</p>
-                <p className="text-xs font-semibold text-gray-600"> {customerData.station}</p>
+                <p className="text-xs font-semibold text-gray-600"> {userData?.user?.station}</p>
               </span>
             </div>
         </div>
