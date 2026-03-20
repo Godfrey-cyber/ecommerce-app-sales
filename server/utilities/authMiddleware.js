@@ -74,10 +74,18 @@ export const restrictTo = (...roles) => { // restrictTo
 				if (!user) return res.status(403).json("User not found")
 				// Check if user has required role
 					req.user = user;
-				console.log(req.user.role)
+				console.log("role", req.user.role)
         			// req.userId = user._id;
-				if (!roles.includes(user.role)) {
-					return res.status(403).json(`Access denied. You do not have the required role, you are a ${user.role}.`)
+				console.log(roles)
+
+				const userRole = user.role.toLowerCase().trim();
+                const allowedRoles = roles.map(r => r.toLowerCase().trim());
+
+                console.log("Allowed", allowedRoles)
+                console.log("userRole", userRole)
+
+				if (!allowedRoles.includes(userRole)) {
+					return res.status(403).json(`Access denied. You are a ${user.role}.`)
 				}
 				next()
 			})

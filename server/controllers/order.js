@@ -169,23 +169,24 @@ export const createOrder = async (req, res) => {
 export const getOrders = async (req, res) => {
 	try {
 		const query = {}
-		console.log(req.user.role)
+		console.log("-admin-", req.user.role)
 
-		if (req.user.role === "admin") {
-			query = {}
-		}
+		console.log("-typeof-", typeof(req.user.role))
+		// if (req.user.role === "admin") {
+		// 	query = {}
+		// }
 
-		else if (req.user.role === "vendor") {
-			query = { user: req.user._id }
-		}
+		// else if (req.user.role === "customer") {
+		// 	query = { user: req.user._id }
+		// }
 
-		else {
-			return res.status(403).json({
-				status: "fail",
-				message: "Not Authorized"
-			})
-		}
-		const orders = await Order.find(query)
+		// else {
+		// 	return res.status(403).json({
+		// 		status: "fail",
+		// 		message: "Not Authorized"
+		// 	})
+		// }
+		const orders = await Order.find({ user: req.userId })
 	    	.populate('user', 'firstname lastname email')
 	    	
 	    if (!orders) {
