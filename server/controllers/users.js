@@ -77,15 +77,6 @@ export const loginUser = async(req, res) => {
         user.refreshTokens.push({ token: refreshToken });
         await user.save();
 
-        const safeUser = {
-            _id: user._id,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            role: user.role,
-            verified: user.verified,
-        }
-
         res.cookie('accessToken', accessToken, {
             path: "/",
             httpOnly: true,
@@ -162,7 +153,24 @@ export const changePassword = async(req, res) => {
 // get all users
 export const getAllUsers = async(req, res) => {
     try {
-        const users = req.query.new ? await User.find().sort({ createdAt: -1} ).limit(5).select("-password") : await User.find().select("-password")
+        let query = {}
+        console.log("-admin-", req.user.role)
+
+        if (req.user.role === "admin") {
+            query = {}
+        }
+
+        else if (req.user.role === "customer" || req.user.role === "vendor") {
+            query = { user: req.userId }
+        }
+
+        else {
+            return res.status(403).json({
+                status: "fail",
+                message: "Not Authorized"
+            })
+        }
+        const users = req.query.new ? await User.find().sort({ createdAt: -1} ).limit(10).select("-password") : await User.find().select("-password")
         // const { _id, }
         console.log("NODE_ENV: ", process.env.NODE_ENV)
         return res.status(200).json({ 

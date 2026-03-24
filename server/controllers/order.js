@@ -168,27 +168,28 @@ export const createOrder = async (req, res) => {
 
 export const getOrders = async (req, res) => {
 	try {
-		const query = {}
+		let query = {}
 		console.log("-admin-", req.user.role)
 
-		console.log("-typeof-", typeof(req.user.role))
-		// if (req.user.role === "admin") {
-		// 	query = {}
-		// }
+		if (req.user.role === "admin") {
+			query = {}
+		}
 
-		// else if (req.user.role === "customer") {
-		// 	query = { user: req.user._id }
-		// }
+		else if (req.user.role === "customer" || req.user.role === "vendor") {
+			query = { user: req.userId }
+		}
 
-		// else {
-		// 	return res.status(403).json({
-		// 		status: "fail",
-		// 		message: "Not Authorized"
-		// 	})
-		// }
-		const orders = await Order.find({ user: req.userId })
+		else {
+			return res.status(403).json({
+				status: "fail",
+				message: "Not Authorized"
+			})
+		}
+		console.log("query", query)
+		console.log("role", req.user.role)
+		console.log("role", req.user)
+		const orders = await Order.find(query)
 	    	.populate('user', 'firstname lastname email')
-	    	
 	    if (!orders) {
             return res.status(404).json({ message: 'No order not found!' })
         }
