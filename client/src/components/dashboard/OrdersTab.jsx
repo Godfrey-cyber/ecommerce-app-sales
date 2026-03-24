@@ -2,21 +2,20 @@ import React from 'react'
 
 const OrdersTab = ({ orders, isError, load }) => {
   const data = orders?.orders
-  console.log(orders?.orders)
-  console.log(orders)
-  console.log(data?.map(t => t.orderStatus))
+  console.log(data)
 	return (
 		<div className="animate-fade-in">
             <div className="gradient-border overflow-hidden">
               <table className="w-full">
                 <thead className="bg-zinc-900/50 border-b border-zinc-800">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">Order ID</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">Customer</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">Items</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">Date</th>
+                    <th className="title-table">Order ID</th>
+                    <th className="title-table">Customer</th>
+                    <th className="title-table">Mode</th>
+                    <th className="title-table">Total(Ksh.)</th>
+                    <th className="title-table">Status</th>
+                    <th className="title-table">Date</th>
+                    <th className="title-table">Time</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800">
@@ -41,7 +40,8 @@ const OrdersTab = ({ orders, isError, load }) => {
                           {order.orderStatus.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-zinc-400 mono">{order.createdAt}</td>
+                      <td className="px-6 py-4 text-sm text-zinc-400 mono">{new Date(order.createdAt).toLocaleString("en-KE", { timeZone: "Africa/Nairobi", year: "numeric", month: "short" })}</td>
+                      <td className="px-6 py-4 text-sm text-zinc-400 mono">{new Date(order.createdAt).toLocaleString("en-KE", { hour: "2-digit", minute: "2-digit" })}</td>
                     </tr>
                   ))}
                 </tbody>

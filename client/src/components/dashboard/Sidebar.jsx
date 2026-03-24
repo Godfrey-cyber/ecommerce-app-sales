@@ -1,7 +1,9 @@
 import React from 'react'
 import { User, LogOut } from 'lucide-react';
+import { useNavigate } from "react-router-dom"
 
 const Sidebar = ({ userData, menuItems, setUserRole, userRole, handleLogout, loading, activeTab, setActiveTab }) => {
+  const navigate = useNavigate()
 	return (
 		<aside className="w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col animate-slide-in-left bg-noise">
           {/* Logo */}
@@ -10,7 +12,7 @@ const Sidebar = ({ userData, menuItems, setUserRole, userRole, handleLogout, loa
               <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center" style={{ clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)' }}>
                 <span className="text-black font-bold text-xl">V</span>
               </div>
-              <div>
+              <div onClick={() => navigate("/")} className="cursor-pointer" >
                 <h1 className="text-xl font-bold text-amber-400 tracking-tight">VendorHub</h1>
                 <p className="text-xs text-zinc-500 mono">{userData.user.role.toUpperCase()}</p>
               </div>

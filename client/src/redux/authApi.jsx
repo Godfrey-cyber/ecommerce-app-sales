@@ -71,7 +71,7 @@ export const authApi = createApi({
                     console.log(error)
                 } finally {
                     dispatch(logoutUser());
-                    dispatch(authApi.util.restApiState())
+                    dispatch(authApi.util.resetApiState())
                 }
             }
         }),
@@ -90,7 +90,13 @@ export const authApi = createApi({
                     dispatch(logoutUser());
                 }
             }
-        })
+        }),
+        // @Admin - Get all Users
+        getUsers: builder.query({
+          query: () => 
+            '/users/get-users',
+          providesTags: ['Users'],
+        }),
     }),
 });
 
@@ -98,6 +104,7 @@ export const {
     useRegisterMutation,
     useLoginMutation,
     useLogoutMutation,
-    useGetMeQuery
+    useGetMeQuery,
+    useGetUsersQuery,
 } = authApi;
 

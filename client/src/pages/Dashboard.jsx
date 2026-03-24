@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGetOrdersQuery } from "../redux/orderApi.jsx"
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
-import { useLogoutMutation, useGetMeQuery } from "../redux/authApi.jsx"
+import { useLogoutMutation, useGetMeQuery, useGetUsersQuery } from "../redux/authApi.jsx"
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from "../redux/categoriesApi.jsx"
 import Sidebar from "../components/dashboard/Sidebar.jsx"
 import Header from "../components/dashboard/Header.jsx"
@@ -24,16 +24,11 @@ export default function EcommerceDashboard() {
   const [logout, { isLoading:loading }] = useLogoutMutation();
   const { data:orders, isLoading:load, error:isError } = useGetOrdersQuery();
   const { data:categories, isLoading:loadingCat } = useGetCategoriesQuery();
-
+  const { data:users, isLoading:loadingUsers } = useGetUsersQuery();
   // const data = orders?.orders
-  const [users] = useState([
-    { id: 1, name: 'TechVendor', email: 'tech@vendor.com', role: 'customer', products: 45, joined: '2025-01-15' },
-    { id: 2, name: 'GadgetStore', email: 'gadget@store.com', role: 'customer', products: 23, joined: '2025-03-20' },
-    { id: 3, name: 'FitGear', email: 'fit@gear.com', role: 'customer', products: 67, joined: '2025-02-10' },
-  ]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '', category: '' });
-
+  console.log("orders", orders)
   const handleAddProduct = () => {
     if (newProduct.name && newProduct.price && newProduct.stock && newProduct.category) {
       setProducts([...products, {
@@ -120,8 +115,8 @@ export default function EcommerceDashboard() {
             )}
 
             {/* Users Tab (Admin Only) */}
-            {activeTab === 'users' && userRole === 'admin' && ( // VendorHub
-              <UsersTab users={users} />
+            {activeTab === 'users' && ( // VendorHub
+              <UsersTab users={users} loadingUsers={loadingUsers} />
             )}
 
             {/* Payments Tab */}

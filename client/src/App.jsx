@@ -20,6 +20,7 @@ import NotFound404Page from "./pages/NotFound404Page.jsx"
 import ProductsPage from "./pages/ProductsPage.jsx"
 import { setUser } from "./redux/slices/authSlice.js"
 import Dashboard from "./pages/Dashboard.jsx"
+import Orders from "./pages/Orders.jsx"
 
 function App() {
     const dispatch = useDispatch();
@@ -43,7 +44,7 @@ function App() {
                     <Route path="/:slug/:id" element={<ProductsPage />} />
                     <Route path="/checkout/select-payment" element={(user && isAuthenticated) ? <CheckoutPage1 /> : <HomePage />} />
                     <Route path="/dashboard" element={(user && isAuthenticated) ? <Dashboard /> : <HomePage />} />
-                    {/*<Route path="/twiter" element={<Twiter />} />*/}
+                    <Route path="/orders" element={<Orders />} />
                 </Routes>
             </BrowserRouter>
         </section>
