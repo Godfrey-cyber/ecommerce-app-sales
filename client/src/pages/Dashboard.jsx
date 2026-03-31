@@ -16,7 +16,7 @@ import AddProductModal from "../components/dashboard/AddProductModal.jsx"
 import { useNavigate } from "react-router-dom"
 import { Plus, Package, ShoppingBag, CreditCard, User, Users, Settings, LogOut, Edit2, Trash2, Eye, X } from 'lucide-react';
 
-export default function EcommerceDashboard() {
+const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('products');
   const [userRole, setUserRole] = useState('customer'); // vendor or admin
   const { data, error, isLoading } = useGetProductsQuery();
@@ -144,3 +144,5 @@ export default function EcommerceDashboard() {
     </div>
   );
 }
+
+export default Dashboard

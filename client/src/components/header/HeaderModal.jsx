@@ -20,6 +20,7 @@ const HeaderModal = ({ showUserMenu, setShowUserMenu, handleLogout, isLoading, c
   	const { user } = useSelector(state => state.auth);
 	const { data, error } = useGetCartQuery();
 	const { data:userData } = useGetMeQuery(); 
+	const navigate = useNavigate()
 
   	const cartItems = useSelector((state) => state.cart?.items || []);
   	const wishlistItems = useSelector((state) => state.wishlist?.items || []);

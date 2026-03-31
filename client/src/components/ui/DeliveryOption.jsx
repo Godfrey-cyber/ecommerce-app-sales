@@ -1,23 +1,21 @@
-import React from "react"
+import React, { forwardRef } from "react"
 import { Plus } from 'lucide-react';
 import LocationModal from "./LocationModal.jsx"
 
-const DeliveryOption = ({
+const DeliveryOption = forwardRef(({
   title,
-  description,
+  description, // ref
   price,
   selected,
   onSelect,
   setShowUserMenu,
   showUserMenu,
-  ref,
   userData,
   data
-}) => {
-  console.log(selected)
+}, ref) => {
   return (
     <div
-      
+      // ref={ref}
       className={`col-span-12 cursor-pointer border-2 rounded-md my-4 p-4 transition
       ${selected ? "border-orange-500 bg-orange-50" : "border-gray-200 hover:border-orange-300"}`}
     >
@@ -55,6 +53,6 @@ const DeliveryOption = ({
       </div>
     </div>  
   );
-};
+});
 
 export default DeliveryOption;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useGetOrdersQuery } from "../redux/orderApi.jsx"
+import { useGetMeQuery } from "../redux/authApi.jsx"
 import OrderCard from "../components/order/OrderCard.jsx"
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -104,14 +105,16 @@ function StatusTag({ status }) {
 
 // ─── Orders Page ──────────────────────────────────────────────────────────────
 const Orders = () => {
-  const [activeTab, setActiveTab] = useState("ongoing");
-  const [activeSidebar, setActiveSidebar] = useState("Orders");
-  const { data:orders, isLoading:load, error:isError } = useGetOrdersQuery();
-	 const data = orders?.orders
-  // const prefix = datePrefixMap[order?.status] ?? "Date";
-	 console.log("data", data)
+    const [activeTab, setActiveTab] = useState("ongoing");
+    const [activeSidebar, setActiveSidebar] = useState("Orders");
+    const { data:orders, isLoading:load, error:isError } = useGetOrdersQuery();
+    const { data:user, isLoading:loadingUser } = useGetMeQuery();
+	const data = orders?.orders
+    // const prefix = datePrefixMap[order?.status] ?? "Date";
+	console.log("data", data)
 
   // const orders = activeTab === "ongoing" ? ongoingOrders : cancelledOrders;
+  console.log("user", user)
 
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-4 font-sans">

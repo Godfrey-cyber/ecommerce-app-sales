@@ -36,9 +36,7 @@ const Header1 = () => {
   const wishlistItems = useSelector((state) => state.wishlist?.items || []);
   const cartCount = cartItems.length;
   const wishlistCount = wishlistItems.length;
-  // console.log("userData", userData?.user)
-  // console.log("user", user)
-  // Close dropdown when clicking outside
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {

@@ -141,9 +141,6 @@ const counties = [
     }));
   };
 
-  console.log("shippingDetails", shippingDetails)
-  console.log("cartSummary", cartSummary)
-
   const handleCheckout = async() => {
     const allComplete = Object.values(completedSections).every(Boolean);
     try {
@@ -205,17 +202,17 @@ const counties = [
         console.log(result)
 
         if (selectedPayment === 'M-Pesa') {
-            navigate(`/payment/mpesa/${result.order._id}`);
+            navigate(`/payment/${result?.order?.paymentMethod}/order/${result.order._id}`);
         } else if (selectedPayment === 'Bank') {
-            navigate(`/payment/bank/${result.order._id}`);
+            navigate(`/payment/${result?.order?.paymentMethod}/order/${result.order._id}`);
         } else {
-            navigate(`/order-confirmation/${result.order._id}`);
+            navigate(`/order-confirmation/order/${result.order._id}`);
         }
         console.log(orderData)
         console.log(selectedDelivery)
     } catch (error) {
         console.log(error)
-        toast.error(error?.data?.message || 'Failed to create order')
+        toast.error(error?.data?.msg || 'Failed to create order')
     }
 
   };
@@ -255,7 +252,7 @@ const counties = [
             <LocationModal
               setShowUserMenu={setShowUserMenu}
               onConfirm={handleLocationConfirm}
-              setSelectedDelivery={selectedDelivery}
+              setSelectedDelivery={setSelectedDelivery}
             />
           )}
           

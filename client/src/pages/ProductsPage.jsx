@@ -24,10 +24,12 @@ const ProductsPage = () => {
 
     // @Add to cart
     const handleAdd = async () => {
+        console.log("add to cart")
         await addToCart({
             productId: product._id,
             quantity: 1,
         });
+        console.log("add to cart")
     };
 
     // console.log(product._id)

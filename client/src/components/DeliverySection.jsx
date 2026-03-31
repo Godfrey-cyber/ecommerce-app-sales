@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import SectionCard from "../components/ui/SectionCard";
 import DeliveryOption from "../components/ui/DeliveryOption";
 import ProductItem from "../components/ui/ProductItem";
-import { useGetCartQuery } from "../redux/cartApi.jsx"
 
-const DeliverySection = ({
+const DeliverySection = forwardRef(({
   completed,
   toggle,
   selectedDelivery,
@@ -13,10 +12,9 @@ const DeliverySection = ({
   setCompletedSections,
   setShowUserMenu,
   showUserMenu,
-  ref,
   userData,
   data
-}) => {
+}, ref) => {
   // const { data, error } = useGetCartQuery();
 
   const cartItems = data?.cart[0]?.items || [];
@@ -94,6 +92,6 @@ const DeliverySection = ({
       </div>
     </SectionCard>
   );
-};
+});
 
 export default DeliverySection;

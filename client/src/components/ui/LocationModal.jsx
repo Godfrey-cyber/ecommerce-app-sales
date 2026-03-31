@@ -50,7 +50,7 @@ const LocationModal = ({ setShowUserMenu, onConfirm, selectedDeliveryMethod }) =
     // Kiambu
     'Makongeni': ['Ananas Mall', 'Naivas Makongeni'],
     'Thika Town': ['Thika Poster', 'Near KCB'],
-    'Makongeni': ['Cerials', 'Engen Garissa Road'],
+    'Juja': ['High Point', 'Thika Road'],
     // Default fallback
     'default': ['Main Collection Point', 'Town Centre', 'Market Station']
   };
@@ -89,7 +89,6 @@ const LocationModal = ({ setShowUserMenu, onConfirm, selectedDeliveryMethod }) =
     onConfirm(location);
     setShowUserMenu();
   };
-  console.log(location)
 	return (
 		<>
       {/* Backdrop */}
