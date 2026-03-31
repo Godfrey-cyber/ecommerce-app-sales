@@ -78,7 +78,7 @@ export const addToCart = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-       	return res.json(error);
+       	return res.status(401).json(error);
     }
 }
 
@@ -247,9 +247,10 @@ export const removeCartItem = async (req, res, next) => {
 };
 
 export const getCart = async (req, res) => {
+    console.log("userId", req.userId)
   try {
     	const cart = await Cart.find({ user: req.userId })
-
+        console.log("userId", req.userId)
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' })
         }

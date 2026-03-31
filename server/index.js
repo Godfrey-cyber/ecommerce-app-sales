@@ -60,7 +60,7 @@ app.use("/v1/api/reviews", reviewsRoutes);
 app.use("/v1/api/orders", orderRoutes);
 
 app.use("*", (req, res) => {
-  res.status(404).json({ success: false, msg: "Routes not found" });
+  res.status(404).json({ success: false, msg: `${req.method} - ${req.originalUrl} is not a recognized route.` });
 });
 
 app.listen(PORT, "0.0.0.0", () => {
