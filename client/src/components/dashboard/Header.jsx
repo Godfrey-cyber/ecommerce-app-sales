@@ -1,16 +1,16 @@
 import React from 'react'
 import { Plus } from 'lucide-react';
 
-const Header = ({ menuItems, activeTab }) => {
+const Header = ({ menuItems, activeTab, setShowAddModal }) => {
 	return (
 		<header className="sticky top-0 z-10 bg-black/80 backdrop-blur-xl border-b border-zinc-800 p-6">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold text-white mb-1">
-              {menuItems.find(item => item.id === activeTab)?.label}
+                {menuItems.find(item => item.id === activeTab)?.label}
             </h2>
             <p className="text-sm text-zinc-500 mono">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
           {activeTab === 'products' && (

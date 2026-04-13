@@ -1,10 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
 import { X } from 'lucide-react';
 
-const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProduct, setShowAddModal  }) => {
+const AddProductModal = ({ categories, setShowAddModal  }) => {
+    const [newProduct, setNewProduct] = useState({ title: '', price: '', stock: '', category: '', condition: '', brand: '', description: '' });
+
+    const handleChange = (event) => {
+        setNewProduct({
+          ...newProduct,
+          [event.target.name]: event.target.value
+        });
+        // setErrors({ ...errors, [event.target.name]: "" });
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            // if (newProduct.title && newProduct.price && newProduct.stock && newProduct.category && newProduct.description && newProduct.condition) {
+                await createProduct(newProduct).unwrap();
+            // }
+        } catch (error) {
+            console.error(error.data);
+            toast.error(error.data.message);
+        }
+        setNewProduct({ title: '', price: '', stock: '', category: '', condition: '', brand: '', description: '' });
+        setShowAddModal(false);
+    };
+    console.log("newProduct", newProduct)
+
 	return (
 		<div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in overflow-y-auto">
-          <div className="gradient-border w-full max-w-md p-8 animate-slide-in-up h-auto">
+          <div className="gradient-border w-full max-w-lg p-8 animate-slide-in-up  w-4/5">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-white">Add New Product</h3>
               <button
@@ -20,39 +46,47 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
                 <label className="block text-sm text-zinc-400 mb-2">Product Name*</label>
                 <input
                   type="text"
-                  value={newProduct.name}
-                  onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                  name="title"
+                  value={newProduct.title}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors placeholder:text-sm"
                   placeholder="e.g. Lenovo IdeaPad Intel Core i7...."
                 />
               </div>
-              <div>
-              	{/*Price*/}
-                <label className="block text-sm text-zinc-400 mb-2">Price</label>
-                <input
-                  type="number"
-                  value={newProduct.price}
-                  onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors mono"
-                  placeholder="0.00"
-                />
-              </div>
-              <div>
-              	{/*Stock*/}
-                <label className="block text-sm text-zinc-400 mb-2">Stock</label>
-                <input
-                  type="number"
-                  value={newProduct.stock}
-                  onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors mono"
-                  placeholder="0"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Price *</label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={newProduct.price}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors mono"
+                    placeholder="0"
+                    min="0"
+                    // max="100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Stock *</label>
+                  <input
+                    type="number"
+                    name="stock"
+                    value={newProduct.stock}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors mono"
+                    placeholder="0"
+                    min="0"
+                    // max="100"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm text-zinc-400 mb-2">Select Parent Category. e.g Laptop</label>
 		            <select
 		                value={newProduct.category}
-		                onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                        name="category"
+                        onChange={handleChange}
 		                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors appearance-none cursor-pointer">
 		                <option disabled>Select Category</option>
 		                {categories?.data?.map(cat => (
@@ -64,7 +98,8 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
 	                <label className="block text-sm text-zinc-400 mb-2">Subcategory *</label>
 	                <select
 	                  value={newProduct.subcategory}
-	                  onChange={(e) => setNewProduct({...newProduct, subcategory: e.target.value})}
+                      onChange={handleChange}
+                      name="subcategory"
 	                  disabled={!newProduct.category}
 	                  className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
 	                  <option value="" disabled>
@@ -80,8 +115,9 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
                 <label className="block text-sm text-zinc-400 mb-2">Description</label>
                 <input
                   type="text"
+                  name="description"
                   value={newProduct.description}
-                  onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors"
                   placeholder="Enter description"
                 />
@@ -91,8 +127,9 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
                 <label className="block text-sm text-zinc-400 mb-2">Image</label>
                 <input
                   type="text"
+                  name="image"
                   value={newProduct.image}
-                  onChange={(e) => setNewProduct({...newProduct, image: e.target.value})}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors"
                   placeholder="Enter image"
                 />
@@ -101,18 +138,21 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
                 <label className="block text-sm text-zinc-400 mb-2">Brand</label>
                 <input
                   type="text"
+                  name="brand"
                   value={newProduct.brand}
-                  onChange={(e) => setNewProduct({...newProduct, brand: e.target.value})}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors"
                   placeholder="Enter brand name (optional)"
                 />
               </div>
+              {/*Condition & Discount*/}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-zinc-400 mb-2">Condition *</label>
                   <select
                     value={newProduct.condition}
-                    onChange={(e) => setNewProduct({...newProduct, condition: e.target.value})}
+                    onChange={handleChange}
+                    name="condition"
                     className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors appearance-none cursor-pointer">
                     <option value="New">New</option>
                     <option value="Refurblished">Refurblished</option>
@@ -124,8 +164,9 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
                   <label className="block text-sm text-zinc-400 mb-2">Discount %</label>
                   <input
                     type="number"
+                    name="discount"
                     value={newProduct.discount}
-                    onChange={(e) => setNewProduct({...newProduct, discount: e.target.value})}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 text-white focus:border-amber-400 focus:outline-none transition-colors mono"
                     placeholder="0"
                     min="0"
@@ -133,9 +174,10 @@ const AddProductModal = ({ newProduct, categories, setNewProduct, handleAddProdu
                   />
                 </div>
               </div>
+
               <div className="flex gap-3 pt-4">
-                <button
-                  onClick={handleAddProduct}
+                <button type="submit"
+                  onClick={handleSubmit}
                   className="flex-1 py-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold hover:from-amber-500 hover:to-yellow-600 transition-all"
                 >
                   Add Product

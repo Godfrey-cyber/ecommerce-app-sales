@@ -35,8 +35,8 @@ const UsersTab = ({ users, loadingUsers }) => {
                           {user.role.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-zinc-300 mono">{user.verified}</td>
-                      <td className="px-6 py-4 text-sm text-zinc-400 mono">{new Date(user.createdAt).toLocaleString("en-KE", { year: "numeric", month: "short" })}</td>
+                      <td className="px-6 py-4 text-sm text-zinc-300">{user.verified === true ? "Verified" : "Not Verified"}</td>
+                      <td className="px-6 py-4 text-sm text-zinc-400">{new Date(user.createdAt).toLocaleString("en-KE", { year: "numeric", month: "short" })}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           <button className="p-2 text-zinc-400 hover:text-blue-400 hover:bg-zinc-900 transition-all">

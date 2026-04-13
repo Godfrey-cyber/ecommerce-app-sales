@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGetOrdersQuery } from "../redux/orderApi.jsx"
-import { useGetProductsQuery } from "../redux/productsApi.jsx"
+import { useGetProductsQuery, useCreateProductMutation } from "../redux/productsApi.jsx"
 import { useLogoutMutation, useGetMeQuery, useGetUsersQuery } from "../redux/authApi.jsx"
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from "../redux/categoriesApi.jsx"
 import Sidebar from "../components/dashboard/Sidebar.jsx"
@@ -17,38 +17,22 @@ import { useNavigate } from "react-router-dom"
 import { Plus, Package, ShoppingBag, CreditCard, User, Users, Settings, LogOut, Edit2, Trash2, Eye, X } from 'lucide-react';
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('products'); // setShowAddModal
   const [userRole, setUserRole] = useState('customer'); // vendor or admin
   const { data, error, isLoading } = useGetProductsQuery();
   const { data:userData } = useGetMeQuery();
   const [logout, { isLoading:loading }] = useLogoutMutation();
+  const [createProduct, { isLoading:uploading }] = useCreateProductMutation();
   const { data:orders, isLoading:load, error:isError } = useGetOrdersQuery();
   const { data:categories, isLoading:loadingCat } = useGetCategoriesQuery();
   const { data:users, isLoading:loadingUsers } = useGetUsersQuery();
   // const data = orders?.orders
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '', category: '' });
-  console.log("orders", orders)
-  const handleAddProduct = () => {
-    if (newProduct.name && newProduct.price && newProduct.stock && newProduct.category) {
-      setProducts([...products, {
-        id: products.length + 1,
-        name: newProduct.name,
-        price: parseFloat(newProduct.price),
-        stock: parseInt(newProduct.stock),
-        category: newProduct.category,
-        vendor: 'TechVendor',
-        image: '📦'
-      }]);
-      setNewProduct({ name: '', price: '', stock: '', category: '' });
-      setShowAddModal(false);
-    }
-  };
+  // const [newProduct, setNewProduct] = useState({ title: '', price: '', stock: '', category: '', condition: '', brand: '', description: '' });
+  console.log("orders", orders?.orders[0])
 
-  const handleDeleteProduct = (id) => {
-    setProducts(products.filter(p => p.id !== id));
-  };
-
+  
+  
   const menuItems = userRole === 'vendor' 
     ? [
         { id: 'products', icon: Package, label: 'Products' },
@@ -97,7 +81,7 @@ const Dashboard = () => {
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto bg-black">
           {/* Header */}
-          <Header menuItems={menuItems} activeTab={activeTab} />
+          <Header menuItems={menuItems} activeTab={activeTab} setShowAddModal={setShowAddModal} />
 
           {/* Content Area */}
           <div className="p-6 space-y-6">
@@ -139,7 +123,7 @@ const Dashboard = () => {
 
       {/* Add Product Modal */}
       {showAddModal && (
-        <AddProductModal newProduct={setNewProduct} categories={categories} setNewProduct={setNewProduct} handleAddProduct={handleAddProduct} setShowAddModal={setShowAddModal} />
+        <AddProductModal categories={categories} setShowAddModal={setShowAddModal} />
       )}
     </div>
   );
