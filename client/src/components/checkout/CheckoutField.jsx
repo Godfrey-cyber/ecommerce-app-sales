@@ -10,7 +10,7 @@ const CheckoutField = ({ label, placeholder, type = "text", half = false, icon, 
 	      <div
 	        className={`relative flex items-center rounded-xl border transition-all duration-150 bg-white
 	          ${focused
-	            ? "border-violet-500 ring-2 ring-violet-100 shadow-sm"
+	            ? "border-amber-500 ring-2 ring-amber-100 shadow-sm"
 	            : "border-slate-200 hover:border-slate-300"
 	          }`}
 	      >
