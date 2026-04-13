@@ -1,41 +1,12 @@
 import { useState } from "react";
+import { useGetOrdersQuery } from "../redux/orderApi.jsx"
+import Done from "../components/checkout/Done.jsx"
+import CheckoutField from "../components/checkout/CheckoutField.jsx"
+import SectionHeader from "../components/checkout/SectionHeader.jsx"
 
-// ─── Mock Cart Items ──────────────────────────────────────────────────────────
-const cartItems = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop",
-    title: "Premium Minimalist Watch",
-    variant: "Silver / 40mm",
-    qty: 1,
-    price: 12500,
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=120&h=120&fit=crop",
-    title: "Leather Bifold Wallet",
-    variant: "Cognac Brown",
-    qty: 2,
-    price: 3200,
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=120&h=120&fit=crop",
-    title: "Ultraboost Running Shoes",
-    variant: "Cloud White / Size 42",
-    qty: 1,
-    price: 17850,
-  },
-];
+// const fmt = (n) => `KSh ${n.toLocaleString()}`;
 
-const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-const shipping = 350;
-const tax = Math.round(subtotal * 0.16);
-const total = subtotal + shipping + tax;
-
-const fmt = (n) => `KSh ${n.toLocaleString()}`;
-
-// ─── Icons ────────────────────────────────────────────────────────────────────
+// ─────────────────────── Icons ──────────────────────────────
 const LockIcon = () => (
   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
     <path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM12 17a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2z" />
@@ -53,7 +24,9 @@ const CheckIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
   </svg>
 );
+// ─────────────────────── End of Icons ──────────────────────────────
 
+// ─────────────────────── CardIcons ──────────────────────────────
 const CardIcon = ({ brand }) => {
   const icons = {
     visa: (
@@ -71,53 +44,6 @@ const CardIcon = ({ brand }) => {
   };
   return icons[brand] ?? null;
 };
-
-// ─── Input Field ──────────────────────────────────────────────────────────────
-function Field({ label, placeholder, type = "text", half = false, icon, value, onChange }) {
-  const [focused, setFocused] = useState(false);
-  return (
-    <div className={half ? "col-span-1" : "col-span-2"}>
-      <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
-        {label}
-      </label>
-      <div
-        className={`relative flex items-center rounded-xl border transition-all duration-150 bg-white
-          ${focused
-            ? "border-violet-500 ring-2 ring-violet-100 shadow-sm"
-            : "border-slate-200 hover:border-slate-300"
-          }`}
-      >
-        <input
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          className="w-full px-4 py-3 text-sm text-slate-800 bg-transparent outline-none placeholder:text-slate-300 font-medium"
-        />
-        {icon && (
-          <span className="pr-4 text-slate-300 flex-shrink-0">{icon}</span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Section Header ───────────────────────────────────────────────────────────
-function SectionHeader({ number, title, subtitle }) {
-  return (
-    <div className="flex items-start gap-3 mb-5">
-      <div className="w-7 h-7 rounded-full bg-violet-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
-        {number}
-      </div>
-      <div>
-        <h3 className="text-sm font-bold text-slate-900">{title}</h3>
-        {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
-      </div>
-    </div>
-  );
-}
 
 // ─── Checkout Page ────────────────────────────────────────────────────────────
 const DummyCheck = () => {
@@ -139,6 +65,7 @@ const DummyCheck = () => {
     cvv: "",
     cardName: "",
   });
+  const { data:orders, isLoading:load, error:isError } = useGetOrdersQuery();
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -149,25 +76,7 @@ const DummyCheck = () => {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-        <div className="text-center max-w-sm">
-          <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-9 h-9 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Payment Successful!</h2>
-          <p className="text-sm text-slate-500 mb-1">Your order has been placed.</p>
-          <p className="text-xs text-slate-400 font-mono mb-8">Order #ORD-{Math.floor(Math.random() * 90000 + 10000)}</p>
-          <p className="text-sm font-semibold text-slate-700 mb-6">{fmt(total)} charged to your card.</p>
-          <button
-            onClick={() => setDone(false)}
-            className="px-8 py-3 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700 transition-colors"
-          >
-            Continue Shopping
-          </button>
-        </div>
-      </div>
+      <Done orders={orders} setDone={setDone} />
     );
   }
 
@@ -179,7 +88,7 @@ const DummyCheck = () => {
       <header className="bg-white border-b border-slate-100 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-amber-400 flex items-center justify-center">
               <span className="text-white font-black text-xs">S</span>
             </div>
             <span className="font-bold text-slate-900 text-sm tracking-tight">ShopKenya</span>
@@ -196,7 +105,7 @@ const DummyCheck = () => {
         <div className="flex items-center gap-1.5 text-xs text-slate-400">
           {["Cart", "Information", "Payment"].map((step, i, arr) => (
             <span key={step} className="flex items-center gap-1.5">
-              <span className={i === 2 ? "text-violet-600 font-semibold" : i < 2 ? "text-slate-500" : "text-slate-300"}>
+              <span className={i === 2 ? "text-amber-400 font-semibold" : i < 2 ? "text-slate-500" : "text-slate-300"}>
                 {step}
               </span>
               {i < arr.length - 1 && <ChevronRight />}
@@ -205,19 +114,21 @@ const DummyCheck = () => {
         </div>
       </div>
 
+      {/*SectionHeader*/}
+      {/*Field*/}
+
       {/* Main Grid */}
       <div className="max-w-5xl mx-auto px-6 pb-16 grid grid-cols-[1fr_380px] gap-8 items-start">
 
         {/* ── LEFT: Form ── */}
         <div className="space-y-6">
-
           {/* Contact */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
             <SectionHeader number="1" title="Contact Information" subtitle="We'll send your receipt here" />
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Email Address" placeholder="you@email.com" type="email" value={form.email} onChange={set("email")} />
-              <Field label="Full Name" placeholder="John Doe" value={form.fullName} onChange={set("fullName")} />
-              <Field label="Phone Number" placeholder="+254 712 345 678" half value={form.phone} onChange={set("phone")} />
+              <CheckoutField label="Email Address" placeholder="you@email.com" type="email" value={form.email} onChange={set("email")} />
+              <CheckoutField label="Full Name" placeholder="John Doe" value={form.fullName} onChange={set("fullName")} />
+              <CheckoutField label="Phone Number" placeholder="+254 712 345 678" half value={form.phone} onChange={set("phone")} />
             </div>
           </div>
 
@@ -225,10 +136,10 @@ const DummyCheck = () => {
           <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
             <SectionHeader number="2" title="Shipping Address" subtitle="Where should we deliver?" />
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Street Address" placeholder="123 Kimathi Street" value={form.address} onChange={set("address")} />
-              <Field label="City" placeholder="Nairobi" half value={form.city} onChange={set("city")} />
-              <Field label="Postal Code" placeholder="00100" half value={form.zip} onChange={set("zip")} />
-              <Field label="Country" placeholder="Kenya" value={form.country} onChange={set("country")} />
+              <CheckoutField label="Street Address" placeholder="123 Kimathi Street" value={form.address} onChange={set("address")} />
+              <CheckoutField label="City" placeholder="Nairobi" half value={form.city} onChange={set("city")} />
+              <CheckoutField label="Postal Code" placeholder="00100" half value={form.zip} onChange={set("zip")} />
+              <CheckoutField label="Country" placeholder="Kenya" value={form.country} onChange={set("country")} />
             </div>
           </div>
 
@@ -248,7 +159,7 @@ const DummyCheck = () => {
                   onClick={() => setPayMethod(key)}
                   className={`flex flex-col items-center gap-1.5 py-3 rounded-xl border-2 text-xs font-semibold transition-all duration-150
                     ${payMethod === key
-                      ? "border-violet-500 bg-violet-50 text-violet-700"
+                      ? "border-amber-500 bg-amber-50 text-amber-400"
                       : "border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50"
                     }`}
                 >
@@ -276,7 +187,7 @@ const DummyCheck = () => {
                         const v = e.target.value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
                         setForm((f) => ({ ...f, cardNumber: v }));
                       }}
-                      className="w-full px-4 py-3 pr-28 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
+                      className="w-full px-4 py-3 pr-28 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
                       <CardIcon brand="visa" />
@@ -300,7 +211,7 @@ const DummyCheck = () => {
                         if (v.length >= 2) v = v.slice(0, 2) + " / " + v.slice(2, 4);
                         setForm((f) => ({ ...f, expiry: v }));
                       }}
-                      className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
+                      className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
                     />
                   </div>
                   <div>
@@ -314,7 +225,7 @@ const DummyCheck = () => {
                         maxLength={4}
                         value={form.cvv}
                         onChange={set("cvv")}
-                        className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 placeholder:text-slate-300 transition-all"
+                        className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 transition-all"
                       />
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300">
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -334,7 +245,7 @@ const DummyCheck = () => {
                     placeholder="As it appears on your card"
                     value={form.cardName}
                     onChange={set("cardName")}
-                    className="w-full px-4 py-3 text-sm text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 placeholder:text-slate-300 transition-all"
+                    className="w-full px-4 py-3 text-sm text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 transition-all"
                   />
                 </div>
 
@@ -344,7 +255,7 @@ const DummyCheck = () => {
                   onClick={() => setSaveCard(!saveCard)}
                 >
                   <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all
-                    ${saveCard ? "bg-violet-600 border-violet-600 text-white" : "border-slate-300 group-hover:border-slate-400"}`}
+                    ${saveCard ? "bg-amber-400 border-amber-400 text-white" : "border-slate-300 group-hover:border-slate-400"}`}
                   >
                     {saveCard && <CheckIcon />}
                   </div>
@@ -374,7 +285,7 @@ const DummyCheck = () => {
                   <input
                     type="tel"
                     placeholder="e.g. 0712 345 678"
-                    className="w-full px-4 py-3 text-sm text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 placeholder:text-slate-300 transition-all"
+                    className="w-full px-4 py-3 text-sm text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 transition-all"
                   />
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed">
@@ -413,8 +324,8 @@ const DummyCheck = () => {
             disabled={loading}
             className={`w-full py-4 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2.5 transition-all duration-200
               ${loading
-                ? "bg-violet-400 cursor-not-allowed"
-                : "bg-violet-600 hover:bg-violet-700 active:scale-[0.99] shadow-lg shadow-violet-200 hover:shadow-violet-300"
+                ? "bg-amber-400 cursor-not-allowed"
+                : "bg-amber-400 hover:bg-amber-400 active:scale-[0.99] shadow-lg shadow-amber-200 hover:shadow-amber-300"
               }`}
           >
             {loading ? (
@@ -428,7 +339,7 @@ const DummyCheck = () => {
             ) : (
               <>
                 <LockIcon />
-                Pay {fmt(total)}
+                Pay {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(orders?.orders[0]?.totalAmount)}
               </>
             )}
           </button>
@@ -453,27 +364,27 @@ const DummyCheck = () => {
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100">
               <h2 className="text-sm font-bold text-slate-900">Order Summary</h2>
-              <p className="text-xs text-slate-400 mt-0.5">{cartItems.length} items</p>
+              <p className="text-xs text-slate-400 mt-0.5">{orders?.orders[0]?.items.length} items</p>
             </div>
 
             {/* Items */}
             <div className="px-5 divide-y divide-slate-100">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex gap-3 py-4">
+              {orders?.orders[0]?.items?.map((item) => (
+                <div key={item._id} className="flex gap-3 py-4">
                   <div className="relative flex-shrink-0">
                     <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-100 bg-slate-50">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                      <img src={item.image} alt="" className="w-full h-full object-cover" />
                     </div>
                     <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-slate-700 text-white text-[9px] font-bold rounded-full flex items-center justify-center min-w-[18px] min-h-[18px]">
-                      {item.qty}
+                      {item.quantity}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-slate-800 leading-snug line-clamp-2">{item.title}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{item.variant}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{item?.variant}</p>
                   </div>
                   <span className="text-xs font-bold text-slate-800 font-mono whitespace-nowrap">
-                    {fmt(item.price * item.qty)}
+                    {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
@@ -485,9 +396,9 @@ const DummyCheck = () => {
                 <input
                   type="text"
                   placeholder="Promo code"
-                  className="flex-1 px-3 py-2.5 text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-100 placeholder:text-slate-300 transition-all"
+                  className="flex-1 px-3 py-2.5 text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-100 placeholder:text-slate-300 transition-all"
                 />
-                <button className="px-4 py-2.5 text-xs font-semibold text-violet-600 bg-violet-50 border border-violet-200 rounded-lg hover:bg-violet-100 transition-colors whitespace-nowrap">
+                <button className="px-4 py-2.5 text-xs font-semibold text-amber-400 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors whitespace-nowrap">
                   Apply
                 </button>
               </div>
@@ -496,9 +407,9 @@ const DummyCheck = () => {
             {/* Totals */}
             <div className="px-5 py-4 border-t border-slate-100 space-y-2.5">
               {[
-                ["Subtotal", fmt(subtotal)],
-                ["Shipping", fmt(shipping)],
-                ["Tax (16% VAT)", fmt(tax)],
+                ["Subtotal", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(orders?.orders[0]?.subtotal)],
+                ["Shipping", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(orders?.orders[0]?.deliveryFee)],
+                ["Tax (16% VAT)", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(orders?.orders[0]?.tax)]
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between items-center">
                   <span className="text-xs text-slate-500">{label}</span>
@@ -507,7 +418,8 @@ const DummyCheck = () => {
               ))}
               <div className="flex justify-between items-center pt-3 border-t border-slate-100">
                 <span className="text-sm font-bold text-slate-900">Total</span>
-                <span className="text-base font-black text-slate-900 font-mono">{fmt(total)}</span>
+                <span className="text-base font-black text-slate-900 font-mono">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(orders?.orders[0]?.totalAmount)}</span>
+
               </div>
             </div>
           </div>
