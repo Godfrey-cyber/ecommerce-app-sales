@@ -37,8 +37,7 @@ const LoginForm = () => {
 	    		navigate('/');
 	    	} catch (error) {
 	    		resetForm();
-	    		toast.error(error.data);
-	    		console.log(error.data)
+	    		toast.error(error.error);
 	    	}
 		}	
   	};
@@ -84,12 +83,13 @@ const LoginForm = () => {
 
 	        <button
 	          onClick={handleSubmit}
-	          disabled={isLoading}
-	          className="w-full bg-amber-400 text-white font-semibold py-3 px-4 rounded-sm hover:bg-amber-600 transition duration-200 my-10">
+	          disabled={isLoading || formData.email === "" || formData.password === ""}
+	          className={`w-full ${isLoading || formData.email === "" || formData.password === "" ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-amber-400 text-white hover:bg-amber-600 transition duration-200' } font-semibold py-3 px-4 rounded-sm my-10`}>
 	          {isLoading ? 'Signing in...' : 'Login'}
 	        </button>
 	      </div>
 	    </div>
+
 	    <div className="flex md:hidden items-center space-x-4 px-5 w-full">
 	    	<span className="h-[.5px] w-1/2 bg-gray-500" />
 	    	<p className="text-lg font-semibold text-gray-800">OR</p>
@@ -112,4 +112,5 @@ const LoginForm = () => {
 };
 
 export default LoginForm
+
 

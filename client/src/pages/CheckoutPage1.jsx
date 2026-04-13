@@ -22,6 +22,7 @@ const CheckoutPage = () => {
     delivery: false,
     payment: false
   });
+
   // console.log("userData", userData.user)
   const [showUserMenu, setShowUserMenu] = useState(false);
   const navigate = useNavigate()
@@ -141,7 +142,7 @@ const counties = [
     }));
   };
 
-  const handleCheckout = async() => {
+const handleCheckout = async() => {
     const allComplete = Object.values(completedSections).every(Boolean);
     try {
         if (!allComplete) {
@@ -195,7 +196,7 @@ const counties = [
         };
 
         console.log(orderData)
-        console.log(selectedDelivery)
+        console.log("data ---", data)
 
         const result = await createOrder(orderData).unwrap();
         toast.success('Order placed successfully!');
@@ -208,14 +209,12 @@ const counties = [
         } else {
             navigate(`/order-confirmation/order/${result.order._id}`);
         }
-        console.log(orderData)
-        console.log(selectedDelivery)
+        console.log("orderData", orderData)
     } catch (error) {
         console.log(error)
         toast.error(error?.data?.msg || 'Failed to create order')
     }
-
-  };
+};
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-white">

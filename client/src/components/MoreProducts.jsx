@@ -15,7 +15,7 @@ const MoreProducts = () => {
             {/* Categories */}
             <div className="mb-12">
                 <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
-                    {categories.map(cat => (
+                    {categories?.map(cat => (
                         <button
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
@@ -46,16 +46,16 @@ const MoreProducts = () => {
                                         </div>
                                         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-tr-md rounded-tl-md h-32 flex items-center justify-center overflow-hidden">
                                             <img
-                                                src={item.image}
-                                                alt={item.name}
+                                                src={item?.image}
+                                                alt={item?.name}
                                                 className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 object-cover"
                                             />
                                         </div>
                                     </div>
 
-                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 px-3">{item.brand}</p>
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 px-3">{item?.brand}</p>
                                     <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2 min-h-10 px-3">
-                                        {item.title}
+                                        {item?.title}
                                     </h3>
 
                                     <div className="flex items-center gap-1 mb-3 px-3">
@@ -65,7 +65,7 @@ const MoreProducts = () => {
 
                                     <div className="flex items-center justify-between px-3 pb-3">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-semibold text-gray-900">Ksh. {item.finalPrice.toLocaleString()}</span>
+                                            <span className="text-sm font-semibold text-gray-900">Ksh. {item?.finalPrice?.toLocaleString()}</span>
                                         </div>
                                         <button className="bg-yellow-400 hover:bg-yellow-500 p-2 rounded-full transition-all duration-200 hover:scale-110">
                                             <ShoppingCart className="w-4 h-4 text-gray-900" />
@@ -172,7 +172,7 @@ const MoreProducts = () => {
 
                                     <div className="flex items-center justify-between px-3 pb-3">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-semibold text-gray-900">Ksh. {item?.finalPrice.toLocaleString()}</span>
+                                            <span className="text-sm font-semibold text-gray-900">Ksh. {item?.finalPrice?.toLocaleString()}</span>
                                         </div>
                                         <button className="bg-yellow-400 hover:bg-yellow-500 p-2 rounded-full transition-all duration-200 hover:scale-110">
                                             <ShoppingCart className="w-4 h-4 text-gray-900" />

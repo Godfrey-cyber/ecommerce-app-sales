@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from './baseQueryWithReauth.js'
 import { setCredentials, logoutUser, setUser } from "./slices/authSlice.js"
+import { ToastContainer, toast } from 'react-toastify';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
@@ -51,7 +52,7 @@ export const authApi = createApi({
                         }));
                     console.log("Login successful")
                 } catch (error) {
-                    console.error('Login error:', error);
+                    // console.error('Login error:', error);
                 }
             }
         }),
