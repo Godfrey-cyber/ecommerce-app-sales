@@ -53,7 +53,7 @@ function App() {
                     {/* Payments */}
                     <Route path="/payment/:method/order/:id" element={<MpesaPayment />} />
                     <Route path="/payment/:method/order/:id" element={<BankPayment />} />
-                    <Route path="/payment" element={<DummyCheck />} />
+                    <Route path="/payment" element={user ? <DummyCheck /> : <HomePage />} />
                 </Routes>
             </BrowserRouter>
         </section>

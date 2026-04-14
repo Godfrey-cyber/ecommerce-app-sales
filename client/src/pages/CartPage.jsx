@@ -89,7 +89,7 @@ const CartPage = () => {
 					{cartItems?.map(item => (
 						<div key={item?._id} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
 					      <div className="flex-shrink-0">
-					        <div className="w-24 h-32 bg-white rounded-md overflow-hidden shadow-md">
+					        <div className="w-28 h-32 bg-white rounded-md overflow-hidden shadow-sm">
 					          <img 
 					            src={item?.image} 
 					            alt={item?.title} 
@@ -108,16 +108,16 @@ const CartPage = () => {
 					        	{/* @Cart Quantity Update */}
 					          <div className="flex items-center gap-3">
 					            <button onClick={() => handleQtyUpdate(item, +1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
-					              <Plus className="text-gray-800 w-5 h-5" />
+					              <Plus className="text-green-500 w-5 h-5" />
 					            </button>
 					            <span className="font-semibold text-slate-900 w-8 text-center">{item.quantity}</span>
 					            <button onClick={() => handleQtyUpdate(item, -1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
-					              <Minus className="text-gray-800 w-5 h-5" />
+					              <Minus className="text-red-500 w-5 h-5" />
 					            </button>
 					          </div>
 					          
 					          <div className="flex items-center justify-between w-full gap-4">
-					            <span className="text-sm md:text-lg font-bold text-gray-600">Ksh. {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item.finalPrice)}</span>
+					            <span className="text-sm md:text-lg font-bold text-gray-600">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item.finalPrice)}</span>
 					            <button onClick={() => handleItemRemove(item._id)} disabled={isLoading} title="Remove item" className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
 					              <Trash2 className="text-red-600 w-6 h-6" />
 					            </button>

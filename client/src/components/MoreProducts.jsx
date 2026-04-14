@@ -65,7 +65,7 @@ const MoreProducts = () => {
 
                                     <div className="flex items-center justify-between px-3 pb-3">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-semibold text-gray-900">Ksh. {item?.finalPrice?.toLocaleString()}</span>
+                                            <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item?.finalPrice)}</span>
                                         </div>
                                         <button className="bg-yellow-400 hover:bg-yellow-500 p-2 rounded-full transition-all duration-200 hover:scale-110">
                                             <ShoppingCart className="w-4 h-4 text-gray-900" />

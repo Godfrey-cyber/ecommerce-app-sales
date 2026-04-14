@@ -33,96 +33,96 @@ const CheckoutPage = () => {
   // const [tempDeliveryMethod, setTempDeliveryMethod] = useState(null);
 
   // Shipping details
-  const [shippingDetails, setShippingDetails] = useState({
-    firstname: '',
-    lastname: '',
-    email: '',
-    phone: '',
-    county: '',
-    subCounty: '',
-    station: '',
-    address: '' // For door delivery
-  });
-
-  const [location, setLocation] = useState({
-    county: '',
-    subCounty: '',
-    station: ''
-  });
-
-const counties = [
-    'Nairobi',
-    'Mombasa',
-    'Kisumu',
-    'Nakuru',
-    'Eldoret',
-    'Kiambu',
-    'Machakos',
-];
-
-  const subCounties = {
-    'Nairobi': ['Westlands', 'Langata', 'Dagoretti', 'Kasarani', 'Embakasi', 'Makadara', 'Starehe'],
-    'Mombasa': ['Mvita', 'Likoni', 'Changamwe', 'Jomvu', 'Kisauni', 'Nyali'],
-    'Kisumu': ['Kisumu East', 'Kisumu West', 'Kisumu Central', 'Seme', 'Nyando'],
-    'Nakuru': ['Nakuru Town', 'Naivasha', 'Gilgil', 'Molo', 'Njoro'],
-    'Eldoret': ['Ainabkoi', 'Kapseret', 'Kesses', 'Moiben', 'Soy', 'Turbo'],
-    'Kiambu': ['Thika Town', 'Juja', 'Gatundu', 'Ruiru'],
-    'Machakos': ['Machakos Town', 'Kangundo', 'Matungulu', 'Yatta', 'Mwala']
-  };
-
-  const stations = {
-    'Westlands': ['Sarit Centre', 'Westgate Mall', 'The Mall Westlands', 'ABC Place'],
-    'Langata': ['Prestige Plaza', 'T-Mall', 'Karen Hub'],
-    'Dagoretti': ['Junction Mall', 'Ngong Road Mall'],
-    'Kasarani': ['Thika Road Mall', 'Garden City Mall', 'Nextgen Mall'],
-    'Embakasi': ['Gateway Mall', 'Fedha Plaza'],
-    'Makadara': ['City Stadium', 'Machakos Bus Station'],
-    'Starehe': ['Times Tower', 'GPO Nairobi'],
-    // Mombasa
-    'Mvita': ['Nkrumah Road Station', 'Moi Avenue Station'],
-    'Likoni': ['Likoni Ferry Station', 'Shelly Beach'],
-    'Changamwe': ['Port Reitz Station', 'Airport Road'],
-    'Jomvu': ['Miritini Station'],
-    'Kisauni': ['Bamburi Station', 'Nyali Centre'],
-    'Nyali': ['Nyali City Mall', 'Mamba Village'],
-    // Kisumu
-    'Kisumu East': ['Mega Plaza', 'Kisumu Bus Station'],
-    'Kisumu West': ['West End Mall', 'Kondele Market'],
-    'Kisumu Central': ['Simba Club', 'Jubilee Market'],
-    // Kiambu
-    'Makongeni': ['Ananas Mall', 'Naivas Makongeni'],
-    'Thika Town': ['Thika Poster', 'Near KCB'],
-    'Gatitu': ['Gateway {Plaza', 'Engen Garissa Road'],
-    // Default fallback
-    'default': ['Main Collection Point', 'Town Centre', 'Market Station']
-  };
-
-  const [customerData, setCustomerData] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+254 712 345 678",
-    county: "Nairobi",
-    subCounty: "Westlands",
-    station: "Sarit Centre"
-  });
-
-  // Update delivery click handler
-  const handleDeliveryMethodClick = (method) => {
-    // setTempDeliveryMethod(method);
-    setShowLocationModal(true);
-  };
-
-  // Add location confirmation handler
-  const handleLocationConfirm = (location) => {
-    setShippingDetails({
-      ...shippingDetails,
-      county: location.county,
-      subCounty: location.subCounty,
-      station: location.station
+    const [shippingDetails, setShippingDetails] = useState({
+        firstname: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        county: '',
+        subCounty: '',
+        station: '',
+        address: '' // For door delivery
     });
-    setSelectedDelivery(selectedDelivery);
-    setCompletedSections(prev => ({...prev, delivery: true}));
-  };
+
+    const [location, setLocation] = useState({
+        county: '',
+        subCounty: '',
+        station: ''
+    });
+
+    const counties = [
+        'Nairobi',
+        'Mombasa',
+        'Kisumu',
+        'Nakuru',
+        'Eldoret',
+        'Kiambu',
+        'Machakos',
+    ];
+
+    const subCounties = {
+        'Nairobi': ['Westlands', 'Langata', 'Dagoretti', 'Kasarani', 'Embakasi', 'Makadara', 'Starehe'],
+        'Mombasa': ['Mvita', 'Likoni', 'Changamwe', 'Jomvu', 'Kisauni', 'Nyali'],
+        'Kisumu': ['Kisumu East', 'Kisumu West', 'Kisumu Central', 'Seme', 'Nyando'],
+        'Nakuru': ['Nakuru Town', 'Naivasha', 'Gilgil', 'Molo', 'Njoro'],
+        'Eldoret': ['Ainabkoi', 'Kapseret', 'Kesses', 'Moiben', 'Soy', 'Turbo'],
+        'Kiambu': ['Thika Town', 'Juja', 'Gatundu', 'Ruiru'],
+        'Machakos': ['Machakos Town', 'Kangundo', 'Matungulu', 'Yatta', 'Mwala']
+    };
+
+    const stations = {
+        'Westlands': ['Sarit Centre', 'Westgate Mall', 'The Mall Westlands', 'ABC Place'],
+        'Langata': ['Prestige Plaza', 'T-Mall', 'Karen Hub'],
+        'Dagoretti': ['Junction Mall', 'Ngong Road Mall'],
+        'Kasarani': ['Thika Road Mall', 'Garden City Mall', 'Nextgen Mall'],
+        'Embakasi': ['Gateway Mall', 'Fedha Plaza'],
+        'Makadara': ['City Stadium', 'Machakos Bus Station'],
+        'Starehe': ['Times Tower', 'GPO Nairobi'],
+        // Mombasa
+        'Mvita': ['Nkrumah Road Station', 'Moi Avenue Station'],
+        'Likoni': ['Likoni Ferry Station', 'Shelly Beach'],
+        'Changamwe': ['Port Reitz Station', 'Airport Road'],
+        'Jomvu': ['Miritini Station'],
+        'Kisauni': ['Bamburi Station', 'Nyali Centre'],
+        'Nyali': ['Nyali City Mall', 'Mamba Village'],
+        // Kisumu
+        'Kisumu East': ['Mega Plaza', 'Kisumu Bus Station'],
+        'Kisumu West': ['West End Mall', 'Kondele Market'],
+        'Kisumu Central': ['Simba Club', 'Jubilee Market'],
+        // Kiambu
+        'Makongeni': ['Ananas Mall', 'Naivas Makongeni'],
+        'Thika Town': ['Thika Poster', 'Near KCB'],
+        'Gatitu': ['Gateway {Plaza', 'Engen Garissa Road'],
+        // Default fallback
+        'default': ['Main Collection Point', 'Town Centre', 'Market Station']
+    };
+
+    const [customerData, setCustomerData] = useState({
+        name: "John Doe",
+        email: "john@example.com",
+        phone: "+254 712 345 678",
+        county: "Nairobi",
+        subCounty: "Westlands",
+        station: "Sarit Centre"
+    });
+
+    // Update delivery click handler
+    const handleDeliveryMethodClick = (method) => {
+        // setTempDeliveryMethod(method);
+        setShowLocationModal(true);
+    };
+
+    // Add location confirmation handler
+    const handleLocationConfirm = (location) => {
+        setShippingDetails({
+            ...shippingDetails,
+            county: location.county,
+            subCounty: location.subCounty,
+            station: location.station
+        });
+        setSelectedDelivery(selectedDelivery);
+        setCompletedSections(prev => ({...prev, delivery: true}));
+    };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -215,6 +215,9 @@ const handleCheckout = async() => {
         toast.error(error?.data?.msg || 'Failed to create order')
     }
 };
+
+console.log("cartSummary", cartSummary)
+console.log("cartItems", cartItems)
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-white">

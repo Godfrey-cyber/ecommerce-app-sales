@@ -85,7 +85,7 @@ export const authApi = createApi({
                 try {
                     const { data } = await queryFulfilled;
                     if (data?.user) {
-                        dispatch(setUser(data.user));
+                        dispatch(setUser(data?.user));
                     }
                 } catch (error) {
                     dispatch(logoutUser());

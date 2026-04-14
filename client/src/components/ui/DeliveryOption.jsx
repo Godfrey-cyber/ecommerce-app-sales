@@ -19,7 +19,6 @@ const DeliveryOption = forwardRef(({
       className={`col-span-12 cursor-pointer border-2 rounded-md my-4 p-4 transition
       ${selected ? "border-orange-500 bg-orange-50" : "border-gray-200 hover:border-orange-300"}`}
     >
-
       <div className="flex items-start justify-between">
 
         <div className="space-y-1">
