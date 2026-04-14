@@ -23,7 +23,7 @@ export const createCategory = async (req, res) => {
         if (existingSlug) {
             return res.status(409).json({ msg: "🚫 A cat with this title already exists" })
         }
-
+// 
         const category = await Category.create({
             title,
             slug,

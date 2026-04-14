@@ -60,6 +60,10 @@ const shippingAddressSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    zip: {
+        type: String,
+        default: '',
+    },
 });
 
 const orderSchema = new mongoose.Schema(

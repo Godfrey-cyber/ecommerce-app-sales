@@ -79,3 +79,6 @@ ProductSchema.index({ parentCategory: 1 });
 ProductSchema.index({ '$**': 'text' })
 
 export default mongoose.model('Product', ProductSchema);
+
+
+// https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/34/0395623/1.jpg?0487
