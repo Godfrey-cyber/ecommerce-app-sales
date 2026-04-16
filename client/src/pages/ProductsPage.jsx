@@ -46,11 +46,11 @@ const ProductsPage = () => {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="bg-white rounded-sm overflow-hidden ">
-              <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-sm flex items-center justify-center">
+              <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-sm flex items-center justify-center flex items-center justify-center">
                 <img
                   src={product?.image}
                   alt={product?.title}
-                  className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
