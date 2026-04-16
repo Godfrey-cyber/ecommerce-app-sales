@@ -39,7 +39,7 @@ const MoreProducts = () => {
                     <div className="grid grid-cols-2 gap-4">
                         {data?.products?.slice(0, 4).map(item => (
                             <Link to={`/${item.slug}/${item._id}`} key={item._id}>
-                                <div className="bg-white rounded-md shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-yellow-400">
+                                <div className="bg-white rounded-md shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100 hover:border-yellow-400 w-44 md:w-52 lg:w-64">
                                     <div className="relative mb-3">
                                         <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-bold z-10">
                                             -{item.discount}%

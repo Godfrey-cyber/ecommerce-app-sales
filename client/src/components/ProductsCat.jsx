@@ -22,7 +22,7 @@ const ProductsCat = () => {
 			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-8">
 				{data?.products?.map(product => (
 					<Link to={`/${product.slug}/${product._id}`} key={product._id}>
-					<div className="flex flex-col justify-between relative w-72 h-[500px] bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+					<div className="flex flex-col justify-center relative w-44 md:w-52 lg:w-64 h-[350px] md:[300px] h-[500px] bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
 					  <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
 					    <TrendingUp className="w-3 h-3" />
 					    Best Seller
@@ -36,7 +36,7 @@ const ProductsCat = () => {
 					    <Heart className={`w-5 h-5 transition-all duration-200 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`} />
 					  </button>
 
-					  <div className="relative h-72 overflow-hidden bg-gray-100">
+					  <div className="relative h-32 overflow-hidden bg-gray-100">
 					    {/*<img src={product.image} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />*/}
 					    <img src={product?.image} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
 					    <div className={`absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity duration-300 flex items-center justify-center ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
@@ -60,20 +60,20 @@ const ProductsCat = () => {
 					      <span className="text-sm text-gray-500">({product.rating})</span>
 					    </div>
 
-					    <h3 className="text-lg font-bold text-gray-900 mb-.5 line-clamp-1">{product.title}</h3>
+					    <h3 className="text-sm lg:text-lg font-bold text-gray-900 mb-.5 line-clamp-1">{product.title}</h3>
 
 					    <p className="text-xs text-gray-600 mb-1 line-clamp-2 leading-relaxed">{product.description}</p>
 					    	
-					    <div className="flex items-end justify-between">
+					    <div className="flex-col lg:flex lg:items-end space-x-4">
 					      <div>
 					        <div className="flex flex-col items-baseline">
-					          <span className="text-xl font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.finalPrice)}</span>
+					          <span className="text-sm lg:text-lg font-bold text-gray-900">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.finalPrice)}</span>
 					          {product.discount > 0 && <span className="text-sm text-gray-400 line-through">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.price)}</span>}
 					        </div>
 					        <span className="text-xs text-green-600 font-semibold">Save {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product.discountAmount)}</span>
 					      </div>
 
-					      <div className="flex items-center space-x-1 justify-between">
+					      <div className="flex items-center space-x-1 justify-start">
 					        <div className={`w-2 h-2 rounded-full ${product.stock ? 'bg-green-500' : 'bg-red-500'}`} />
 					        <span className={`text-xs font-medium ${product.stock ? 'text-green-600' : 'text-red-600'}`}>
 					          {product.stock ? 'In Stock' : 'Out of Stock'}
