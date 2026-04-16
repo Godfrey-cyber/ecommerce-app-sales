@@ -22,7 +22,7 @@ const ProductsCat = () => {
 			<div className="grid grid-cols-2 lg:grid-cols-5 gap-2 my-8">
 				{data?.products?.map(product => (
 					<Link to={`/${product.slug}/${product._id}`} key={product._id}>
-					<div className="flex flex-col justify-center relative w-36 md:w-48 lg:w-56 h-[350px] md:[300px] h-[500px] bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+					<div className="flex flex-col justify-center relative w-44 md:w-48 lg:w-56 h-[350px] md:[300px] h-[500px] bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
 					  <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
 					    <TrendingUp className="w-3 h-3" />
 					    Best Seller
