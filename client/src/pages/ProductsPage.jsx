@@ -5,9 +5,10 @@ import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
 import CartTabContent from "../components/cart/CartTabContent.jsx"
 import Header from "../components/Header.jsx"
 import Header1 from "../components/Header1.jsx"
+import { ToastContainer, toast } from 'react-toastify';
 import { useSelector,useDispatch } from "react-redux"
-import { useGetProductByIdQuery } from "../redux/productsApi.jsx"
-import { useAddToCartMutation, useGetCartQuery } from "../redux/cartApi.jsx"
+import { useGetProductByIdQuery, useGetProductsQuery } from "../redux/productsApi.jsx"
+import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
@@ -15,10 +16,23 @@ const ProductsPage = () => {
     const { data, error } = useGetProductByIdQuery(id);
     const { data:cartData, error:cartError } = useGetCartQuery(id);
     const [addToCart, { isLoading }] = useAddToCartMutation();
+    const { data: products, error: productsError, isLoading: productsLoading } = useGetProductsQuery();
+    const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
+    const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
   	const [quantity, setQuantity] = useState(1);
   	const [activeTab, setActiveTab] = useState('details');
     const dispatch = useDispatch()
-  	
+
+    const prod = products?.products.find(item => item?._id === data?.product._id)
+    const prod2 = products.products?.map(item => item._id)
+    const itemInCart = cartData?.cart[0]?.items.find(item => item.product === data?.product._id)
+    // console.log("prod ->", data)
+    // console.log("cartData ->", cartData?.cart[0]?.items)
+    // console.log("if item is in cart ->", prod)
+    // // console.log("newProd ->", prod)
+    // console.log("newProd ->", prod2)
+    // console.log("products ->", products)
+  	// console.log("itemInCart", itemInCart)
   
     const product = data?.product
 
@@ -32,7 +46,38 @@ const ProductsPage = () => {
         console.log("add to cart")
     };
 
-    // console.log(product._id)
+    // @Add/Subtract cart items - cart update
+    const handleQtyUpdate = async (product, delta) => {
+        const newQuantity = itemInCart.quantity + delta;
+        
+        if (newQuantity < 1) return;
+        // if (newQuantity === 0) {
+        //  // Remove item if quantity becomes 0
+        //  try {
+        //      await removeFromCart(item.product).unwrap();
+        //  } catch (error) {
+        //      console.error('Failed to remove item:', error);
+        //  }
+        // } else if (newQuantity > 0) {
+            // Update quantity
+            console.log("item.itemInCart", itemInCart)
+            console.log("item.product", product)
+            console.log("newQuantity", newQuantity)
+            try {
+                await updateCartItem({
+                    itemId: itemInCart._id,        // Cart item ID
+                    quantity: newQuantity,   // New calculated quantity
+                }).unwrap();
+                toast.success(data.message);
+            } catch (error) {
+                // toast.error(error.data.message);
+                console.log(error?.data?.message);
+                console.error('Failed to update quantity:', error);
+            }
+        // }
+    };
+
+    console.log(product)
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -131,25 +176,21 @@ const ProductsPage = () => {
 
             {/* Quantity & Add to Cart */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <div className="flex items-center gap-3 bg-gray-100 rounded-xl p-2 w-fit">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
+              {itemInCart && <div className="flex items-center gap-3 bg-gray-100 rounded-xl p-2 w-fit">
+                <button onClick={() => handleQtyUpdate(product, -1)} disabled={isProcessing} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
                 >
                   -
                 </button>
-                <span className="w-12 text-center font-semibold text-lg">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity + 1))}
-                  className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
+                <span className="w-12 text-center font-semibold text-lg">{itemInCart?.quantity}</span>
+                <button onClick={() => handleQtyUpdate(product, +1)} disabled={isProcessing} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
                 >
                   +
                 </button>
-              </div>
-              <button onClick={handleAdd} disabled={isLoading} className="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+              </div>}
+              {!itemInCart && <button onClick={handleAdd} disabled={isLoading} className="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
                 <ShoppingCart className="w-6 h-6" />
                 Add to Cart
-              </button>
+              </button>}
             </div>
 
             {/* Action Buttons */}
