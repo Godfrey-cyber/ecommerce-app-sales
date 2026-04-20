@@ -672,7 +672,7 @@ const DummyCheck = () => {
                   {[
                     ["Subtotal", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.totalAmount)],
                     ["Shipping", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.shipping)],
-                    ["Tax (16% VAT)", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary.tax)]
+                    ["Tax (16% VAT)", new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.tax)]
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between items-center">
                       <span className="text-xs text-slate-500">{label}</span>
