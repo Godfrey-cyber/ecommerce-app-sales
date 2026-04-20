@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Star, ThumbsUp, Trash2, ShieldCheck, PenLine, ChevronDown, Loader2 } from 'lucide-react';
-// import {
-//   useGetProductReviewsQuery,
-//   useCanUserReviewQuery,
-//   useCreateReviewMutation,
-//   useDeleteReviewMutation,
-// } from '../redux/reviewsApi';
 import { useSelector } from 'react-redux';
-
+import {
+    useGetProductReviewsQuery,
+    useCanUserReviewQuery,
+    useCreateReviewMutation,
+    useDeleteReviewMutation,
+} from "../redux/reviewsApi.jsx"
 const ProductReviews = ({ productId }) => {
   const [sort, setSort] = useState('recent');
   const [page, setPage] = useState(1);
