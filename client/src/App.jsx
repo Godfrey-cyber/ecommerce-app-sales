@@ -23,7 +23,7 @@ import Dashboard from "./pages/Dashboard.jsx"
 import Orders from "./pages/Orders.jsx"
 import BankPayment from "./pages/BankPayment.jsx"
 import MpesaPayment from "./pages/MpesaPayment.jsx"
-import DummyCheck from "./pages/DummyCheck.jsx"
+import Checkout from "./pages/Checkout.jsx"
 // payment/mpesa/${result.order._id}
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
                     {/* Payments */}
                     <Route path="/payment/:method/order/:id" element={<MpesaPayment />} />
                     <Route path="/payment/:method/order/:id" element={<BankPayment />} />
-                    <Route path="/payment" element={user ? <DummyCheck /> : <HomePage />} />
+                    <Route path="/pay/checkout" element={user ? <Checkout /> : <HomePage />} />
                 </Routes>
             </BrowserRouter>
         </section>

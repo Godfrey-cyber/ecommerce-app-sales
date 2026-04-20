@@ -24,7 +24,7 @@ const ProductsPage = () => {
     const dispatch = useDispatch()
 
     const prod = products?.products.find(item => item?._id === data?.product._id)
-    const prod2 = products.products?.map(item => item._id)
+    const prod2 = products?.products?.map(item => item._id)
     const itemInCart = cartData?.cart[0]?.items.find(item => item.product === data?.product._id)
     // console.log("prod ->", data)
     // console.log("cartData ->", cartData?.cart[0]?.items)
@@ -174,6 +174,14 @@ const ProductsPage = () => {
               {product?.description}
             </p>
 
+            {product?.stock < 1 && <div className="flex items-center space-x-1">
+                <div className={`w-4 h-4 rounded-full ${product?.stock < 3 && 'bg-red-500'}`} />
+                <span className={`text-xs md:text-sm font-medium md:font-semibold ${product?.stock < 3 ? 'text-red-600' : ""}`}>
+                  {product?.stock <= 3 && product?.stock > 1 ? `Only ${product?.stock} units left.` : `Product is out of Stock.`}
+                </span>
+            </div>}
+            {/*</div>*/}
+
             {/* Quantity & Add to Cart */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               {itemInCart && <div className="flex items-center gap-3 bg-gray-100 rounded-xl p-2 w-fit">
@@ -187,7 +195,7 @@ const ProductsPage = () => {
                   +
                 </button>
               </div>}
-              {!itemInCart && <button onClick={handleAdd} disabled={isLoading} className="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+              {!itemInCart && <button onClick={handleAdd} disabled={isLoading} className={`flex-1 font-bold py-4 px-8 rounded-md flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-10 ${product?.stock < 1 ? "bg-gray-300 text-gray-100 cursor-not-allowed" : "bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900"}`}>
                 <ShoppingCart className="w-6 h-6" />
                 Add to Cart
               </button>}

@@ -196,7 +196,7 @@ const CartPage = () => {
 		                    <p className="font-semibold">Add $50 more for free shipping!</p>
 		                  </div>
 		                )}
-		                <Link to="/checkout/select-payment">
+		                <Link to="/pay/checkout">
 			                <button className="w-full bg-amber-400 text-gray-800 py-4 rounded-xl font-bold text-lg hover:bg-amber-400 transition shadow-lg hover:shadow-xl mb-3">
 			                  Proceed to Checkout
 			                </button>
