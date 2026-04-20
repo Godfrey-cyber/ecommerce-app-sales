@@ -10,7 +10,7 @@ const ProductsCat = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [isWishlisted, setIsWishlisted] = useState(false);
-  	const [isHovered, setIsHovered] = useState(false); 
+  	const [isHovered, setIsHovered] = useState(false);
 	return (
 		<div className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-20">
 			<span className="flex items-center space-x-6 border-b border-gray-300 py-2">

@@ -10,6 +10,7 @@ import { Link } from "react-router-dom"
 const MoreProducts = () => {
     const [activeCategory, setActiveCategory] = useState('Best Deals');
     const { data, error, isLoading } = useGetProductsQuery();
+    console.log("products", data?.products)
     return (
         <section className="w-full min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 lg:px-10">
             {/* Categories */}
