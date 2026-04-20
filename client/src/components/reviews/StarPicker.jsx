@@ -36,4 +36,4 @@ const StarPicker = ({ value, onChange }) => {
   );
 };
 
-export default StarPickers
+export default StarPicker

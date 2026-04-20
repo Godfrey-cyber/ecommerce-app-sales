@@ -3,6 +3,7 @@ import { ShoppingCart, Star, Heart, Share2, Truck, Shield, RotateCcw, Check } fr
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import CartTabHeaders from "../components/cart/CartTabHeaders.jsx"
 import CartTabContent from "../components/cart/CartTabContent.jsx"
+// import ProductReviews from "../components/reviews/ProductReviews.jsx"
 import Header from "../components/Header.jsx"
 import Header1 from "../components/Header1.jsx"
 import { ToastContainer, toast } from 'react-toastify';

@@ -58,4 +58,4 @@ export const {
     useCanUserReviewQuery,
     useCreateReviewMutation,
     useDeleteReviewMutation,
-} = productsApi;
+} = reviewsApi;
