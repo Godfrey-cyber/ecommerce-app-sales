@@ -21,30 +21,24 @@ const ProductsPage = () => {
     const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
     const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
   	const [quantity, setQuantity] = useState(1);
-  	const [activeTab, setActiveTab] = useState('details');
+    const [activeTab, setActiveTab] = useState('details');
+  	const [action, setAction] = useState(null);
     const dispatch = useDispatch()
+
+    console.log("state", isProcessing)
 
     const prod = products?.products.find(item => item?._id === data?.product._id)
     const prod2 = products?.products?.map(item => item._id)
     const itemInCart = cartData?.cart[0]?.items.find(item => item.product === data?.product._id)
-    // console.log("prod ->", data)
-    // console.log("cartData ->", cartData?.cart[0]?.items)
-    // console.log("if item is in cart ->", prod)
-    // // console.log("newProd ->", prod)
-    // console.log("newProd ->", prod2)
-    // console.log("products ->", products)
-  	// console.log("itemInCart", itemInCart)
   
     const product = data?.product
 
     // @Add to cart
     const handleAdd = async () => {
-        console.log("add to cart")
         await addToCart({
             productId: product._id,
             quantity: 1,
         });
-        console.log("add to cart")
     };
 
     // @Add/Subtract cart items - cart update
@@ -52,18 +46,7 @@ const ProductsPage = () => {
         const newQuantity = itemInCart.quantity + delta;
         
         if (newQuantity < 1) return;
-        // if (newQuantity === 0) {
-        //  // Remove item if quantity becomes 0
-        //  try {
-        //      await removeFromCart(item.product).unwrap();
-        //  } catch (error) {
-        //      console.error('Failed to remove item:', error);
-        //  }
-        // } else if (newQuantity > 0) {
             // Update quantity
-            console.log("item.itemInCart", itemInCart)
-            console.log("item.product", product)
-            console.log("newQuantity", newQuantity)
             try {
                 await updateCartItem({
                     itemId: itemInCart._id,        // Cart item ID
@@ -78,12 +61,10 @@ const ProductsPage = () => {
         // }
     };
 
-    console.log(product)
-
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 		{/*<Header />*/}
-    <Header1 />
+        <Header1 />
       <div className="max-w-7xl mx-auto px-4 py-2 lg:py-6 mt-4">
         {/* Main Product Section */}  
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-2">
@@ -100,23 +81,6 @@ const ProductsPage = () => {
                 />
               </div>
             </div>
-            
-            {/* Thumbnail Images */}
-            {/*<div className="grid grid-cols-4 gap-3">
-              {product?.image && product?.image.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(index)}
-                  className={`aspect-square rounded-xl overflow-hidden border-2 transition-all duration-200 ${
-                    selectedImage === index
-                      ? 'border-yellow-400 shadow-lg scale-105'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>*/}
           </div>
 
           {/* Right - Product Info */}
@@ -155,9 +119,6 @@ const ProductsPage = () => {
             {/* Price */}
             <div className="flex lg:flex-row flex-col items-baseline gap-4">
             	<div className="flex items-center space-x-4">
-
-                    {/*<div className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-red-500'}`} />*/}
-
 	                {product?.discount > 0 && <span className="text-lg md:text-2xl lg:3xl font-bold text-gray-900">
                         {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(product?.price * ((100 - product?.discount) / 100).toFixed(1))}
                     </span>}
@@ -186,12 +147,12 @@ const ProductsPage = () => {
             {/* Quantity & Add to Cart */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               {itemInCart && <div className="flex items-center gap-3 bg-gray-100 rounded-xl p-2 w-fit">
-                <button onClick={() => handleQtyUpdate(product, -1)} disabled={isProcessing} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
+                <button onClick={() => handleQtyUpdate(product, -1)} disabled={isProcessing} className={`w-10 h-10 ${isProcessing ? "bg-gray-200 text-gray-100 rounded-xl cursor-not-allowed" : "bg-white rounded-lg hover:bg-gray-200"} flex items-center justify-center transition font-semibold`}
                 >
                   -
                 </button>
                 <span className="w-12 text-center font-semibold text-lg">{itemInCart?.quantity}</span>
-                <button onClick={() => handleQtyUpdate(product, +1)} disabled={isProcessing} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition font-semibold"
+                <button onClick={() => handleQtyUpdate(product, +1)} disabled={isProcessing} className={`w-10 h-10 ${isProcessing ? "bg-gray-200 text-gray-100 rounded-xl cursor-not-allowed" : "bg-white rounded-lg hover:bg-gray-200"} flex items-center justify-center transition font-semibold`}
                 >
                   +
                 </button>

@@ -21,35 +21,20 @@ const CartPage = () => {
 	const cartItems = data?.cart[0]?.items || [];
 	const cartSummary = data?.cart[0];
 
-	console.log(cartSummary)
-
 	// update cartitem qty
     const handleQtyUpdate = async (item, delta) => {
 		const newQuantity = item.quantity + delta;
-		
-		// if (newQuantity === 0) {
-		// 	// Remove item if quantity becomes 0
-		// 	try {
-		// 		await removeFromCart(item.product).unwrap();
-		// 	} catch (error) {
-		// 		console.error('Failed to remove item:', error);
-		// 	}
-		// } else if (newQuantity > 0) {
-			// Update quantity
-			console.log("item.product", item.product)
-			console.log(newQuantity)
-			try {
-				await updateCartItem({
-					itemId: item._id,        // Cart item ID
-					quantity: newQuantity,   // New calculated quantity
-				}).unwrap();
-				toast.success(data.message);
-			} catch (error) {
-				// toast.error(error.data.message);
-				console.log(error.data.message);
-				console.error('Failed to update quantity:', error);
-			}
-		// }
+		try {
+			await updateCartItem({
+				itemId: item._id,        // Cart item ID
+				quantity: newQuantity,   // New calculated quantity
+			}).unwrap();
+			toast.success(data.message);
+		} catch (error) {
+			// toast.error(error.data.message);
+			console.log(error.data.message);
+			console.error('Failed to update quantity:', error);
+		}
 	};
 
 	// @Remove item from cart
@@ -107,11 +92,11 @@ const CartPage = () => {
 					        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 					        	{/* @Cart Quantity Update */}
 					          <div className="flex items-center gap-3">
-					            <button onClick={() => handleQtyUpdate(item, +1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
+					            <button onClick={() => handleQtyUpdate(item, +1)} disabled={isLoading} className={`w-10 h-10 ${isProcessing ? "bg-gray-200 text-gray-100 rounded-xl cursor-not-allowed" : "bg-white rounded-lg hover:bg-gray-200"} rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm`}>
 					              <Plus className="text-green-500 w-5 h-5" />
 					            </button>
 					            <span className="font-semibold text-slate-900 w-8 text-center">{item.quantity}</span>
-					            <button onClick={() => handleQtyUpdate(item, -1)} disabled={isLoading} className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
+					            <button onClick={() => handleQtyUpdate(item, -1)} disabled={isLoading} className={`w-10 h-10 ${isProcessing ? "bg-gray-200 text-gray-100 rounded-xl cursor-not-allowed" : "bg-white rounded-lg hover:bg-gray-200"} rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm`}>
 					              <Minus className="text-red-500 w-5 h-5" />
 					            </button>
 					          </div>
