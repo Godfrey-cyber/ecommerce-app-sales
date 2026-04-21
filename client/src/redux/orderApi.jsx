@@ -5,10 +5,10 @@ export const orderApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_URL,
         credentials: "include",
-        prepareHeaders: (headers, { getState }) => {
-            return headers;
-        },
     }),
+    prepareHeaders: (headers, { getState }) => {
+        return headers;
+    },
     
     tagTypes: ['Order', 'Orders'],
   

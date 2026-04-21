@@ -49,7 +49,7 @@ const CardIcon = ({ brand }) => {
 };
 
 // ─── Checkout Page ────────────────────────────────────────────────────────────
-const DummyCheck = () => {
+const Checkout = () => {
     const [saveCard, setSaveCard] = useState(false);
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
@@ -724,4 +724,4 @@ const DummyCheck = () => {
     );
 }
 
-export default DummyCheck
+export default Checkout

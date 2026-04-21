@@ -7,6 +7,7 @@ import { authApi } from './authApi.jsx';
 import { categoriesApi } from './categoriesApi.jsx';
 import { orderApi } from './orderApi';
 import { paymentApi } from './paymentApi';
+import { reviewsApi } from './reviewsApi';
 
 export const store = configureStore({
 	reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
 		[categoriesApi.reducerPath]: categoriesApi.reducer,
 		[orderApi.reducerPath]: orderApi.reducer,
 		[paymentApi.reducerPath]: paymentApi.reducer,
+		[reviewsApi.reducerPath]: reviewsApi.reducer,
 	},
 	middleware: (getDefaultMiddleware) => 
 		getDefaultMiddleware()
@@ -27,4 +29,5 @@ export const store = configureStore({
 		.concat(categoriesApi.middleware)
 		.concat(orderApi.middleware)
 		.concat(paymentApi.middleware)
+		.concat(reviewsApi.middleware)
 });

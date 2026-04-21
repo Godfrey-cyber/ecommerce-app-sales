@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Star,  RotateCcw, Check } from 'lucide-react';
 import { products } from "../../assets/products.js"
+import ProductReviews from "../../components/ProductReviews.jsx"
 
-const CartTabContent = ({ activeTab, product }) => {
+const CartTabContent = ({ activeTab, product, id, isUploading, createReview }) => {
 	return (
 		<div className="p-3 md:p-5 lg:p-8">
             {activeTab === 'details' && (
@@ -50,40 +51,7 @@ const CartTabContent = ({ activeTab, product }) => {
                   </button>
                 </div>
                 
-                <div className="space-y-4">
-                  {products?.reviews?.map((review, index) => ( 
-                    <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-gray-900">{review?.user}</span>
-                            {review.verified && (
-                              <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-                                Verified Purchase
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-4 h-4 ${
-                                    i < item?.rating
-                                      ? 'fill-yellow-400 text-yellow-400'
-                                      : 'text-gray-300'
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-sm text-gray-500">{review.date}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-gray-700 leading-relaxed">{review.comment}</p>
-                    </div>
-                   ))}
-                </div>
+                <ProductReviews id={id} isUploading={isUploading} createReview={createReview}  />
               </div>
             )}
           </div>

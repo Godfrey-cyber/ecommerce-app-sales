@@ -3,50 +3,43 @@ import mongoose from "mongoose"
 const ReviewSchema = new mongoose.Schema({
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
-		required: true,
-		ref: "user"
+		required: [true, "A Review must belong to a User."],
+		ref: "user",
 		index: true,
 	},
 	product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      required: true,
+      required: [true, "A Review must belong to a Product."],
       index: true,
     },
 	rating: {
       type: Number,
-      required: true,
+      required: [true, "A Review must have a rating."],
       min: 1,
       max: 5,
     },
     comment: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 1000,
+        type: String,
+        required: [true, "A Review must have a comment."],
+        trim: true,
+        minlength: [10, 'Review must be at least 10 characters'],
+        maxlength: [1000, 'Review must be under 1000 characters'],
     },
-	createdAt: {
-		type: Date,
-		required: true,
-	},
 	isVerifiedPurchase: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     isApproved: {
-      type: Boolean,
-      default: true, // set false if you want moderation
+        type: Boolean,
+        default: true, // set false if you want moderation
     },
-	expiresAt: {
-		type: Date,
-		required: true,
-	}
 }, { timestamps: true }, {  autoIndex: process.env.NODE_ENV !== "production", })
 
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 ReviewSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-ReviewSchema.statics.updateProductRating = async function (productId) {
+ReviewSchema.statics.calcAverageRatings = async function (productId) {
   const stats = await this.aggregate([
     { $match: { product: productId, isApproved: true } },
     {
@@ -58,18 +51,25 @@ ReviewSchema.statics.updateProductRating = async function (productId) {
     },
   ]);
 
-  await mongoose.model("Product").findByIdAndUpdate(productId, {
-    averageRating: stats[0]?.avgRating || 0,
-    reviewCount: stats[0]?.reviewCount || 0,
-  });
+    if (stats.length > 0) {
+    await mongoose.model('Product').findByIdAndUpdate(productId, {
+      rating: Math.round(stats[0].avgRating * 10) / 10,
+      numReviews: stats[0].numReviews,
+    });
+  } else {
+    await mongoose.model('Product').findByIdAndUpdate(productId, {
+      rating: 0,
+      numReviews: 0,
+    });
+  }
 };
-
-ReviewSchema.post("save", async function () {
-  await this.constructor.updateProductRating(this.product);
+ 
+ReviewSchema.post('save', function () {
+  this.constructor.calcAverageRatings(this.product);
 });
-
-ReviewSchema.post("remove", async function () {
-  await this.constructor.updateProductRating(this.product);
+ 
+ReviewSchema.post('findOneAndDelete', function (doc) {
+  if (doc) doc.constructor.calcAverageRatings(doc.product);
 });
-
+ 
 export default mongoose.model('Review', ReviewSchema);
