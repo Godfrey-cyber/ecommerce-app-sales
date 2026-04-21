@@ -2,9 +2,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const reviewsApi = createApi({
     reducerPath: 'reviewsApi',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
+    baseQuery: fetchBaseQuery({ 
+        baseUrl: import.meta.env.VITE_API_URL,
+        credentials: "include",
+    }),
     prepareHeaders: (headers, { getState }) => {
-      return headers;
+        return headers;
     },
     tagTypes: ['Reviews', 'CanReview'],
   
@@ -12,10 +15,10 @@ export const reviewsApi = createApi({
     
         // Fetch paginated reviews for a product
         getProductReviews: builder.query({
-          query: ({ productId, page = 1, limit = 10, sort = 'recent' }) =>
-            `/${productId}?page=${page}&limit=${limit}&sort=${sort}`,
-          providesTags: (result, error, { productId }) => [
-            { type: 'Reviews', id: productId },
+          query: ({ id, page = 1, limit = 10, sort = 'recent' }) =>
+            `/reviews/get-reviews/${id}?page=${page}&limit=${limit}&sort=${sort}`,
+          providesTags: (result, error, { id }) => [
+            { type: 'Reviews', id: id },
           ],
         }),
         
@@ -29,14 +32,14 @@ export const reviewsApi = createApi({
         
         // Submit a new review
         createReview: builder.mutation({
-          query: ({ productId, rating, comment }) => ({
-            url: `/${productId}`,
+          query: ({ id, rating, comment }) => ({
+            url: "/reviews/create-review/",
             method: 'POST',
-            body: { rating, comment },
+            body: { rating, comment, id },
           }),
-          invalidatesTags: (result, error, { productId }) => [
-            { type: 'Reviews',   id: productId },
-            { type: 'CanReview', id: productId },
+          invalidatesTags: (result, error, { id }) => [
+            { type: 'Reviews',   id: id },
+            { type: 'CanReview', id: id },
           ],
         }),
         

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Star } from 'lucide-react';
 
 const StarPicker = ({ value, onChange }) => {

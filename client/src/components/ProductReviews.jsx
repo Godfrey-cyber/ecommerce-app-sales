@@ -14,7 +14,7 @@ import ReviewCard from "../components/reviews/ReviewCard.jsx"
 import StarDisplay from "../components/reviews/StarDisplay.jsx"
 import StarPicker from "../components/reviews/StarPicker.jsx"
 
-const ProductReviews = ({ productId }) => {
+const ProductReviews = ({ id }) => {
     const [sort, setSort] = useState('recent');
     const [page, setPage] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -24,12 +24,12 @@ const ProductReviews = ({ productId }) => {
         data,
         isLoading: reviewsLoading,
         isFetching,
-    } = useGetProductReviewsQuery({ productId, page, sort });
-
+    } = useGetProductReviewsQuery({ id, page, sort });
+    console.log("reviews", data?.reviews)
     const {
         data: canReviewData,
         isLoading: checkLoading,
-    } = useCanUserReviewQuery(productId, { skip: !user });
+    } = useCanUserReviewQuery(id, { skip: !user });
 
     const [deleteReview] = useDeleteReviewMutation();
 
@@ -44,33 +44,6 @@ const ProductReviews = ({ productId }) => {
         setTimeout(() => setShowSuccess(false), 4000);
     };
 
-    const Avatar = ({ user, size = 'md' }) => {
-      const sz = size === 'md' ? 'w-10 h-10 text-sm' : 'w-8 h-8 text-xs';
-      const initials = user?.name
-        ?.split(' ')
-        .map((n) => n[0])
-        .slice(0, 2)
-        .join('')
-        .toUpperCase();
-     
-      if (user?.avatar) {
-        return (
-          <img
-            src={user.avatar}
-            alt={user.name}
-            className={`${sz} rounded-full object-cover ring-2 ring-white flex-shrink-0`}
-          />
-        );
-      }
-      return (
-        <div
-          className={`${sz} rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-bold text-white flex-shrink-0 ring-2 ring-white`}
-        >
-          {initials || '?'}
-        </div>
-      );
-    };
-
     return (
         <div className="w-full space-y-6 py-4">
           {/* ── Header + Stats ── */}
@@ -80,7 +53,7 @@ const ProductReviews = ({ productId }) => {
             <div className="flex flex-col items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-5 min-w-[120px]">
               <span className="text-4xl font-black text-gray-900 tracking-tight">{avgRating}</span>
               <StarDisplay value={Math.round(parseFloat(avgRating))} size="md" />
-              <span className="text-xs text-gray-500 mt-1">{data?.total || 0} reviews</span>
+              <span className="text-xs text-gray-500 mt-1">{data?.reviews?.length || 0} reviews</span>
             </div>
 
             {/* Breakdown bars */}
@@ -105,7 +78,7 @@ const ProductReviews = ({ productId }) => {
             </div>
           )}
 
-          {user && !checkLoading && canReviewData?.canReview && (
+          {user && !checkLoading && (
             <>
               {showSuccess && (
                 <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium px-4 py-3 rounded-xl">
@@ -113,16 +86,16 @@ const ProductReviews = ({ productId }) => {
                   Review submitted successfully! Thank you for your feedback.
                 </div>
               )}
-              <ReviewForm productId={productId} onSuccess={handleSuccess} />
+              <ReviewForm id={id} onSuccess={handleSuccess} />
             </>
           )}
 
-          {user && !checkLoading && !canReviewData?.canReview && (
+          {user && !checkLoading && (
             <div className="bg-gray-50 border border-dashed border-gray-200 rounded-2xl p-4 text-center">
               <p className="text-sm text-gray-500">
-                {canReviewData?.reason === 'purchase_required'
+                {/*{canReviewData?.reason === 'purchase_required'
                   ? '🛒 Purchase this product to leave a review.'
-                  : '✅ You have already reviewed this product.'}
+                  : '✅ You have already reviewed this product.'}*/}
               </p>
             </div>
           )}
@@ -183,7 +156,7 @@ const ProductReviews = ({ productId }) => {
                     key={review._id}
                     review={review}
                     currentUserId={user?._id}
-                    productId={productId}
+                    id={id}
                     onDelete={deleteReview}
                   />
                 ))}

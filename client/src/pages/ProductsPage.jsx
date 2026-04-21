@@ -9,6 +9,7 @@ import Header1 from "../components/Header1.jsx"
 import { ToastContainer, toast } from 'react-toastify';
 import { useSelector,useDispatch } from "react-redux"
 import { useGetProductByIdQuery, useGetProductsQuery } from "../redux/productsApi.jsx"
+import { useCreateReviewMutation } from "../redux/reviewsApi.jsx"
 import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
 
 const ProductsPage = () => {
@@ -20,6 +21,7 @@ const ProductsPage = () => {
     const { data: products, error: productsError, isLoading: productsLoading } = useGetProductsQuery();
     const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
     const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
+    const [createReview, { isLoading: isUploading }] = useCreateReviewMutation();
   	const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('details');
   	const [action, setAction] = useState(null);
@@ -196,11 +198,11 @@ const ProductsPage = () => {
         {/* Tabs Section */}
         <div className="bg-white rounded-md sm:shadow md:shadow shadow-lg border border-gray-100 overflow-hidden">
           	{/* Tab Headers */}
-        	<CartTabHeaders activeTab={activeTab} product={product} setActiveTab={setActiveTab} />
+        	<CartTabHeaders id={id} activeTab={activeTab} product={product} setActiveTab={setActiveTab} />
           {/* Tab Content */}
           
         </div>
-        <CartTabContent product={product} activeTab={activeTab} />
+        <CartTabContent id={id} isUploading={isUploading} createReview={createReview} product={product} activeTab={activeTab} />
       </div>
     </div>
 	)

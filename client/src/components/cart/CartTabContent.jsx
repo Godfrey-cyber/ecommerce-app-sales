@@ -3,7 +3,7 @@ import { Star,  RotateCcw, Check } from 'lucide-react';
 import { products } from "../../assets/products.js"
 import ProductReviews from "../../components/ProductReviews.jsx"
 
-const CartTabContent = ({ activeTab, product }) => {
+const CartTabContent = ({ activeTab, product, id, isUploading, createReview }) => {
 	return (
 		<div className="p-3 md:p-5 lg:p-8">
             {activeTab === 'details' && (
@@ -51,7 +51,7 @@ const CartTabContent = ({ activeTab, product }) => {
                   </button>
                 </div>
                 
-                <ProductReviews />
+                <ProductReviews id={id} isUploading={isUploading} createReview={createReview}  />
               </div>
             )}
           </div>

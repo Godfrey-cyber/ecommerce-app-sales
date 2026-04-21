@@ -1,24 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
+import {
+    useCreateReviewMutation,
+} from "../../redux/reviewsApi.jsx"
+import { PenLine, Star, Loader2 } from 'lucide-react';
+import StarPicker from "./StarPicker.jsx"
 
-const ReviewForm = ({ productId, onSuccess }) => {
+const ReviewForm = ({ id, onSuccess }) => {
 	const [rating, setRating] = useState(0);
 	const [comment, setComment] = useState('');
 	const [createReview, { isLoading }] = useCreateReviewMutation();
 	const [error, setError] = useState('');
 
-	const handleSubmit = async (e) => {
-	    e.preventDefault();
+	const handleSubmit = async (event) => {
+	    event.preventDefault();
 	    setError('');
 	    if (rating === 0) return setError('Please select a star rating.');
 	    if (comment.trim().length < 10) return setError('Comment must be at least 10 characters.');
 
 	    try {
-	      	await createReview({ productId, rating, comment }).unwrap();
+	      	await createReview({ id, rating, comment }).unwrap();
 	      	setRating(0);
 	      	setComment('');
 	      	onSuccess?.();
 	    } catch (err) {
 	      	setError(err?.data?.message || 'Something went wrong. Please try again.');
+	      	console.log(err)
 	    }
 	};
 	return (
@@ -43,7 +49,7 @@ const ReviewForm = ({ productId, onSuccess }) => {
 	        	</label>
 		        <textarea
 		          value={comment}
-		          onChange={(e) => setComment(e.target.value)}
+		          onChange={(event) => setComment(event.target.value)}
 		          rows={4}
 		          maxLength={1000}
 		          placeholder="Share your experience with this product..."
@@ -62,7 +68,7 @@ const ReviewForm = ({ productId, onSuccess }) => {
 	      >
 	        {isLoading ? (
 	          <>
-	            <Loader2 className="w-4 h-4 animate-spin" />
+	            <Loader2 className={`w-4 h-4 ${isLoading ? "bg-gray-200 text-gray-100 cursor-not-allowed" : ""} animate-spin`} />
 	            Submitting…
 	          </>
 	        ) : (

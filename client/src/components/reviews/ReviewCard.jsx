@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Star, ThumbsUp, Trash2, ShieldCheck, PenLine, ChevronDown, Loader2 } from 'lucide-react';
+import StarDisplay from "./StarDisplay.jsx"
 
 const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
   	const [deleting, setDeleting] = useState(false);
@@ -20,6 +21,33 @@ const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
 	    if (days < 365) return `${Math.floor(days / 30)} months ago`;
 	    return `${Math.floor(days / 365)} years ago`;
  	};
+
+ 	const Avatar = ({ user, size = 'md' }) => {
+      const sz = size === 'md' ? 'w-10 h-10 text-sm' : 'w-8 h-8 text-xs';
+      const initials = user?.name
+        ?.split(' ')
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+     
+      if (user?.avatar) {
+        return (
+          <img
+            src={user.avatar}
+            alt={user.name}
+            className={`${sz} rounded-full object-cover ring-2 ring-white flex-shrink-0`}
+          />
+        );
+      }
+      return (
+        <div
+          className={`${sz} rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-bold text-white flex-shrink-0 ring-2 ring-white`}
+        >
+          {initials || '?'}
+        </div>
+      );
+    };
 	return (
 	    <div className="group bg-white border border-gray-100 rounded-2xl p-5 hover:border-amber-100 hover:shadow-md transition-all duration-300">
 	      <div className="flex items-start justify-between gap-3">
