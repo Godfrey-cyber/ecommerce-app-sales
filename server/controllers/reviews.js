@@ -1,37 +1,36 @@
-import Review from "../models/Products.js"
+import Review from "../models/Reviews.js"
 import slugify from 'slugify'
 import mongoose from 'mongoose'
 
 // @Add a Review [ only verified buyer ]
 export const addReview = async (req, res, next) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
 
     try {
-        const { productId, rating, comment } = req.body;
+        const { id, rating, comment } = req.body;
+        console.log(id, rating, comment)
 
         const review = await Review.create(
-            [
-                {
-              product: productId,
-                user: req.userId,
-                rating,
+            {
+                product: id,
+                userId: req.userId,
+                rating: Number(rating),
                 comment,
-                },
-            ],
-            { session }
+            },
+            // { session }
         );
 
-        await session.commitTransaction();
+        // await session.commitTransaction();
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
-            review: review[0],
+            review,
         });
 
     } catch (error) {
-        await session.abortTransaction();
-
+        // await session.abortTransaction();
+        console.log(error)
         if (error.code === 11000) {
             return res.status(400).json({
                 message: "You have already reviewed this product",
@@ -39,15 +38,27 @@ export const addReview = async (req, res, next) => {
         }
 
         next(error);
-    } finally {
-        session.endSession();
     }
+    // } finally {
+        // session.endSession();
+    // }
 };
 
 export const getAllReviews = async (req, res) => {
     try {
+        const { reviewId } = req.params
         const reviews = await Review.find()
-        return res.status(200).json({ message: "Review fetch successfull🥇", review })
+        return res.status(200).json({ message: "Review fetch successfull🥇", reviews })
+    } catch (error) {
+        return res.status(401).json(error)
+    }
+}
+
+export const getProductReviews = async (req, res) => {
+    try {
+        const { productId } = req.params
+        const reviews = await Review.find({ product: productId }) //.populate('user', 'firstname lastname');
+        return res.status(200).json({ message: "Review fetch successfull🥇", reviews })
     } catch (error) {
         return res.status(401).json(error)
     }
