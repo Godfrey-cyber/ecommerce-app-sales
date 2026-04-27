@@ -1,4 +1,6 @@
 import Review from "../models/Reviews.js"
+import Order from "../models/Order.js"
+import Product from "../models/Products.js"
 import slugify from 'slugify'
 import mongoose from 'mongoose'
 
@@ -9,7 +11,31 @@ export const addReview = async (req, res, next) => {
 
     try {
         const { id, rating, comment } = req.body;
-        console.log(id, rating, comment)
+        console.log(id, rating, comment, req.userId)
+        console.log("userId", req.userId)
+
+        // Gate: must have a delivered order with this product
+        // const purchasedOrder = await Order.findOne({
+        //     user: req.userId,
+        //     'items.product': id,
+        //     status: 'pending',
+        // });
+     
+        // if (!purchasedOrder) {
+        //     return res.status(403).json({
+        //         success: false,
+        //         message: 'You can only review products you have purchased and received.',
+        //     });
+        // }
+
+        // Gate: one review per user per product (index also enforces this)
+        const existing = await Review.findOne({ product: id, user: req.userId });
+        if (existing) {
+            return res.status(409).json({
+                success: false,
+                message: 'You have already reviewed this product.',
+            });
+        }
 
         const review = await Review.create(
             {
@@ -25,6 +51,7 @@ export const addReview = async (req, res, next) => {
 
         return res.status(201).json({
             success: true,
+            message: 'Review submitted successfully.',
             review,
         });
 

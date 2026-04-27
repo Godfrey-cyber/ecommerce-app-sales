@@ -30,15 +30,16 @@ const ProductSchema = new mongoose.Schema({
 	  type: mongoose.Schema.Types.Mixed
 	},
 	rating: {
-	    type: Number,
-	    default: 0,
-	    min: 0,
-	    max: 5
-	},
-	review: { 
-		type: mongoose.Schema.Types.ObjectId, 
-		ref: "Review",
-	},
+      	type: Number,
+      	default: 0,
+      	min: 0,
+      	max: 5,
+      	set: (val) => Math.round(val * 10) / 10, // always 1 decimal e.g. 4.6
+    },
+    numReviews: {
+      	type: Number,
+      	default: 0,
+    },
 	stock: { 
 		type: Number, required: [true, "A Product must have a quantity"], default: 1, min: 0
 	},

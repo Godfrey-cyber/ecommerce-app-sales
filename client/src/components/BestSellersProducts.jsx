@@ -10,80 +10,165 @@ const BestSellersProducts = () => {
   	const [isHovered, setIsHovered] = useState(false);
   	const { data, error, isLoading } = useGetProductsQuery();
   	const navigate = useNavigate()
-  	// useEffect(() => {
-	//     const controller = new AbortController();
-	//     dispatch(fetchProducts())
-	//     return () => controller.abort();
-	//   }, []);
+  	
+  	const StarRating = ({ value }) => {
+	    return (
+	      <div className="flex items-center gap-1">
+	        {[1, 2, 3, 4, 5].map((star) => {
+	          const filled = value >= star;
+	          const half = !filled && value >= star - 0.5;
+	          return (
+	            <span key={star} className="relative inline-block w-4 h-4">
+	              <svg viewBox="0 0 20 20" className="w-4 h-4 text-gray-200" fill="currentColor">
+	                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+	              </svg>
+
+	              {(filled || half) && (
+	                <span
+	                  className="absolute inset-0 overflow-hidden"
+	                  style={{ width: filled ? "100%" : "50%" }}
+	                >
+	                  <svg viewBox="0 0 20 20" className="w-4 h-4 text-amber-400" fill="currentColor">
+	                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+	                  </svg>
+	                </span>
+	              )}
+	            </span>
+	          );
+	        })}
+	        {/*<span className="text-xs font-semibold text-gray-700 ml-0.5">{value}</span>*/}
+	        <span className="text-xs text-gray-400">({value?.toLocaleString()})</span>
+	      </div>
+	    );
+	};
+
 	return (
-		<div className="w-full my-12 px-4 md:px-8">
-	      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-8 divide-x">
+		<section className="w-full my-12 px-4 md:px-8">
+	      <div className="grid lg:grid-cols-5 grid-cols-2 gap-5 lg:gap-x-3 w-full scroll-smooth snap-x">
+	      	{/*<div className="flex flex-col border-b border-gray-300">						*/}
 				{data?.products?.map(product => (
-					<Link to={`/${product.slug}/${product._id}`} key={product._id}>
-					<div className="relative w-44 md:w-52 lg:w-64 bg-white rounded-sm shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-					  <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
-					    <TrendingUp className="w-3 h-3" />
-					    Best Seller
-					  </div>
 
-					  {product.discount > 0 && <div className="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-					    -{product.discount}%
-					  </div>}
+					<Link to={`/${product?.slug}/${product?._id}`} key={product?._id}>
+				<div className="group relative w-62 rounded-lg bg-white border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
+				      {/* Image Container */}
+				      <div className="mx-auto relative my-3 overflow-hidden bg-gradient-to-br from-slate-50 to-stone-100 w-44 h-48">
+				        <img
+				          src={product.image}
+				          alt={product.title}
+				          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+				        />
 
-					  <button onClick={() => setIsWishlisted(!isWishlisted)} className="absolute top-16 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center group/heart">
-					    <Heart className={`w-5 h-5 transition-all duration-200 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover/heart:text-red-500'}`} />
-					  </button>
+				        {/* Top-left: Best Seller + Discount stacked */}
+				        <div className="absolute top-3 left-1 flex flex-col gap-1.5">
+			
+				          {product?.discount > 0 && (
+				            <span className="inline-block bg-red-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide shadow-sm">
+				              -{product?.discount}% OFF
+				            </span>
+				          )}
+				        </div>
 
-					  <div className="relative h-72 overflow-hidden bg-gray-100">
-					    {/*<img src={product.image} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />*/}
-					    <img src={product?.image} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-					    <div className={`absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity duration-300 flex items-center justify-center ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-					    	<div onClick={() => navigate(`/${product.slug}/${product._id}`)}>
-						      <button className="bg-white text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200 flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0">
-						        <ShoppingCart className="w-5 h-5" />
-						        Quick Add
-						      </button>
-						    </div>
-					    </div>
-					  </div>
+				        {/* Wishlist button — below the tags */}
+				        <button
+				          onClick={() => setWishlisted(!isWishlisted)}
+				          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-all duration-200 active:scale-90
+				            ${isWishlisted
+				              ? "bg-red-500 text-white"
+				              : "bg-white/90 text-gray-400 hover:text-red-400 hover:bg-white"
+				            }`}
+				          aria-label="Toggle wishlist"
+				        >
+				          <svg
+				            className="w-4 h-4"
+				            fill={isWishlisted ? "currentColor" : "none"}
+				            stroke="currentColor"
+				            strokeWidth={2}
+				            viewBox="0 0 24 24"
+				          >
+				            <path
+				              strokeLinecap="round"
+				              strokeLinejoin="round"
+				              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+				            />
+				          </svg>
+				        </button>
+				      </div>
 
-					  <div className="p-5">
-					    <div className="flex items-center gap-2 mb-1">
-					      <div className="flex items-center gap-1">
-					        {[...Array(5)].map((_, i) => (
-					          <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-amber-400 text-amber-400' : i < product.rating ? 'fill-amber-400 text-amber-400 opacity-50' : 'fill-gray-200 text-gray-200'}`} />
-					        ))}
-					      </div>
-					      {/*<span className="text-sm font-semibold text-gray-900">{product.rating}</span>*/}
-					      <span className="text-sm text-gray-500">({product.rating})</span>
-					    </div>
+				      {/* Body */}
+				      <div className="p-4 space-y-3">
+				        {/* Rating */}
+				        <StarRating value={product?.rating} />
 
-					    <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{product.title}</h3>
+				        {/* Title */}
+				        <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-1">
+				          {product?.title}
+				        </h3>
 
-					    <p className="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">{product.description}</p>
+				        {/* Description */}
+				        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+				          {product?.description}
+				        </p>
 
-					    <div className="flex items-end justify-between">
-					      <div>
-					        <div className="flex items-baseline gap-2">
-					          <span className="text-2xl font-bold text-gray-900">{product?.price * ((100 - product?.discount) / 100).toFixed(1)}</span>
-					          {product.discount > 0 && <span className="text-sm text-gray-400 line-through">${product.price}</span>}
-					        </div>
-					        <span className="text-xs text-green-600 font-semibold">Save ${product.price - product?.price * ((100 - product?.discount) / 100).toFixed(2)}</span>
-					      </div>
+				        {/* Price block — column on small, row on md+ */}
+				        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+				          <span className="text-lg font-extrabold text-gray-900 tracking-tight">
+				            KSh {product?.finalPrice?.toLocaleString()}
+				          </span>
+				          <span className="text-sm text-gray-400 line-through">
+				            KSh {product?.price?.toLocaleString()}
+				          </span>
+				        </div>
 
-					      <div className="flex items-center gap-1">
-					        <div className={`w-2 h-2 rounded-full ${product.stock ? 'bg-green-500' : 'bg-red-500'}`} />
-					        <span className={`text-xs font-medium ${product.stock ? 'text-green-600' : 'text-red-600'}`}>
-					          {product.stock ? 'In Stock' : 'Out of Stock'}
-					        </span>
-					      </div>
-					    </div>
-					  </div>
-					</div>
-				</Link>
-				))}
+				        {/* Savings badge */}
+				        {product.discountAmount > 0 && (
+				          <div className="flex items-center gap-1.5">
+				            <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+				              <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+				            </svg>
+				            <span className="text-xs font-semibold text-emerald-600">
+				              Save KSh {product.discountAmount.toLocaleString()}
+				            </span>
+				          </div>
+				        )}
+
+				        {/* Stock indicator */}
+				        <div className="flex items-center gap-1.5">
+				          <span
+				            className={`inline-block w-2 h-2 rounded-full ${
+				              product.stock > 0 ? "bg-emerald-400" : "bg-red-400"
+				            }`}
+				          />
+				          <span
+				            className={`text-xs font-medium ${
+				              product.stock ? "text-emerald-600" : "text-red-500"
+				            }`}
+				          >
+				            {product?.stock > 0
+				              ? product?.stock <= 5
+				                ? `Only ${product?.stock} left in stock`
+				                : "In stock"
+				              : "Out of stock"}
+				          </span>
+				        </div>
+
+				        {/* CTA */}
+				        <button
+				          disabled={!product?.stock <= 0}
+				          className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95
+				            ${product?.stock > 0
+				              ? "bg-amber-400 text-white hover:bg-gray-700 shadow-sm hover:shadow-md"
+				              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+				            }`}
+				        >
+				          {product.stock >= 0 ? "Add to Cart" : "Unavailable"}
+				        </button>
+				      </div>
+				    </div>
+						</Link>
+					))}
+				{/*</div>*/}
 			</div>
-      </div>
+		</section>
 	)
 }
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import { X } from 'lucide-react';
 
-const AddProductModal = ({ categories, setShowAddModal  }) => {
+const AddProduct = ({ categories, setShowAddModal  }) => {
     const [newProduct, setNewProduct] = useState({ title: '', price: '', stock: '', category: '', condition: '', brand: '', description: '' });
 
     const handleChange = (event) => {
@@ -29,17 +29,8 @@ const AddProductModal = ({ categories, setShowAddModal  }) => {
     console.log("newProduct", newProduct)
 
 	return (
-		<div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in overflow-y-auto">
-          <div className="gradient-border w-full max-w-lg p-8 animate-slide-in-up  w-4/5">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-white">Add New Product</h3>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="text-zinc-400 hover:text-white transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
+		<div className="animate-fade-in bg ">
+      <div className="gradient-border overflow-hidden">
             <div className="space-y-4">
               <div>
               	{/*Title*/}
@@ -195,4 +186,4 @@ const AddProductModal = ({ categories, setShowAddModal  }) => {
 	)
 }
 
-export default AddProductModal
+export default AddProduct

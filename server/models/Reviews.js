@@ -8,23 +8,23 @@ const ReviewSchema = new mongoose.Schema({
 		index: true,
 	},
 	product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: [true, "A Review must belong to a Product."],
-      index: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: [true, "A Review must belong to a Product."],
+        index: true,
     },
 	rating: {
-      type: Number,
-      required: [true, "A Review must have a rating."],
-      min: 1,
-      max: 5,
+        type: Number,
+        required: [true, "A Review must have a rating."],
+        min: 1,
+        max: 5,
     },
     comment: {
         type: String,
         required: [true, "A Review must have a comment."],
         trim: true,
         minlength: [10, 'Review must be at least 10 characters'],
-        maxlength: [1000, 'Review must be under 1000 characters'],
+        maxlength: [100, 'Review must be under 1000 characters'],
     },
 	isVerifiedPurchase: {
         type: Boolean,
@@ -36,7 +36,7 @@ const ReviewSchema = new mongoose.Schema({
     },
 }, { timestamps: true }, {  autoIndex: process.env.NODE_ENV !== "production", })
 
-ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
+// ReviewSchema.index({ product: 1, user: 1 });
 ReviewSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 ReviewSchema.statics.calcAverageRatings = async function (productId) {
