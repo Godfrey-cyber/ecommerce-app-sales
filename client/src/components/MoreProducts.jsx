@@ -45,11 +45,11 @@ const MoreProducts = () => {
                                         <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-bold z-10">
                                             -{item.discount}%
                                         </div>
-                                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-tr-md rounded-tl-md h-32 flex items-center justify-center overflow-hidden">
+                                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-tr-md rounded-tl-md h-28 flex items-center justify-center overflow-hidden">
                                             <img
                                                 src={item?.image}
                                                 alt={item?.name}
-                                                className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 object-cover"
+                                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 object-cover"
                                             />
                                         </div>
                                     </div>
@@ -80,6 +80,7 @@ const MoreProducts = () => {
 
                 {/* Center Column - Featured Product */}
                 <div className="lg:col-span-4">
+                   
                     <div className="bg-white rounded-md p-4 shadow-lg hover:shadow-2xl transition-all duration-300 h-full border border-gray-100 relative overflow-hidden">
                         {/* Decorative Background */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-yellow-200/30 to-transparent rounded-full blur-3xl"></div>

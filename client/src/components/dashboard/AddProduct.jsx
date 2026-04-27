@@ -29,7 +29,7 @@ const AddProduct = ({ categories, setShowAddModal  }) => {
     console.log("newProduct", newProduct)
 
 	return (
-		<div className="animate-fade-in">
+		<div className="animate-fade-in bg ">
       <div className="gradient-border overflow-hidden">
             <div className="space-y-4">
               <div>

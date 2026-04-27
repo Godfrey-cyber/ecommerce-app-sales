@@ -5,7 +5,7 @@ const BestSellers = () => {
 	return (
 		<section className="w-full h-fit px-5 lg:px-10 my-2 lg:my-5 overflow-x-scroll">
 			<div className="xs:flex-col lg:flex justify-between lg:items-center border-b border-gray-300 w-full">
-				<span className="flex items-center text-center border-b-2 border-yellow-500 cursor-pointer py-1">
+				<span className="flex items-center text-center border-b-2 border-yellow-500 cursor-pointer py-1 w-full">
 					<p className="text-lg font-semibold text-gray-800">Best Sellers</p>
 				</span>
 				<div className="flex justify-center items-center overflow-x-scroll w-full ">
