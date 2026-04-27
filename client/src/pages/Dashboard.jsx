@@ -12,7 +12,7 @@ import OrdersTab from "../components/dashboard/OrdersTab.jsx"
 import PaymentTab from "../components/dashboard/PaymentTab.jsx"
 import Grids from "../components/dashboard/Grids.jsx"
 import ProductsTab from "../components/dashboard/ProductsTab.jsx"
-import AddProductModal from "../components/dashboard/AddProductModal.jsx"
+import AddProduct from "../components/dashboard/AddProduct.jsx"
 import { useNavigate } from "react-router-dom"
 import { Plus, Package, ShoppingBag, CreditCard, User, Users, Settings, LogOut, Edit2, Trash2, Eye, X } from 'lucide-react';
 
@@ -33,12 +33,13 @@ const Dashboard = () => {
 
   
   
-  const menuItems = userRole === 'vendor' 
+  const menuItems = userRole === 'customer' 
     ? [
         { id: 'products', icon: Package, label: 'Products' },
         { id: 'orders', icon: ShoppingBag, label: 'Orders' },
         { id: 'payments', icon: CreditCard, label: 'Payments' },
         { id: 'profile', icon: User, label: 'Profile' },
+        { id: 'add-product', icon: User, label: 'Add Product' },
       ]
     : [
         { id: 'products', icon: Package, label: 'All Products' },
@@ -97,6 +98,10 @@ const Dashboard = () => {
             {activeTab === 'orders' && (
               <OrdersTab orders={orders} isError={isError} load={load} />
             )}
+            {/* Product Tab */}
+            {activeTab === 'add-product' && (
+              <AddProduct categories={categories} setShowAddModal={setShowAddModal} />
+            )}
 
             {/* Users Tab (Admin Only) */}
             {activeTab === 'users' && ( // VendorHub
@@ -122,9 +127,9 @@ const Dashboard = () => {
       </div>
 
       {/* Add Product Modal */}
-      {showAddModal && (
+      {/*{showAddModal && (
         <AddProductModal categories={categories} setShowAddModal={setShowAddModal} />
-      )}
+      )}*/}
     </div>
   );
 }
