@@ -51,7 +51,7 @@ const ReviewForm = ({ id, onSuccess }) => {
 		          value={comment}
 		          onChange={(event) => setComment(event.target.value)}
 		          rows={4}
-		          maxLength={1000}
+		          maxLength={100}
 		          placeholder="Share your experience with this product..."
 		          className="w-full text-sm text-gray-800 placeholder-gray-400 bg-white border border-amber-100 focus:border-amber-400 focus:ring-2 focus:ring-amber-100 rounded-xl px-4 py-3 resize-none outline-none transition-all duration-200"
 		        />
