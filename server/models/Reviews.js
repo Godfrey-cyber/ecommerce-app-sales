@@ -4,7 +4,7 @@ const ReviewSchema = new mongoose.Schema({
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		required: [true, "A Review must belong to a User."],
-		ref: "user",
+		ref: "User",
 		index: true,
 	},
 	product: {
@@ -34,9 +34,9 @@ const ReviewSchema = new mongoose.Schema({
         type: Boolean,
         default: true, // set false if you want moderation
     },
-}, { timestamps: true }, {  autoIndex: process.env.NODE_ENV !== "production", })
+}, { timestamps: true, autoIndex: process.env.NODE_ENV !== 'production', })
 
-// ReviewSchema.index({ product: 1, user: 1 });
+ReviewSchema.index({ product: 1, userId: 1 }, { unique: true });
 ReviewSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 ReviewSchema.statics.calcAverageRatings = async function (productId) {
@@ -52,11 +52,11 @@ ReviewSchema.statics.calcAverageRatings = async function (productId) {
   ]);
 
     if (stats.length > 0) {
-    await mongoose.model('Product').findByIdAndUpdate(productId, {
-      rating: Math.round(stats[0].avgRating * 10) / 10,
-      numReviews: stats[0].numReviews,
-    });
-  } else {
+        await mongoose.model('Product').findByIdAndUpdate(productId, {
+          rating: Math.round(stats[0].avgRating * 10) / 10,
+          numReviews: stats[0].reviewCount, // ← correct
+        });
+    } else {
     await mongoose.model('Product').findByIdAndUpdate(productId, {
       rating: 0,
       numReviews: 0,

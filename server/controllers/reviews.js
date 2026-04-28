@@ -29,13 +29,15 @@ export const addReview = async (req, res, next) => {
         // }
 
         // Gate: one review per user per product (index also enforces this)
-        const existing = await Review.findOne({ product: id, user: req.userId });
+        const existing = await Review.findOne({ product: id, userId: req.userId });
         if (existing) {
             return res.status(409).json({
                 success: false,
                 message: 'You have already reviewed this product.',
             });
         }
+
+        console.log("existing ->", existing)
 
         const review = await Review.create(
             {
@@ -74,7 +76,7 @@ export const addReview = async (req, res, next) => {
 export const getAllReviews = async (req, res) => {
     try {
         const { reviewId } = req.params
-        const reviews = await Review.find()
+        const reviews = await Review.find().populate("user", 'email firstname lastname')
         return res.status(200).json({ message: "Review fetch successfull🥇", reviews })
     } catch (error) {
         return res.status(401).json(error)
@@ -84,7 +86,7 @@ export const getAllReviews = async (req, res) => {
 export const getProductReviews = async (req, res) => {
     try {
         const { productId } = req.params
-        const reviews = await Review.find({ product: productId }) //.populate('user', 'firstname lastname');
+        const reviews = await Review.find({ product: productId }).populate('userId', 'firstname lastname');
         return res.status(200).json({ message: "Review fetch successfull🥇", reviews })
     } catch (error) {
         return res.status(401).json(error)
