@@ -78,8 +78,8 @@ const BestSellersProducts = () => {
 						        </p>
 
 						        {/* Price block — column on small, row on md+ */}
-						        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-						          <span className="text-lg font-extrabold text-gray-900 tracking-tight">
+						        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 spaxe-x-3 w-full">
+						          <span className="text-sm font-extrabold text-gray-900 tracking-tight">
 						            KSh {product?.finalPrice?.toLocaleString()}
 						          </span>
 						          <span className="text-sm text-gray-400 line-through">
