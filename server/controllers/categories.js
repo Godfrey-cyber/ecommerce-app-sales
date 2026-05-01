@@ -177,18 +177,48 @@ export const categoryBread = async (req, res) => {
 // @GET Caregories with number Products
 export const categoryProd = async(req, res) => {
     try {
-        const categories = await Products.aggregate([
+        const categories = await Category.aggregate([
             {
-                $group:{
-                    _id: "$category",
-                    count: { $sum: 1 },
-                },
+                $match: { parent: null }
+            },
+            // 2. Get subcategories
+            {
+                $lookup: {
+                  from: "categories",
+                  localField: "_id",
+                  foreignField: "parent",
+                  as: "subcategories"
+                }
             },
             {
-                $project:{
-                    _id: 0,
-                    category: "$_id",
-                    count: 1,
+                $addFields: {
+                  allCategoryIds: {
+                    $concatArrays: [
+                      ["$_id"],
+                      "$subcategories._id"
+                    ]
+                  }
+                }
+            },
+            {
+                $lookup: {
+                  from: "products",
+                  let: { catIds: "$allCategoryIds" },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: { $in: ["$category", "$$catIds"] }
+                      }
+                    },
+                    { $limit: 10 } // optional: limit per category
+                  ],
+                  as: "products"
+                }
+            },
+            {
+                $project: {
+                  title: 1,
+                  products: 1
                 }
             }
         ]);
@@ -197,3 +227,5 @@ export const categoryProd = async(req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
+// export const 
