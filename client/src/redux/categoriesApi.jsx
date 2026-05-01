@@ -15,6 +15,13 @@ export const categoriesApi = createApi({
                 '/categories/get-parentCategories',
             providesTags: ['Categories'],
         }),
+
+        // Get all categories
+        getCatProducts: builder.query({
+            query: () => 
+                '/categories/get-productcats',
+            providesTags: ['Categories'],
+        }),
         
         // Get one product
         getCategoryById: builder.query({
@@ -27,4 +34,5 @@ export const categoriesApi = createApi({
 export const {
   useGetCategoriesQuery,
   useGetCategoryByIdQuery,
+  useGetCatProductsQuery,
 } = categoriesApi;

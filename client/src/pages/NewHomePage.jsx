@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
 import { Link } from "react-router-dom"
-import { useGetCategoriesQuery } from "../redux/categoriesApi.jsx"
+import { useGetCategoriesQuery, useGetCatProductsQuery } from "../redux/categoriesApi.jsx"
 import { useGetBrandsQuery } from "../redux/productsApi.jsx"
 
 import { NAV_LINKS, CATEGORIES, HERO_SLIDES, TRENDING,FLASH_DEALS, BRAND_DEALS, PERKS } from "../assets/products.js"
@@ -26,8 +26,10 @@ const HomePage = () => {
   const { data:categories, isLoading:loadingCat } = useGetCategoriesQuery();
   const { data:products, error, isLoading } = useGetProductsQuery();
   const { data:brands, brandError, brandLoading } = useGetBrandsQuery();
+  const { data:catProds, prodError, prodLoading } = useGetCatProductsQuery()
   console.log("categories", categories)
   console.log("products", products)
+  console.log("catProds", catProds?.categories)
   const scrollRef = useRef(null);
 
 
@@ -188,10 +190,7 @@ const HomePage = () => {
         </section>
 
         {/* ── Category Sections ── */}
-        {[
-          { title: "Phones & Tablets",  emoji: "📱", accent: "violet", items: TRENDING.filter((_, i) => [0,4,1,3].includes(i)) },
-          { title: "Home & Appliances", emoji: "🏠", accent: "orange", items: TRENDING.filter((_, i) => [3,6,5,2].includes(i)) },
-        ].map(section => (
+        {catProds?.categories?.map(section => (
           <section key={section.title}>
             <div className="flex items-center gap-3 mb-6">
               <span className="text-2xl">{section.emoji}</span>
@@ -200,7 +199,7 @@ const HomePage = () => {
               <button className="text-sm font-medium text-gray-500 hover:text-gray-800 flex items-center gap-1">View All <ArrowRight className="w-3.5 h-3.5" /></button>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {section.items.map(item => <ProductCard2 key={item.id} item={item} size="lg" />)}
+              {section?.products?.map(product => <ProductCard2 key={product.id} product={product} size="lg" />)}
             </div>
           </section>
         ))}
@@ -230,7 +229,7 @@ const HomePage = () => {
         <section>
           <SectionHeader icon={null} tag="Based on your history" title="Recently Viewed" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {products?.products?.slice(0, 4).map(product => <ProductCard2 key={product.id} product={product} />)}
+            {products?.products?.slice(6, 10).map(product => <ProductCard2 key={product.id} product={product} />)}
           </div>
         </section>
 

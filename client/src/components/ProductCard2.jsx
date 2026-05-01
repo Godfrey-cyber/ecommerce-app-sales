@@ -34,7 +34,7 @@ const ProductCard2 = ({ product, size = "md" }) => {
 	        {/*<span className="text-5xl group-hover:scale-110 transition-transform duration-500">{product?.emoji}</span>*/}
 	        <div className="rounded-xl h-28 flex items-center justify-center">
 		        <img src={product?.image} className="h-full w-full object-contain" alt=""/>
-		      </div>
+		    </div>
 	        {product?.discount > 0 && (
 	          <span className="absolute top-2 left-2 bg-red-500/90 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
 	            -{product?.discount}%
