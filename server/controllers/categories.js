@@ -1,4 +1,5 @@
 import Category from "../models/Category.js"
+import Products from "../models/Products.js"
 import slugify from 'slugify'
 
 // Create category (admin)
@@ -172,3 +173,27 @@ export const categoryBread = async (req, res) => {
     });
   }
 };
+
+// @GET Caregories with number Products
+export const categoryProd = async(req, res) => {
+    try {
+        const categories = await Products.aggregate([
+            {
+                $group:{
+                    _id: "$category",
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project:{
+                    _id: 0,
+                    category: "$_id",
+                    count: 1,
+                }
+            }
+        ]);
+        return res.status(200).json({ message: "Success", categories })
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}

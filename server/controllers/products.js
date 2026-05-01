@@ -306,3 +306,39 @@ export const deleteProduct = async (req, res) => {
         return res.status(500).json({ message: 'Server error while deleting product' })
     }   
 }
+
+export const getBrands = async (req, res) => {
+    try {
+        const brands = await Products.aggregate([
+            {
+                $match: { brand: { $ne: null }}
+            },
+            {
+                $group: {
+                    _id: "$brand",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    brand: "$_id",
+                    count: 1
+                },
+            },
+            {
+                $sort: { count: -1 }
+            }
+        ])
+        return res.status(200).json({
+            success: true,
+            message: "Brands fetched Successfully!",
+            brands
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server error while deleting product',
+        })
+    }
+}

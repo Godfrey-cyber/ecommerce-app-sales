@@ -1,8 +1,10 @@
 import express from 'express'
-import { getAllProducts, createProduct, getProduct, updateProduct, deleteProduct, myProducts } from "../controllers/products.js"
+import { getAllProducts, createProduct, getProduct, updateProduct, deleteProduct, myProducts, getBrands } from "../controllers/products.js"
 import { authenticate, restrictTo } from "../utilities/authMiddleware.js"
 const router = express.Router()
 
+// @All 
+router.get("/get-brands", getBrands);
 // @All 
 router.get("/get-products", getAllProducts);
 // @Single
