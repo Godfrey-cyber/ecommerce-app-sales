@@ -6,7 +6,7 @@ import {
   Bell, Menu, X, MapPin
 } from "lucide-react";
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useGetCategoriesQuery, useGetCatProductsQuery } from "../redux/categoriesApi.jsx"
 import { useGetBrandsQuery } from "../redux/productsApi.jsx"
 
@@ -27,6 +27,8 @@ const HomePage = () => {
   const { data:products, error, isLoading } = useGetProductsQuery();
   const { data:brands, brandError, brandLoading } = useGetBrandsQuery();
   const { data:catProds, prodError, prodLoading } = useGetCatProductsQuery()
+
+  const navigate = useNavigate()
   console.log("categories", categories)
   console.log("products", products)
   console.log("catProds", catProds?.categories)
@@ -48,14 +50,14 @@ const HomePage = () => {
           {/* Category sidebar */}
           <div className="hidden lg:flex flex-col gap-0.5 bg-white border border-gray-100 rounded-3xl p-2">
             {categories?.data?.map(c => (
-              <a key={c._id} href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-amber-50 group transition-all">
+              <Link to={`/${c.slug}`} key={c._id} href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-amber-50 group transition-all">
                 <span className="text-xl w-8 text-center">{c?.icon}</span>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-gray-800 group-hover:text-amber-800 leading-tight">{c.title}</p>
                   <p className="text-[10px] text-gray-400">{c?.count}</p>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-amber-500 ml-auto flex-shrink-0" />
-              </a>
+              </Link>
             ))}
             <div className="mt-2 mx-1 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 p-3 text-center">
               <p className="text-amber-900 font-bold text-xs mb-1">🛍️ Sell on Zuri</p>
@@ -169,24 +171,24 @@ const HomePage = () => {
 
             {/* 2×2 grid */}
             <div className="lg:col-span-4 grid grid-cols-4 gap-4">
-              {products?.products?.slice(0, 8).map(product => <ProductCard2 key={product.id} product={product} />)}
+              {products?.products?.slice(0, 8).map(product => <ProductCard2 key={product._id} product={product} />)}
             </div>
           </div>
         </section>
 
         {/* ── Brand Deals ── */}
         <section>
-          <SectionHeader icon={null} tag="Official Stores" title="Top Brands" />
-          <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
-            {brands?.brands?.slice(0, 6).map(brand => (
-                // <Link key={brand.brand} to={`/${brand.brand}`}>
-                  <button key={brand.brand} className="rounded-2xl bg-amber-100 hover:border border-amber-200 py-5 flex flex-col items-center gap-2 hover:opacity-90 hover:scale-105 transition-all duration-200 group">
-                    <span className="text-2xl">{brand?.emoji}</span>
-                    <p className="font-bold text-sm">{brand.brand}</p>
-                    <p className="text-[10px] opacity-60">{brand?.count}+ items</p>
-                  </button>
-            ))}
-          </div>
+            <SectionHeader icon={null} tag="Official Stores" title="Top Brands" />
+            <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
+                {brands?.brands?.slice(0, 6).map(brand => (
+                    // <Link key={brand.brand} to={`/${brand.brand}`}>
+                    <button onClick={() => navigate(`/${brand.brand}`)} key={brand.brand} className="rounded-2xl bg-amber-100 hover:border border-amber-200 py-5 flex flex-col items-center gap-2 hover:opacity-90 hover:scale-105 transition-all duration-200 group">
+                        <span className="text-2xl">{brand?.emoji}</span>
+                        <p className="font-bold text-sm">{brand.brand}</p>
+                        <p className="text-[10px] opacity-60">{brand?.count}+ items</p>
+                    </button>
+                ))}
+            </div>
         </section>
 
         {/* ── Category Sections ── */}
@@ -216,7 +218,7 @@ const HomePage = () => {
             <h2 className="text-2xl lg:text-3xl font-black text-white mb-2">Get Exclusive Deals</h2>
             <p className="text-white/50 text-sm">Join 240,000+ shoppers getting the best deals first.</p>
           </div>
-          <div className="relative z-10 flex gap-2 w-full lg:w-auto">
+          <div className="md:flex-row md:space-x-4 flex-col relative z-10 gap-2 w-full lg:w-auto">
             <input
               type="email"
               placeholder="Enter your email"

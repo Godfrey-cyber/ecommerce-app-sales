@@ -20,13 +20,13 @@ const Navbar = ({ categories, category }) => {
         {/* Main row */}
         <div className="flex items-center gap-4 h-16">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-1.5 flex-shrink-0">
+          <Link to='/home' className="flex items-center gap-1.5 flex-shrink-0">
             <div className="w-8 h-8 rounded-xl bg-amber-400 flex items-center justify-center font-black text-amber-900 text-sm">Z</div>
             <span className="text-xl font-black text-gray-900 tracking-tight">Zuri<span className="text-amber-500">.</span></span>
-          </a>
+          </Link>
 
           {/* Search */}
-          <div className={`flex-1 max-w-xl mx-4 flex items-center bg-gray-50 border rounded-xl px-3 gap-2 transition-all ${searchFocused ? "border-amber-400 shadow-sm bg-white" : "border-gray-200"}`}>
+          <div className={`hidden md:flex flex-1 max-w-xl mx-4 items-center bg-gray-50 border rounded-xl px-3 gap-2 transition-all ${searchFocused ? "border-amber-400 shadow-sm bg-white" : "border-gray-200"}`}>
             <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <input
               type="text"
@@ -35,7 +35,7 @@ const Navbar = ({ categories, category }) => {
               onBlur={() => setSearchFocused(false)}
               className="flex-1 bg-transparent py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none"
             />
-            <button className="hidden md:flex bg-amber-400 hover:bg-amber-500 text-amber-900 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+            <button className="bg-amber-400 hover:bg-amber-500 text-amber-900 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
               Search
             </button>
           </div>
