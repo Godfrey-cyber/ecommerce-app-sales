@@ -342,3 +342,43 @@ export const getBrands = async (req, res) => {
         })
     }
 }
+
+// GET /api/products/category/:categoryId
+export const getProductsByCategory1 = async (req, res) => {
+    try {
+        const products = await Products.find({
+          category: req.params.categoryId,
+        });
+
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+// GET /api/products/category/:categoryId
+export const getProductsByCategory = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+
+        // 1. Find subcategories
+        const subcategories = await Category.find({
+            parent: categoryId,
+        }).select("_id");
+
+        // 2. Collect IDs
+        const categoryIds = [
+            categoryId,
+            ...subcategories.map((c) => c._id),
+        ];
+
+        // 3. Fetch products
+        const products = await Products.find({
+            category: { $in: categoryIds },
+        });
+
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
