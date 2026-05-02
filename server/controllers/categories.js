@@ -179,7 +179,7 @@ export const categoryProd = async(req, res) => {
     try {
         const categories = await Category.aggregate([
             {
-                $match: { parent: null, "products.0": { $exists: true } }
+                $match: { parent: null }
             },
             // 2. Get subcategories
             {
