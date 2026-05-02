@@ -190,19 +190,22 @@ const HomePage = () => {
         </section>
 
         {/* ── Category Sections ── */}
-        {catProds?.categories?.map(section => (
-          <section key={section.title}>
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">{section.emoji}</span>
-              <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
-              <div className="flex-1 h-px bg-gray-100 ml-2" />
-              <button className="text-sm font-medium text-gray-500 hover:text-gray-800 flex items-center gap-1">View All <ArrowRight className="w-3.5 h-3.5" /></button>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {section?.products?.map(product => <ProductCard2 key={product.id} product={product} size="lg" />)}
-            </div>
-          </section>
-        ))}
+        <section className="my-4">
+            {catProds?.categories?.map(section => (
+              <div className="my-2 md:my-4 lg:my-6" key={section.title}>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-2xl"></span>
+                  {/*<h2 className="text-xl font-bold text-gray-900">{section.title}</h2>*/}
+                  <SectionHeader icon={null} tag="Official Stores" title={`${section.title}`} />
+                  <div className="flex-1 h-px bg-gray-100 ml-2" />
+                  <button className="text-sm font-medium text-gray-500 hover:text-gray-800 flex items-center gap-1">View All <ArrowRight className="w-3.5 h-3.5" /></button>
+                </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  {section?.products?.map(product => <ProductCard2 key={product.id} product={product} size="lg" />)}
+                </div>
+              </div>
+            ))}
+        </section>
 
         {/* ── Newsletter ── */}
         <section className="bg-gradient-to-br from-gray-900 to-slate-800 rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">

@@ -9,7 +9,6 @@ export const productsApi = createApi({
     tagTypes: ['Product', 'Products'],
   
     endpoints: (builder) => ({
-    
         // Get all products
         getProducts: builder.query({
           query: () => 
@@ -27,6 +26,12 @@ export const productsApi = createApi({
         // Get one product
         getProductById: builder.query({
           query: (id) => `/products/get-product/${id}`,
+          providesTags: (result, error, id) => [{ type: 'Product', id }],
+        }),
+
+        // Get products by category
+        getProductByCategory: builder.query({
+          query: (id) => `/get-products-by-category/${id}`,
           providesTags: (result, error, id) => [{ type: 'Product', id }],
         }),
         
@@ -72,4 +77,5 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useGetBrandsQuery,
+  useGetProductByCategoryQuery,
 } = productsApi;

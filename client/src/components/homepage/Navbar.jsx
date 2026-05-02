@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom"
 
-const Navbar = ({ categories }) => {
+const Navbar = ({ categories, category }) => {
 	const [menuOpen, setMenuOpen] = useState(false);
   	const [searchFocused, setSearchFocused] = useState(false);
 	return (
@@ -35,7 +35,7 @@ const Navbar = ({ categories }) => {
               onBlur={() => setSearchFocused(false)}
               className="flex-1 bg-transparent py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none"
             />
-            <button className="bg-amber-400 hover:bg-amber-500 text-amber-900 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+            <button className="hidden md:flex bg-amber-400 hover:bg-amber-500 text-amber-900 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
               Search
             </button>
           </div>
@@ -78,7 +78,7 @@ const Navbar = ({ categories }) => {
           ))}*/}
            	<div>
 	          {categories?.data?.map(cat => (
-	            <Link key={cat?._id} to={`/${cat?.slug}`} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all ${cat?.title === "Deals" ? "text-red-600 font-bold hover:bg-red-50" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"}`}>{cat?.title}</Link>
+	            <Link key={cat?._id} to={`/${cat?.slug}`} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all ${cat?.slug === category ? "text-red-600 font-bold hover:bg-red-50" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"}`}>{cat?.title}</Link>
 	          ))}
       		</div>
       		<span/>
