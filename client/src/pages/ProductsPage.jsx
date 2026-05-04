@@ -10,7 +10,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useSelector,useDispatch } from "react-redux"
 import { useGetProductByIdQuery, useGetProductsQuery } from "../redux/productsApi.jsx"
 import { useCreateReviewMutation } from "../redux/reviewsApi.jsx"
+import Navbar from "../components/homepage/Navbar.jsx"
 import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
+import { useGetCategoriesQuery, useGetCatProductsQuery } from "../redux/categoriesApi.jsx"
 
 const ProductsPage = () => {
 	const [selectedImage, setSelectedImage] = useState(0);
@@ -22,6 +24,8 @@ const ProductsPage = () => {
     const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
     const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
     const [createReview, { isLoading: isUploading }] = useCreateReviewMutation();
+    const { data:categories, isLoading:loadingCat } = useGetCategoriesQuery();
+
   	const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('details');
   	const [action, setAction] = useState(null);
@@ -66,7 +70,8 @@ const ProductsPage = () => {
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 		{/*<Header />*/}
-        <Header1 />
+        {/*<Header1 />*/}
+        <Navbar categories={categories} />
       <div className="max-w-7xl mx-auto px-4 py-2 lg:py-6 mt-4">
         {/* Main Product Section */}  
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-2">

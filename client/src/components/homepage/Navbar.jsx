@@ -49,10 +49,12 @@ const Navbar = ({ categories, category }) => {
             <button className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
               <Heart className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-100 transition-colors relative">
-              <ShoppingCart className="w-5 h-5 text-gray-600" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-amber-400 text-amber-900 text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
-            </button>
+            <Link to="/cart/checkout">
+                <button className="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-100 transition-colors relative">
+                  <ShoppingCart className="w-5 h-5 text-gray-600" />
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-amber-400 text-amber-900 text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+                </button>
+            </Link>
             <button className="flex items-center gap-2 pl-2 pr-3 py-2 rounded-xl hover:bg-gray-100 transition-colors ml-1">
               <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center">
                 <User className="w-3.5 h-3.5 text-white" />
@@ -78,7 +80,7 @@ const Navbar = ({ categories, category }) => {
           ))}*/}
            	<div>
 	          {categories?.data?.map(cat => (
-	            <Link key={cat?._id} to={`/${cat?.slug}`} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all ${cat?.slug === category ? "text-red-600 font-bold hover:bg-red-50" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"}`}>{cat?.title}</Link>
+	            <Link key={cat?._id} to={`/categories/${cat?.slug}`} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all ${cat?.slug === category ? "text-red-600 font-bold hover:bg-red-50" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"}`}>{cat?.title}</Link>
 	          ))}
       		</div>
       		<span/>

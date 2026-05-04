@@ -56,7 +56,7 @@ function App() {
                     <Route path="/payment/:method/order/:id" element={<BankPayment />} />
                     <Route path="/pay/checkout" element={user ? <Checkout /> : <HomePage />} />
                     <Route path="/home" element={<NewHomePage />} />
-                    <Route path="/:category" element={<Category />} />
+                    <Route path="/categories/:category" element={<Category />} />
                 </Routes>
             </BrowserRouter>
         </section>

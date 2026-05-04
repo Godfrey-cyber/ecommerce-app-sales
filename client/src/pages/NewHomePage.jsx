@@ -50,7 +50,7 @@ const HomePage = () => {
           {/* Category sidebar */}
           <div className="hidden lg:flex flex-col gap-0.5 bg-white border border-gray-100 rounded-3xl p-2">
             {categories?.data?.map(c => (
-              <Link to={`/${c.slug}`} key={c._id} href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-amber-50 group transition-all">
+              <Link to={`/categories/${c.slug}`} key={c._id} className="flex items-center gap-3 px-3 py-2.5 rounded-2xl hover:bg-amber-50 group transition-all">
                 <span className="text-xl w-8 text-center">{c?.icon}</span>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-gray-800 group-hover:text-amber-800 leading-tight">{c.title}</p>
@@ -111,7 +111,7 @@ const HomePage = () => {
           <SectionHeader icon={null} tag="Browse" title="Shop by Category" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {categories?.data?.map(c => (
-              <Link key={c._id} to={`/${c.slug}`} className="group flex flex-col items-center gap-3 rounded-2xl py-6 px-4 hover:shadow-md transition-all duration-200 border border-transparent hover:border-amber-200 text-center">
+              <Link key={c._id} to={`/categories/${c.slug}`} className="group flex flex-col items-center gap-3 rounded-2xl py-6 px-4 hover:shadow-md transition-all duration-200 border border-transparent hover:border-amber-200 text-center">
                 <span className="text-3xl group-hover:scale-110 transition-transform duration-300">{c?.icon}</span>
                 <div>
                   <p className={`text-xs font-bold ${c?.accent} leading-tight`}>{c.title}</p>

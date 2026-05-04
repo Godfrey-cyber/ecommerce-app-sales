@@ -31,8 +31,8 @@ export const productsApi = createApi({
 
         // Get products by category
         getProductByCategory: builder.query({
-          query: (id) => `/get-products-by-category/${id}`,
-          providesTags: (result, error, id) => [{ type: 'Product', id }],
+          query: ({ category, page = 1, limit = 24 }) => `products/get-products-by-category/${category}?page=${page}&limit=${limit}`, // ?page=1&limit=3
+          providesTags: (result, error, category) => [{ type: 'Product', category }],
         }),
         
         // Create product
