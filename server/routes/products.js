@@ -6,7 +6,7 @@ const router = express.Router()
 // @All products Brands 
 router.get("/get-brands", getBrands);
 // @All products by Category 
-router.get("/get-products-by-category/:categoryId", getProductsByCategory);
+router.get("/get-products-by-category/:slug", getProductsByCategory);
 // @All 
 router.get("/get-products", getAllProducts);
 // @Single

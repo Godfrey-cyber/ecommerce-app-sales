@@ -69,9 +69,13 @@ const CategorySchema = new mongoose.Schema({
   level: {
     type: Number,
     default: 0,  // 0 = department, 1 = category, 2 = subcategory
-    enum: [0, 1]
+    enum: [0, 1, 2]
   },
   image: {
+    type: String,
+    default: ''
+  },
+  banner: {
     type: String,
     default: ''
   },

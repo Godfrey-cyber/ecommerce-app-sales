@@ -359,25 +359,56 @@ export const getProductsByCategory1 = async (req, res) => {
 // GET /api/products/category/:categoryId
 export const getProductsByCategory = async (req, res) => {
     try {
-        const { categoryId } = req.params;
+        const { slug } = req.params;
+
+        console.log("slug", slug)
 
         // 1. Find subcategories
-        const subcategories = await Category.find({
-            parent: categoryId,
-        }).select("_id");
+        const parentCategory = await Category.findOne({ slug }).select("_id title slug");
 
-        // 2. Collect IDs
+        if (!parentCategory) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        // 2. Find all subcategories belonging to this parent
+        const subcategories = await Category.find({
+            parent: parentCategory._id,   // query by _id, not slug
+        }).select("_id title slug");
+
+        // 3. Collect parent + all subcategory IDs
         const categoryIds = [
-            categoryId,
+            parentCategory._id,
             ...subcategories.map((c) => c._id),
         ];
 
-        // 3. Fetch products
-        const products = await Products.find({
-            category: { $in: categoryIds },
-        });
+        // 4. Pagination
+        const page  = parseInt(req.query.page)  || 1;
+        const limit = parseInt(req.query.limit) || 24;
+        const skip  = (page - 1) * limit;
 
-        res.json(products);
+        // 5. Fetch products with pagination + total count
+        const [products, total] = await Promise.all([
+            Products.find({ category: { $in: categoryIds } })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate("category", "title slug"),
+            Products.countDocuments({ category: { $in: categoryIds } }),
+        ]);
+
+        res.json({
+            category: parentCategory,
+            subcategories: subcategories,
+            products,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
