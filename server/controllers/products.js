@@ -361,6 +361,8 @@ export const getProductsByCategory = async (req, res) => {
     try {
         const { slug } = req.params;
 
+        console.log(req.headers)
+
         console.log("slug", slug)
 
         // 1. Find subcategories
