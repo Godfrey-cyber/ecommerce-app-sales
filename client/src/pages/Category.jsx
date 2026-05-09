@@ -39,7 +39,7 @@ const Category = () => {
 		              <Link key={c._id} to={`/categories/${c.slug}`} className="group flex flex-col items-center gap-3 rounded-2xl py-6 px-4 hover:shadow-md transition-all duration-200 border border-transparent hover:border-amber-200 text-center">
 		                <span className="text-3xl group-hover:scale-110 transition-transform duration-300">{c?.icon}</span>
 		                <div>
-		                  <p className={`text-xs font-bold ${c?.accent} leading-tight`}>{c.title}</p>
+		                  <p className={`text-xs font-bold ${c?.accent} leading-tight`}>{c?.title}</p>
 		                  <p className="text-[10px] text-gray-400 mt-0.5">{c?.count}</p>
 		                </div>
 		              </Link>

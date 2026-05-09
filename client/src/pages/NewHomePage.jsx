@@ -16,7 +16,7 @@ import FlashCard from "../components/homepage/FlashCard.jsx"
 import SectionHeader from "../components/homepage/SectionHeader.jsx"
 import HeroCarousel from "../components/homepage/HeroCarousel.jsx"
 import Navbar from "../components/homepage/Navbar.jsx"
-import Footer from "../components/Footer.jsx"
+import Footer from "../components/Footer2.jsx"
 import StarRow from "../components/StarRow.jsx"
 
 const fmt = (n) =>
