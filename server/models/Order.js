@@ -66,6 +66,47 @@ const shippingAddressSchema = new mongoose.Schema({
     },
 });
 
+const paymentDetailsSchema = new mongoose.Schema({
+    checkoutRequestId:  {
+        type: String,
+        default: '',
+    },
+    // merchantRequestId:  {
+    //     type: String,
+    //     default: '',
+    // },
+    // mpesaReceiptNumber: {
+    //     type: String,
+    //     default: '',
+    // },
+    // phoneNumber:        {
+    //     type: String,
+    //     default: '',
+    // },
+    // Stripe
+    stripePaymentIntentId: {
+        type: String,
+        default: '',
+    },
+    stripeChargeId:        {
+        type: String,
+        default: '',
+    },
+    // Shared
+    amount:        {
+        type: Number,
+        default: '',
+    },
+    failureReason: {
+        type: String,
+        default: '',
+    },
+    transactionDate: {
+        type: String,
+        default: '',
+    },
+});
+
 const orderSchema = new mongoose.Schema(
     {
         // User who placed the order
@@ -94,14 +135,22 @@ const orderSchema = new mongoose.Schema(
             required: true,
         },
         
-        // ✅ Delivery method (from checkout page)
+        // Delivery method (from checkout page)
         deliveryMethod: {
             type: String,
             enum: ['Door Delivery', 'Pickup Station'],
             required: true,
         },
+        // Delivery method (from checkout page)
+        paymentDetails: {
+            type: paymentDetailsSchema,
+            required: true,
+        },
+        paidAt: {
+            type: Date,
+        },
         
-        // ✅ Payment method (from checkout page)
+        // Payment method (from checkout page)
         paymentMethod: {
             type: String,
             enum: ['M-Pesa', 'Bank', 'Pay-On-Delivery'],
@@ -116,7 +165,7 @@ const orderSchema = new mongoose.Schema(
             index: true,
         },
         
-        // ✅ Pricing breakdown (from cart)
+        // Pricing breakdown (from cart)
         subtotal: {
             type: Number,
             required: true,
