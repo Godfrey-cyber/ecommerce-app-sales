@@ -9,8 +9,6 @@ export const createOrder = async (req, res) => {
 	const session = await mongoose.startSession();
   	session.startTransaction();
   	const { accessToken } = req.cookies
-  	console.log(accessToken)
-  	console.log(req.userId)
   	try {
   		const {
 		    items,
@@ -100,18 +98,18 @@ export const createOrder = async (req, res) => {
 	    // Create Order.
 	    const order = await Order.create([{
 	    	user: req.userId,
-	    	items: items.map(item => ({ // ✅ Added this
+	    	items: items.map(item => ({
 		        product: item.product,
 		        title: item.title,
 		        quantity: item.quantity,
 		        price: item.price,
-		        totalPrice,
+		        totalPrice: item.price * item.quantity,
 		    })),
 	    	shippingAddress,
 		    deliveryMethod,
 		    paymentMethod,
 		    subtotal,
-		    deliveryFee: shippingPrice,    // ✅ Saved here
+		    deliveryFee: shippingPrice, 
 		    tax,
 		    discount,
 		    totalAmount: totalPrice,
