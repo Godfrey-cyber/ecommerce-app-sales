@@ -48,7 +48,7 @@ const Navbar = ({ categories, category, totalItems }) => {
         {/* Main row */}
         <div className="flex items-center gap-4 h-16">
           {/* Logo */}
-          <Link to='/home' className="flex items-center gap-1.5 flex-shrink-0">
+          <Link to='/' className="flex items-center gap-1.5 flex-shrink-0">
             <div className="w-8 h-8 rounded-xl bg-amber-400 flex items-center justify-center font-black text-amber-900 text-sm">Z</div>
             <span className="text-xl font-black text-gray-900 tracking-tight">Zuri<span className="text-amber-500">.</span></span>
           </Link>
