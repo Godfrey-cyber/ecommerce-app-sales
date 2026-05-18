@@ -16,31 +16,31 @@ export const orderApi = createApi({
     
         // @Admin - Get all orders
         getOrders: builder.query({
-          query: () => 
-            '/orders/get-orders',
-          providesTags: ['Orders'],
+            query: () => 
+                '/orders/get-orders',
+            providesTags: ['Orders'],
         }),
         
         // @Admin - Get one product
         getOrderById: builder.query({
-          query: (id) => `/orders/get-order/${id}`,
-          providesTags: (result, error, id) => [{ type: 'Order', id }],
+            query: (id) => `/orders/get-order/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Order', id }],
         }),
         
         // @Admin - Create order
         createOrder: builder.mutation({
-          query: (newOrder) => ({
-            url: '/orders/create-order',
-            method: 'POST',
-            body: newOrder,
-          }),
+            query: (newOrder) => ({
+                url: '/orders/create-order',
+                method: 'POST',
+                body: newOrder,
+            }),
           invalidatesTags: ['Order'],
         }),    
     }),
 });
 
 export const {
-  useGetOrdersQuery,
-  useGetOrderByIdQuery,
-  useCreateOrderMutation
+    useGetOrdersQuery,
+    useGetOrderByIdQuery,
+    useCreateOrderMutation
 } = orderApi;
