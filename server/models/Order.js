@@ -144,7 +144,7 @@ const orderSchema = new mongoose.Schema(
         // Delivery method (from checkout page)
         paymentDetails: {
             type: paymentDetailsSchema,
-            required: true,
+            // required: true,
         },
         paidAt: {
             type: Date,

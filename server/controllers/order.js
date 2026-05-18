@@ -14,6 +14,7 @@ export const createOrder = async (req, res) => {
 		    items,
 		    shippingAddress,
 		    deliveryMethod,
+		    paymentDetails,
 		    paymentMethod,
 		    subtotal,
 		    deliveryFee,
@@ -22,7 +23,7 @@ export const createOrder = async (req, res) => {
 		    totalAmount,
 	    } = req.body;
 
-	    console.log("Req.body ====", req.body)
+	    // console.log("Req.body ====", req.body)
 
     	if (!items || items.length === 0) {
     		await session.abortTransaction();
@@ -61,7 +62,7 @@ export const createOrder = async (req, res) => {
 	    		message: "No products found in database" 
 	    	});
 	    }
-	    console.log("products", products)
+	    // console.log("products", products)
 	    //validate products
 	    const validatedProducts = [];
 
@@ -106,6 +107,7 @@ export const createOrder = async (req, res) => {
 		        totalPrice: item.price * item.quantity,
 		    })),
 	    	shippingAddress,
+	    	paymentDetails,
 		    deliveryMethod,
 		    paymentMethod,
 		    subtotal,
@@ -157,8 +159,8 @@ export const createOrder = async (req, res) => {
 
   	} catch (error) {
   		await session.abortTransaction();
-  		console.log(error)
-  		return res.status(500).json({ success: false, message: error.message })
+  		
+  		return res.status(500).json({ success: false, message: error })
   	} finally {
 	    session.endSession();
 	}
@@ -183,9 +185,7 @@ export const getOrders = async (req, res) => {
 				message: "Not Authorized"
 			})
 		}
-		console.log("query", query)
-		console.log("role", req.user.role)
-		console.log("role", req.user)
+
 		const orders = await Order.find(query)
 	    	.populate('user', 'firstname lastname email')
 	    if (!orders) {

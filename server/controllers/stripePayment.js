@@ -1,4 +1,5 @@
 import Order from "../models/Order.js"
+import Products from "../models/Products.js"
 import slugify from 'slugify'
 import mongoose from 'mongoose'
 import Stripe from "stripe";
@@ -8,6 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const createPaymentIntent = async (req, res) => {
 	try {
 		const { orderId } = req.body; // stripePaymentIntentId
+		console.log("orderId", orderId)
 
 		// @validate ObjectId format
 	    if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -25,6 +27,9 @@ export const createPaymentIntent = async (req, res) => {
 		    metadata: { orderId: orderId.toString() },
 		    automatic_payment_methods: { enabled: true },
 	    });
+
+	    console.log("id:",            paymentIntent.id);
+		console.log("client_secret:", paymentIntent.client_secret);
 
 	    // Save intent ID on order
 	    await Order.findByIdAndUpdate(orderId, {
