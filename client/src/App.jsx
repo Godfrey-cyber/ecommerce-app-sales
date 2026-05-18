@@ -12,7 +12,6 @@ import { axiosInstance } from './utilities/apiCalls.js';
 import HomePage from "./pages/HomePage.jsx"
 import CartPage from "./pages/CartPage.jsx"
 import CheckoutPage1 from "./pages/CheckoutPage1.jsx"
-// import HeroCarousel from "./pages/LoginPage.jsx"
 import RegisterForm from "./pages/RegisterForm.jsx"
 import LoginForm from "./pages/LoginForm.jsx"
 import NotFound404Page from "./pages/NotFound404Page.jsx"
@@ -26,7 +25,6 @@ import Checkout from "./pages/Checkout.jsx"
 import NewHomePage from "./pages/NewHomePage.jsx"
 import Category from "./pages/Category.jsx"
 import ShepherdsFieldHomepage from "./pages/NewPage.jsx"
-// payment/mpesa/${result.order._id}
 
 function App() {
     const dispatch = useDispatch();
