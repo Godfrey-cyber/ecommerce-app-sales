@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import HeaderModal from "../header/HeaderModal.jsx"
 import { ShoppingCart, Search, Heart, User, Bell, Menu, X, Check, ChevronDown } from "lucide-react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { useGetMeQuery, useLogoutMutation } from "../../redux/authApi.jsx"
 
@@ -115,12 +115,15 @@ const Navbar = ({ categories, category, totalItems }) => {
                   />
                 </button>
                 ) : (
+                <Link to="/auth/login">
                     <button onClick={() => setShowUserMenu(!showUserMenu)} className="flex items-center gap-2 pl-2 pr-3 py-2 rounded-xl hover:bg-gray-100 transition-colors ml-1">
                         <div className="w-7 h-7 rounded-full bg-gray-900 flex items-center justify-center">
                             <User className="w-3.5 h-3.5 text-white" />
                         </div>
                       <span className="hidden lg:block text-sm font-medium text-gray-700">Account</span>
                     </button>
+                </Link>
+                    
             )}
             {/* ✅ Dropdown Menu */}
             {userData?.user && showUserMenu && (
