@@ -159,6 +159,14 @@ const Checkout = () => {
         // Get client secret from backend for this order
         const result = await createPaymentIntent({ orderId })
 
+        if (!result || result?.error) {
+            toast.error(result?.error?.data?.message || "Card element not found. Please refresh.");
+            return;
+        }
+
+        console.log("result", result)
+        console.log("cardElement", cardElement)
+
         const { clientSecret } = result?.data;
 
         if (!clientSecret) {
@@ -166,7 +174,7 @@ const Checkout = () => {
             return;
         }
 
-        console.log("PaymentIntent result:", clientSecret);
+        console.log("clientSecret:", clientSecret);
 
         const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
@@ -179,6 +187,8 @@ const Checkout = () => {
             },
         })
 
+        console.log("paymentIntent", paymentIntent)
+
         if (error) throw new Error(error.message);
         console.log("error", error)
 
@@ -187,6 +197,8 @@ const Checkout = () => {
             return true;
         }
     }
+
+    console.log("isPaying", isPaying)
 
     // Main Checkout
     const handleCheckout = async () => {
@@ -785,9 +797,9 @@ const Checkout = () => {
               {/* Pay button */}
               <button
                 onClick={handleCheckout}
-                disabled={isCreating}
+                disabled={isPaying}
                 className={`w-full py-4 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2.5 transition-all duration-200
-                  ${isCreating
+                  ${isPaying
                     ? "bg-amber-400 cursor-not-allowed"
                     : "bg-amber-400 hover:bg-amber-400 active:scale-[0.99] shadow-lg shadow-amber-200 hover:shadow-amber-300"
                   }`}
