@@ -7,7 +7,7 @@
     "dev": "nodemon index.js"
   },
   "type": "module",
-  "keywords": [],
+  "keywords": ["mongodb", "express", "react", "mongoose"],
   "author": "Godfrey Ndiritu",
   "license": "ISC",
   "dependencies": {
