@@ -1,17 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './baseQuery';
 
 export const cartApi = createApi({
     reducerPath: 'cartApi',
-
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_URL,
-        credentials: "include",
-        prepareHeaders: (headers, { getState }) => {
-            return headers;
-        },
-    }),
-    // console.log(token)
-
+    baseQuery,
     tagTypes: ['Cart', 'CartItems'],
 
     endpoints: (builder) => ({
