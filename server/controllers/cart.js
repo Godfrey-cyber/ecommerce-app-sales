@@ -73,7 +73,9 @@ export const addToCart = async (req, res) => {
         cart.calculateTotals();
         
         await cart.save();
-        console.log(cart)
+        console.log("cart", cart)
+        console.log("-SECRET_KEY-", process.env.STRIPE_SECRET_KEY)
+
         return res.status(200).json({ message: "successfull🥇 added items in cart", cart: cart });
 
     } catch (error) {
@@ -247,10 +249,9 @@ export const removeCartItem = async (req, res, next) => {
 };
 
 export const getCart = async (req, res) => {
-    console.log("userId", req.userId)
-  try {
+    console.log("-userId-", req.userId)
+    try {
     	const cart = await Cart.find({ user: req.userId })
-        console.log("userId", req.userId)
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' })
         }

@@ -9,6 +9,7 @@ export const createOrder = async (req, res) => {
 	const session = await mongoose.startSession();
   	session.startTransaction();
   	const { accessToken } = req.cookies
+  	console.log("secret_key", process.env.STRIPE_SECRET_KEY)
   	try {
   		const {
 		    items,
@@ -169,7 +170,6 @@ export const createOrder = async (req, res) => {
 export const getOrders = async (req, res) => {
 	try {
 		let query = {}
-		console.log("-admin-", req.user.role)
 
 		if (req.user.role === "admin") {
 			query = {}

@@ -14,7 +14,7 @@ export const createProduct = async(req, res) => {
     }
 
     if (!req.userId) {
-      console.log(req.userId)  
+      // console.log(req.userId)  
       return res.status(400).json("Unauthorized");
     }
     const slug = slugify(title, { lower: true })
@@ -360,10 +360,6 @@ export const getProductsByCategory1 = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
     try {
         const { slug } = req.params;
-
-        console.log(req.headers)
-
-        console.log("slug", slug)
 
         // 1. Find subcategories
         const parentCategory = await Category.findOne({ slug }).select("_id title slug");

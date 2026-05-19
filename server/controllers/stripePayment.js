@@ -9,7 +9,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const createPaymentIntent = async (req, res) => {
 	try {
 		const { orderId } = req.body; // stripePaymentIntentId
-		console.log("orderId", orderId)
 
 		// @validate ObjectId format
 	    if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -22,7 +21,7 @@ export const createPaymentIntent = async (req, res) => {
 
 	    // @Create payment intent
 	    const paymentIntent = await stripe.paymentIntents.create({
-		    amount:   Math.round(order.totalAmount * 100), // Stripe uses smallest currency unit
+		    amount:   Math.round(order.totalAmount * 100),
 		    currency: "kes",
 		    metadata: { orderId: orderId.toString() },
 		    automatic_payment_methods: { enabled: true },
@@ -34,6 +33,10 @@ export const createPaymentIntent = async (req, res) => {
 	    // Save intent ID on order
 	    await Order.findByIdAndUpdate(orderId, {
 	      	"paymentDetails.stripePaymentIntentId": paymentIntent.id,
+	      	// "paymentDetails.stripeChargeId": paymentIntent.client_secret,
+	      	// "paymentDetails.transactionDate": paymentIntent.created,
+	      	// "paymentDetails.amount": paymentIntent.amount,
+	      	// "paymentDetails.failureReason": paymentIntent.cancellation_reason,
 	    });
 
 	    res.json({
@@ -43,6 +46,7 @@ export const createPaymentIntent = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 }
+
 
 export const stripeWebhook = async (req, res) => {
 	const sig = req.headers["stripe-signature"];
@@ -95,6 +99,6 @@ export const stripeWebhook = async (req, res) => {
 	    res.json({ received: true });
     } catch (error) {
     	console.error("Stripe webhook error:", error);
-    	res.status(500).json({ message: err.message });
+    	res.status(500).json({ message: error.message });
     }
 }

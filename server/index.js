@@ -1,4 +1,4 @@
-simport express from 'express'
+import express from 'express'
 import dotenv from 'dotenv'
 dotenv.config()
 import cookieParser from "cookie-parser"
@@ -20,16 +20,17 @@ import paymentRoutes from "./routes/payments.js"
 const app = express()
 const PORT = process.env.PORT || 8080;
 // app.use(authMiddleware)
-app.use(express.json());
+// app.use(express.json());
 app.use(cookieParser())
 
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:4000"]
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:4000","http://localhost:5173"]
 app.use(cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:4000"],
+    origin: [process.env.CLIENT_URL, "http://localhost:4000", "http://localhost:5173"],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowdHeaders: [
         "Content-Type",
         "Authorization",
+        "Cookie",
         "Cache-Control",
         "Expires",
         "Pragma"
@@ -60,7 +61,7 @@ app.use("/v1/api/categories", categoryRoutes);
 app.use("/v1/api/reviews", reviewsRoutes);
 app.use("/v1/api/orders", orderRoutes);
 app.use("/v1/api/payments", paymentRoutes);
-
+app.use(express.json());
 app.use("*", (req, res) => {
   res.status(404).json({ success: false, msg: `${req.method} - ${req.originalUrl} is not a recognized route.` });
 });

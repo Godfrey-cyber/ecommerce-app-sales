@@ -11,8 +11,6 @@ export const addReview = async (req, res, next) => {
 
     try {
         const { id, rating, comment } = req.body;
-        console.log(id, rating, comment, req.userId)
-        console.log("userId", req.userId)
 
         // Gate: must have a delivered order with this product
         // const purchasedOrder = await Order.findOne({
@@ -59,7 +57,7 @@ export const addReview = async (req, res, next) => {
 
     } catch (error) {
         // await session.abortTransaction();
-        console.log(error)
+        process.env === 'production' && console.log(error)
         if (error.code === 11000) {
             return res.status(400).json({
                 message: "You have already reviewed this product",
