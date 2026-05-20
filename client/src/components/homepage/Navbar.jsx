@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import HeaderModal from "../header/HeaderModal.jsx"
 import { ShoppingCart, Search, Heart, User, Bell, Menu, X, Check, ChevronDown } from "lucide-react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { useGetMeQuery, useLogoutMutation } from "../../redux/authApi.jsx"
 
@@ -13,6 +13,7 @@ const Navbar = ({ categories, category, totalItems }) => {
     const { data:userData } = useGetMeQuery();
     const [ logout, { isLoading } ] = useLogoutMutation();
     const menuRef = useRef(null);
+    const navigate = useNavigate()
     console.log("totalItems", totalItems)
 
     useEffect(() => {
