@@ -164,17 +164,12 @@ const Checkout = () => {
             return;
         }
 
-        console.log("result", result)
-        console.log("cardElement", cardElement)
-
         const { clientSecret } = result?.data;
 
         if (!clientSecret) {
             toast.error("Failed to initialize payment. Try again.");
             return;
         }
-
-        console.log("clientSecret:", clientSecret);
 
         const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
