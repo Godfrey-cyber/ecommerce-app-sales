@@ -6,6 +6,7 @@ import { createRefreshToken, createAccessToken, validateEmail, validatePassword 
 export const registerUser = async (req, res) => {
     try {
         const { lastname, firstname, email, password } = req.body;
+        console.log("password", password)
         // check all fields
         if (!email || !password || !lastname || !firstname) {
             return res.status(400).json({ msg: '❌ Please enter all fields' })
@@ -34,6 +35,7 @@ export const registerUser = async (req, res) => {
         await user.save()
         return res.status(201).json({ msg: "User Registration successfull🥇" })
     } catch(error) {
+        console.log(error)
         return res.status(500).json({ message: error.message })
     }
 }
