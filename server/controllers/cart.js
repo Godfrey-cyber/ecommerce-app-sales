@@ -178,7 +178,7 @@ export const updateCartItem = async (req, res, next) => {
                 cart,
             });
         }
-        
+
         // 7. Check stock availability (Only if increasing quantity)
         if (quantityDiff > 0 && product.stock < quantityDiff) {
             await session.abortTransaction();
@@ -273,17 +273,34 @@ export const removeCartItem = async (req, res, next) => {
 };
 
 export const getCart = async (req, res) => {
-    console.log("-userId-", req.userId)
     try {
-    	const cart = await Cart.find({ user: req.userId })
+        // 1. FIXED: Use findOne instead of find, and add .lean() for blazing-fast reads
+        const cart = await Cart.findOne({ user: req.userId }).lean();
+        
+        // 2. This check now works flawlessly because findOne returns null if not found
         if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' })
+            return res.status(404).json({ 
+                success: false,
+                message: 'Cart not found' 
+            });
         }
-        return res.status(200).json({ message: "Cart fetched successfull🥇", cart, success: true })
+
+        return res.status(200).json({ 
+            success: true,
+            message: "Cart fetched successfully", 
+            cart 
+        });
+
     } catch (error) {
-    	return res.status(500).json({ message: error.message, success: false })
+        // Log locally for debugging
+        console.error(`Error in getCart for user ${req.userId}:`, error);
+        
+        return res.status(500).json({ 
+            success: false, 
+            message: "An internal server error occurred while retrieving your cart." 
+        });
     }
-}
+};
 // default: "active"
 	// Cart.findOne({ status: "active" })
 export const getOne = async (req, res) => {
@@ -295,12 +312,47 @@ export const getOne = async (req, res) => {
     }
 }
 
-export const deleteCart = async (req, res) => {
+export const deleteCart = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
-        const cart = await Cart.findOne({ user: req.userId });
-        await Cart.deleteMany({})
-        return res.status(200).json({ message: "Product fetch successfull🥇" })
+        // 1. Find the user's specific cart within the transaction context
+        const cart = await Cart.findOne({ user: req.userId }).session(session);
+        
+        if (!cart) {
+            await session.abortTransaction();
+            return res.status(404).json({ success: false, message: 'Cart not found' });
+        }
+
+        // 2. Loop through cart items and return stock to each product
+        if (cart.items && cart.items.length > 0) {
+            for (const item of cart.items) {
+                await Product.updateOne(
+                    { _id: item.product },
+                    { $inc: { stock: item.quantity } },
+                    { session }
+                );
+            }
+        }
+
+        // 3. FIXED: Safely delete ONLY this user's cart document
+        await Cart.deleteOne({ user: req.userId }).session(session);
+
+        await session.commitTransaction();
+
+        return res.status(200).json({ 
+            success: true, 
+            message: "Cart emptied and deleted successfully" 
+        });
+
     } catch (error) {
-        return res.status(401).json(error)
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+        // Pass error to global handler instead of leaking raw details with a 401
+        next(error); 
+    } finally {
+        session.endSession();
     }
-}
+};
