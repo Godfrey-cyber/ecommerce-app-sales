@@ -5,12 +5,31 @@ import mongoose from 'mongoose'
 
 // Add to cart (vendor/admin)
 export const addToCart = async (req, res) => {
-    const { productId, quantity } = req.body;
+    // @Validate basic data input
+    let { productId, quantity } = req.body;
+    quantity = parseInt(quantity, 10)
+
+    if (!productId || isNaN(quantity) || quantity <= 0) {
+        return res.status(400).json({ 
+            success: false, 
+            message: '❌ Valid Product ID and positive quantity are required.' 
+        });
+    }
 
     try {
         // @validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({ msg: '❌ Invalid product Id' })
+        }
+
+
+        // 3. Optimized Product Fetch (Only select required fields to save memory)
+        const product = await Product.findById(productId).select('stock title price finalPrice discountAmount image');
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
         }
 
         // @Get the product
@@ -23,36 +42,32 @@ export const addToCart = async (req, res) => {
             });
         }
 
-        // Check stock
-        if (product.stock < quantity) {
-            return res.status(400).json({
-                success: false,
-                message: 'Insufficient stock',
-            });
-        }
-
-        // @Get the cart
+        // 4. Get or initialize the cart
         let cart = await Cart.findOne({ user: req.userId });
-
-        // @check if cart exists else create
         if (!cart) {
             cart = new Cart({ user: req.userId, items: [] });
         }
 
-        // 
-
-        // @Check if product is in cart
+        // 5. Check if product is already in the cart
         const itemIndex = cart.items.findIndex(
             item => item.product.toString() === productId
         );
 
-        // @if not increase quantity
+        // 6. Fix Cumulative Stock Bypass Bug
+        const currentCartQuantity = itemIndex > -1 ? cart.items[itemIndex].quantity : 0;
+        const totalRequestedQuantity = currentCartQuantity + quantity;
+
+        if (product.stock < totalRequestedQuantity) {
+            return res.status(400).json({
+                success: false,
+                message: `Insufficient stock. You already have ${currentCartQuantity} in cart, and max available is ${product.stock}.`,
+            });
+        }
+
+        // 7. Update or Push items
         if (itemIndex > -1) {
-            // Product already in cart → increase quantity
-            cart.items[itemIndex].quantity += quantity;
-            // cart.items[itemIndex].subTotal = cart.items[itemIndex].price * quantity;
+            cart.items[itemIndex].quantity = totalRequestedQuantity;
         } else {
-            // Add new product
             cart.items.push({
                 product: product._id,
                 name: product.title,
@@ -60,27 +75,27 @@ export const addToCart = async (req, res) => {
                 finalPrice: product.finalPrice,
                 discountAmount: product.discountAmount,
                 image: product.image,
-                quantity,
-                // subTotal,
+                quantity: quantity,
             });
         }
 
-        // Recalculate total
-        // cart.totalAmount = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
-        // cart.totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
-         // Recalculate totals
+        // 8. Recalculate totals and Save
         cart.calculateTotals();
-        
         await cart.save();
-        console.log("cart", cart)
-        console.log("-SECRET_KEY-", process.env.STRIPE_SECRET_KEY)
 
-        return res.status(200).json({ message: "successfull🥇 added items in cart", cart: cart });
-
+        return res.status(200).json({ 
+            success: true,
+            message: "Successfully added items to cart", 
+            cart: cart 
+        });
     } catch (error) {
-        console.log(error)
-       	return res.status(401).json(error);
+        // Log the actual error for developers, don't expose system details to client
+        console.error("Error in addToCart controller:", error); 
+        
+        return res.status(500).json({ 
+            success: false, 
+            message: "An internal server error occurred while updating the cart. Try again" 
+        });
     }
 }
 
