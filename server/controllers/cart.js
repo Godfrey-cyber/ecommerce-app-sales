@@ -104,17 +104,21 @@ export const updateCartItem = async (req, res, next) => {
     session.startTransaction();
     
     try {
-        const { quantity } = req.body;
+        let { quantity } = req.body;
         const { itemId } = req.params;
 
-        // if (!quantity || quantity < 0) {
-        //   return res.status(400).json({
-        //     success: false,
-        //     message: 'Invalid quantity',
-        //   });
-        // }
-        
-        const cart = await Cart.findOne({ user: req.userId });
+        // 1. Strict input validation
+        quantity = parseInt(quantity, 10);
+        if (isNaN(quantity) || quantity < 0) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                success: false,
+                message: '❌ Quantity must be a non-negative integer.',
+            });
+        }
+
+        // 2. FIXED: Added .session(session) to the Cart query
+        const cart = await Cart.findOne({ user: req.userId }).session(session);
         
         if (!cart) {
             await session.abortTransaction();
@@ -124,9 +128,8 @@ export const updateCartItem = async (req, res, next) => {
             });
         }
 
-        // ✅ STEP 1: Get the cart item using cart item ID
+        // 3. Extract the item subdocument
         const cartItem = cart.items.id(itemId);
-        
         if (!cartItem) {
             await session.abortTransaction();
             return res.status(404).json({
@@ -135,9 +138,8 @@ export const updateCartItem = async (req, res, next) => {
             });
         }
 
-        // Check stock
+        // 4. Fetch product attached to the transaction session
         const product = await Product.findById(cartItem.product).session(session);
-
         if (!product) {
             await session.abortTransaction();
             return res.status(404).json({
@@ -146,31 +148,28 @@ export const updateCartItem = async (req, res, next) => {
             });
         }
 
-        // Calculate stock difference
         const currentQuantity = cartItem.quantity || 0;
         const quantityDiff = quantity - currentQuantity;
 
+        // 5. Short-circuit: If quantity hasn't changed, save DB operations
+        if (quantityDiff === 0) {
+            await session.commitTransaction();
+            await cart.populate('items.product', 'title price image stock');
+            return res.status(200).json({ success: true, message: 'No changes made', cart });
+        }
+
+        // 6. Handle Item Removal (Quantity is 0)
         if (quantity === 0) {
-            // Return stock to product (give back all items)
-            await Product.findByIdAndUpdate(
-                product._id,
-                { $inc: { stock: currentQuantity } },  // Add back current quantity
-                { session }
-            );
+            product.stock += currentQuantity;
+            await product.save({ session });
 
-            // Remove item from cart
             cart.items.pull(itemId);
-
-            // Recalculate totals
             cart.calculateTotals();
-
-            // Save cart
             await cart.save({ session });
           
-            // Commit transaction
             await session.commitTransaction();
-          
-            // Populate and return
+            
+            // Populate AFTER transaction commits to minimize transaction holding time
             await cart.populate('items.product', 'title price image stock');
           
             return res.json({
@@ -179,44 +178,43 @@ export const updateCartItem = async (req, res, next) => {
                 cart,
             });
         }
-
-        // Check stock (only if increasing quantity)
+        
+        // 7. Check stock availability (Only if increasing quantity)
         if (quantityDiff > 0 && product.stock < quantityDiff) {
             await session.abortTransaction();
             return res.status(400).json({
                 success: false,
-                message: `Can't add item! Only ${product.stock} items available in stock`,
+                message: `Can't add item! Only ${product.stock} additional units available.`,
             });
         }
         
-        // Update quantity
+        // 8. Update Cart schema state
         await cart.updateItemQuantity(itemId, quantity);
         await cart.save({ session });
 
-        // ✅ ATOMIC: Update product stock
-        if (quantityDiff !== 0) {
-            await Product.findByIdAndUpdate(
-                product._id,
-                { $inc: { stock: -quantityDiff } },
-                { session }
-            );
-        }
+        // 9. Update Product stock state
+        product.stock -= quantityDiff;
+        await product.save({ session });
 
-        await session.commitTransaction()
+        // 10. Commit changes atomically
+        await session.commitTransaction();
         
-        // Populate and return
-        await cart.populate('items.product', 'title price images stock');
+        // 11. FIXED: Final populate & clear response return
+        await cart.populate('items.product', 'title price image stock');
         
-        res.json({
+        return res.status(200).json({
             success: true,
-            message: 'Cart updated',
+            message: 'Cart updated successfully',
             cart,
         });
+
     } catch (error) {
-        await session.abortTransaction()
-        next(error)
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+        next(error);
     } finally {
-        session.endSession()
+        session.endSession();
     }
 };
 
