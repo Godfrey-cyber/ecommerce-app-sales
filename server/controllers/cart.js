@@ -224,37 +224,48 @@ export const removeCartItem = async (req, res, next) => {
   
     try {
         const { itemId } = req.params;
-        const cart = await Cart.findOne({ user: req.userId, "items._id": itemId }, { "items.$": 1 }).session(session);
 
-        if (!cart) throw new Error("Item not found");
+        // 1. Fetch the complete cart bound to the transaction
+        const cart = await Cart.findOne({ user: req.userId }).session(session);
+        if (!cart) {
+            await session.abortTransaction();
+            return res.status(404).json({ success: false, message: "Cart not found" });
+        }
 
-        // const cartItem = cart.items.id(itemId);
-        const cartItem = cart.items[0];
-        
-        // Return stock to product
-        await Product.updateOne(
-            { _id: cartItem.product },
-            { $inc: { stock: cartItem.quantity } },
-            { session }
-        );
-        
-        // Remove item Atomically
-        const updatedCart = await Cart.findOneAndUpdate(
-            { user: req.userId },
-            { $pull: { items: { _id: itemId } } },
-            { new: true, session }
-        );
+        // 2. Identify the target item within the fetched array
+        const cartItem = cart.items.id(itemId);
+        if (!cartItem) {
+            await session.abortTransaction();
+            return res.status(404).json({ success: false, message: "Item not found in cart" });
+        }
 
-        // cart.items.pull(itemId);
-        // Recalculate totals
-        await updatedCart.calculateTotals();
-        await updatedCart.save({ session });
+        // 3. Return stock to the product document
+        const product = await Product.findById(cartItem.product).session(session);
+        if (product) {
+            product.stock += cartItem.quantity;
+            await product.save({ session });
+        }
 
+        // 4. Safely pull item from array and recalculate totals in-memory
+        cart.items.pull(itemId);
+        cart.calculateTotals();
+
+        // 5. Single, clean database write for the cart modification
+        await cart.save({ session });
+
+        // 6. Finalize transaction changes
         await session.commitTransaction();
         
-        res.json({ success: true, message: 'Item successfull🥇 removed', cart: updatedCart });
+        return res.status(200).json({ 
+            success: true, 
+            message: 'Item successfully removed', 
+            cart 
+        });
+
     } catch (error) {
-        await session.abortTransaction();
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
         next(error);
     } finally {
         session.endSession();
