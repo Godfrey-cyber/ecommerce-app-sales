@@ -23,9 +23,8 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser())
 
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:4000","http://localhost:5173"]
 app.use(cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:4000", "http://localhost:5173"],
+    origin: [process.env.CLIENT_URL, "http://localhost:5173"],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowdHeaders: [
         "Content-Type",
@@ -45,7 +44,7 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'Server is running',
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString(),
   });
 });
 

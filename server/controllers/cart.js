@@ -32,16 +32,6 @@ export const addToCart = async (req, res) => {
             });
         }
 
-        // @Get the product
-        const product = await Product.findById(productId);
-        // console.log(product)
-        if (!product) {
-            return res.status(404).json({
-                success: false,
-                message: 'Product not found',
-            });
-        }
-
         // 4. Get or initialize the cart
         let cart = await Cart.findOne({ user: req.userId });
         if (!cart) {
@@ -64,6 +54,8 @@ export const addToCart = async (req, res) => {
             });
         }
 
+        console.log("product", product)
+
         // 7. Update or Push items
         if (itemIndex > -1) {
             cart.items[itemIndex].quantity = totalRequestedQuantity;
@@ -73,15 +65,24 @@ export const addToCart = async (req, res) => {
                 name: product.title,
                 price: product.price,
                 finalPrice: product.finalPrice,
-                discountAmount: product.discountAmount,
+                discountAmount: product.discountAmount || 0,
                 image: product.image,
-                quantity: quantity,
+                quantity,
             });
+        }
+
+        if (typeof cart.calculateTotals === 'function') {
+            cart.calculateTotals();
+        } else {
+            // Fallback manual calculation if your schema method isn't set up yet:
+            cart.discount = cart.items.reduce((sum, item) => sum + (item.discountAmount * item.quantity), 0);
         }
 
         // 8. Recalculate totals and Save
         cart.calculateTotals();
         await cart.save();
+
+        console.log("cart", cart)
 
         return res.status(200).json({ 
             success: true,
@@ -301,14 +302,17 @@ export const getCart = async (req, res) => {
         });
     }
 };
-// default: "active"
-	// Cart.findOne({ status: "active" })
+// default: "active" products
 export const getOne = async (req, res) => {
     try {
         const product = await Products.findOne({ status: "active" })
+        // Handle case where no active product is found
+        if (!product) {
+            return res.status(404).json({ message: "No active product found 🔍" });
+        }
         return res.status(200).json({ message: "Product fetch successfull🥇", product })
     } catch (error) {
-        return res.status(401).json(error)
+        return res.status(500).json(error)
     }
 }
 

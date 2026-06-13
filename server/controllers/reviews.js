@@ -10,24 +10,24 @@ export const addReview = async (req, res, next) => {
     // session.startTransaction();
 
     try {
-        const { id, rating, comment } = req.body;
+        const { id: productId, rating, comment } = req.body;
 
         // Gate: must have a delivered order with this product
-        // const purchasedOrder = await Order.findOne({
-        //     user: req.userId,
-        //     'items.product': id,
-        //     status: 'pending',
-        // });
+        const verifiedOrder = await Order.findOne({
+            user: req.userId,
+            'items.product': productId,
+            status: 'Delivered',
+        });
      
-        // if (!purchasedOrder) {
-        //     return res.status(403).json({
-        //         success: false,
-        //         message: 'You can only review products you have purchased and received.',
-        //     });
-        // }
+        if (!verifiedOrder) {
+            return res.status(403).json({
+                success: false,
+                message: 'You can only review products you have purchased and had successfully delivered.',
+            });
+        }
 
         // Gate: one review per user per product (index also enforces this)
-        const existing = await Review.findOne({ product: id, userId: req.userId });
+        const existing = await Review.findOne({ product: productId, userId: req.userId });
         if (existing) {
             return res.status(409).json({
                 success: false,
@@ -39,7 +39,7 @@ export const addReview = async (req, res, next) => {
 
         const review = await Review.create(
             {
-                product: id,
+                product: productId,
                 userId: req.userId,
                 rating: Number(rating),
                 comment,
@@ -57,7 +57,7 @@ export const addReview = async (req, res, next) => {
 
     } catch (error) {
         // await session.abortTransaction();
-        process.env === 'production' && console.log(error)
+        process.env.NODE_ENV !== 'production' && console.log(error)
         if (error.code === 11000) {
             return res.status(400).json({
                 message: "You have already reviewed this product",
@@ -66,9 +66,6 @@ export const addReview = async (req, res, next) => {
 
         next(error);
     }
-    // } finally {
-        // session.endSession();
-    // }
 };
 
 export const getAllReviews = async (req, res) => {

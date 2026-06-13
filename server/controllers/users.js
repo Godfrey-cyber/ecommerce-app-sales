@@ -9,7 +9,7 @@ export const registerUser = async (req, res) => {
         console.log("password", password)
         // check all fields
         if (!email || !password || !lastname || !firstname) {
-            return res.status(400).json({ msg: '❌ Please enter all fields' })
+            return res.status(400).json( { msg: '❌ Please enter all fields' } )
         }
 
          // Validate password format

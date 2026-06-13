@@ -33,10 +33,6 @@ export const createPaymentIntent = async (req, res) => {
 	    // Save intent ID on order
 	    await Order.findByIdAndUpdate(orderId, {
 	      	"paymentDetails.stripePaymentIntentId": paymentIntent.id,
-	      	// "paymentDetails.stripeChargeId": paymentIntent.client_secret,
-	      	// "paymentDetails.transactionDate": paymentIntent.created,
-	      	// "paymentDetails.amount": paymentIntent.amount,
-	      	// "paymentDetails.failureReason": paymentIntent.cancellation_reason,
 	    });
 
 	    res.json({
@@ -102,3 +98,7 @@ export const stripeWebhook = async (req, res) => {
     	res.status(500).json({ message: error.message });
     }
 }
+
+// https://docs.stripe.com/development/dashboard/webhooks#create-webhook-endpoint
+
+// https://docs.stripe.com/development/dashboard/webhooks#create-webhook-endpoint
