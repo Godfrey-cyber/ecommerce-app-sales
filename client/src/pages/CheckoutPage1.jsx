@@ -106,6 +106,8 @@ const CheckoutPage = () => {
         station: "Sarit Centre"
     });
 
+    
+
     // Update delivery click handler
     const handleDeliveryMethodClick = (method) => {
         // setTempDeliveryMethod(method);

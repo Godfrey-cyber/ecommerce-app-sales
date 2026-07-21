@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+      import mongoose from "mongoose"
 
 const cartItemSchema = new mongoose.Schema(
   {
@@ -131,73 +131,54 @@ CartSchema.pre('save', function(next) {
 // Calculate cart totals
 CartSchema.methods.calculateTotals = function() {
   // Calculate subtotal
-  this.totalAmount = this.items.reduce((total, item) => {
-    return total + (item.price * item.quantity);
-  }, 0);
+    let itemSubtotalAccumulator = 0;
+    let totalItemDiscountAccumulator = 0;
+    let totalItemsCount = 0;
 
-  // Calculate totalItems
-  this.totalItems = this.items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+    this.items.forEach((item) => {
+        // 1. Fill individual item records if missing
+        const originalPrice = item.price || 0;
+        const individualDiscount = item.discountAmount || 0;
+        
+        item.finalPrice = Math.max(0, originalPrice - individualDiscount);
+        
+        // 2. Individual line subtotal: (original price * qty)
+        item.subtotal = originalPrice * item.quantity;
 
-    // Total discount from items
-    const totalItemDiscount = this.items.reduce(
-        (total, item) =>
-            total + ((item.discountAmount || 0) * item.quantity),
-        0
-    );
+        // 3. Increment main counters
+        itemSubtotalAccumulator += item.subtotal;
+        totalItemDiscountAccumulator += individualDiscount * item.quantity;
+        totalItemsCount += item.quantity;
+    });
 
-  // Total before discount
-  const grossTotal = this.items.reduce(
-      (total, item) =>
-          total + (item.price * item.quantity),
-      0
-  );
+    // 4. Map values back to parent document
+    this.totalItems = totalItemsCount;
+    this.totalAmount = itemSubtotalAccumulator; // Gross subtotal total
+    this.discount = totalItemDiscountAccumulator; // Cumulative items discount
 
-  // Total after item discount
-  const discountedSubtotal = this.items.reduce(
-      (total, item) =>
-          total + (item.finalPrice * item.quantity),
-      0
-  );
-  console.log(discountedSubtotal)
-
-  this.totalAmount = grossTotal;
-  this.discount = totalItemDiscount;  
-  // this.totalAmount = subtotal;
-  
-  // Calculate discount from coupon
-  let couponDiscount = 0;
-  if (this.coupon) {
-    if (this.coupon.type === 'percentage') {
-        couponDiscount = (discountedSubtotal * this.coupon.discount) / 100;
-    } else {
-      couponDiscount = this.coupon.discount;
+    // 5. Check if an order-level coupon is applied
+    let couponSavings = 0;
+    if (this.coupon && this.coupon.discount > 0) {
+        const netValueBeforeCoupon = Math.max(0, this.totalAmount - this.discount);
+        
+        if (this.coupon.couponType === 'percentage') {
+          couponSavings = netValueBeforeCoupon * (this.coupon.discount / 100);
+        } else if (this.coupon.couponType === 'fixed') {
+          couponSavings = this.coupon.discount;
+        }
+        
+        // Stack the coupon value onto the total savings tracker
+        this.discount += couponSavings;
     }
-  } else {
-    this.discount = 0;
-  }
 
-  this.discount += couponDiscount;
+    // 6. Formulate total calculation matrix
+    const baseTax = this.tax || 0;
+    const baseShipping = this.shipping || 0;
 
-  const taxableAmount = discountedSubtotal - couponDiscount;
-  
-  // Calculate tax (8% example - adjust based on your needs)
-  const taxRate = 0.04;
-  this.tax = taxableAmount * taxRate;
-  
-  // Calculate shipping (free shipping if totalAmount > $50, else $10)
-  this.shipping = taxableAmount > 100 ? 0 : 50;
-  
-  // Calculate finalAmount
-  this.finalAmount = taxableAmount + this.tax + this.shipping;
-  
-  // Round to 2 decimal places
-  this.totalAmount = Math.round(this.totalAmount * 100) / 100;
-  this.discount = Math.round(this.discount * 100) / 100;
-  this.tax = Math.round(this.tax * 100) / 100;
-  this.finalAmount = Math.round(this.finalAmount * 100) / 100;
+    // Final price to charge: Gross - Discounts + Tax + Shipping
+    this.finalAmount = Math.max(0, (this.totalAmount - this.discount) + baseTax + baseShipping);
+
+    return this;
 };
 
 // Add item to cart

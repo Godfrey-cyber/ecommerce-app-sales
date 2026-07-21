@@ -10,26 +10,24 @@ export const addReview = async (req, res, next) => {
     // session.startTransaction();
 
     try {
-        const { id, rating, comment } = req.body;
-        console.log(id, rating, comment, req.userId)
-        console.log("userId", req.userId)
+        const { id: productId, rating, comment } = req.body;
 
         // Gate: must have a delivered order with this product
-        // const purchasedOrder = await Order.findOne({
-        //     user: req.userId,
-        //     'items.product': id,
-        //     status: 'pending',
-        // });
+        const verifiedOrder = await Order.findOne({
+            user: req.userId,
+            'items.product': productId,
+            status: 'Delivered',
+        });
      
-        // if (!purchasedOrder) {
-        //     return res.status(403).json({
-        //         success: false,
-        //         message: 'You can only review products you have purchased and received.',
-        //     });
-        // }
+        if (!verifiedOrder) {
+            return res.status(403).json({
+                success: false,
+                message: 'You can only review products you have purchased and had successfully delivered.',
+            });
+        }
 
         // Gate: one review per user per product (index also enforces this)
-        const existing = await Review.findOne({ product: id, user: req.userId });
+        const existing = await Review.findOne({ product: productId, userId: req.userId });
         if (existing) {
             return res.status(409).json({
                 success: false,
@@ -37,9 +35,11 @@ export const addReview = async (req, res, next) => {
             });
         }
 
+        console.log("existing ->", existing)
+
         const review = await Review.create(
             {
-                product: id,
+                product: productId,
                 userId: req.userId,
                 rating: Number(rating),
                 comment,
@@ -57,7 +57,7 @@ export const addReview = async (req, res, next) => {
 
     } catch (error) {
         // await session.abortTransaction();
-        console.log(error)
+        process.env.NODE_ENV !== 'production' && console.log(error)
         if (error.code === 11000) {
             return res.status(400).json({
                 message: "You have already reviewed this product",
@@ -66,15 +66,12 @@ export const addReview = async (req, res, next) => {
 
         next(error);
     }
-    // } finally {
-        // session.endSession();
-    // }
 };
 
 export const getAllReviews = async (req, res) => {
     try {
         const { reviewId } = req.params
-        const reviews = await Review.find()
+        const reviews = await Review.find().populate("user", 'email firstname lastname')
         return res.status(200).json({ message: "Review fetch successfull🥇", reviews })
     } catch (error) {
         return res.status(401).json(error)
@@ -84,7 +81,7 @@ export const getAllReviews = async (req, res) => {
 export const getProductReviews = async (req, res) => {
     try {
         const { productId } = req.params
-        const reviews = await Review.find({ product: productId }) //.populate('user', 'firstname lastname');
+        const reviews = await Review.find({ product: productId }).populate('userId', 'firstname lastname');
         return res.status(200).json({ message: "Review fetch successfull🥇", reviews })
     } catch (error) {
         return res.status(401).json(error)

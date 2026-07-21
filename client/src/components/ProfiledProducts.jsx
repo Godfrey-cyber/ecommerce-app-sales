@@ -1,73 +1,65 @@
 import React from 'react'
-import { products } from "../assets/products.js"
 import { Link } from "react-router-dom"
+import { useGetProductsQuery } from "../redux/productsApi.jsx"
+import StarRating from "./StarRating.jsx"
+import SectionHeader from "./SectionHeader.jsx"
+import ProductCard from "./ProductCard.jsx"
+import { TrendingUp, Flame, Star as StarIcon } from 'lucide-react';
 
 const ProfiledProducts = () => {
+	const { data, error, isLoading } = useGetProductsQuery();
+	const sections = [
+		{
+			title: 'Featured products',
+			icon: TrendingUp,
+			iconColor: 'bg-gradient-to-br from-blue-500 to-blue-600',
+			products: data?.products?.slice(0, 3) || []
+		},
+		{
+			title: 'On sale products',
+			icon: Flame,
+			iconColor: 'bg-gradient-to-br from-orange-500 to-red-500',
+			products: data?.products?.slice(4, 7) || []
+		},
+		{
+			title: 'Top rated products',
+			icon: StarIcon,
+			iconColor: 'bg-gradient-to-br from-amber-500 to-yellow-500',
+			products: data?.products?.slice(8, 11) || []
+		}
+	];
 	return (
-		<section className="w-full h-fit px-5 lg:px-10 my-8 py-2 mx-auto">
-			<div className="grid grid-cols-12 gap-x-0 lg:gap-x-8 h-full w-full mx-auto">
-				<div className="col-span-12 lg:col-span-3 flex-col space-y-4 h-fit w-full">
-					<span className="flex-col space-x-3 w-full text-lg cursor-pointer font-normal py-1.5 text-black border-b border-yellow-400">
-						Featured Products
-						<div className="border-b border-gray-300 w-full h-1"></div>
-					</span>
-					{products.slice(0,3).map(item => (
-						<Link to={`/${item.id}`} key={item.id}>
-						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
-							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
-							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
-								<p className="text-sm font-bold group-hover:text-yellow-400 transition-all delay-300 text-blue-600">{item.name}</p>
-								<span className="flex items-center space-x-4">
-									<p className="text-sm font-normal text-red-400">Ksh. {item.price}</p>
-									<p className="text-sm font-light text-gray-500 text-decoration-strike">Ksh. {item.price}</p>
-								</span>
+		<section className="w-full px-4 sm:px-6 lg:px-8 py-12 bg-white">
+			<div className="max-w-7xl mx-auto">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{sections.map((section, idx) => (
+						<div key={idx} className="flex flex-col">
+							{/* Section Header */}
+							<SectionHeader 
+								title={section.title}
+								icon={section.icon}
+								iconColor={section.iconColor}
+							/>
+
+							{/* Product List */}
+							<div className="flex flex-col space-y-2">
+								{section.products.map((product, index) => (
+									<ProductCard 
+										key={product?._id} 
+										product={product}
+										index={index}
+									/>
+								))}
 							</div>
+
+							{/* Empty State */}
+							{section.products.length === 0 && (
+								<div className="flex items-center justify-center h-48 text-sm text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+									No products available
+								</div>
+							)}
 						</div>
-						</Link>
 					))}
-				</div>
-				<div className="col-span-12 lg:col-span-3 flex-col space-y-4 h-fit w-full">
-					<span className="flex-col space-x-3 w-full text-lg cursor-pointer font-normal py-1.5 text-black border-b border-yellow-400">
-						Onsale Products
-						<div className="border-b border-gray-300 w-full h-1"></div>
-					</span>
-					{products.slice(0,3).map(item => (
-						<Link to={`/${item.id}`} key={item.id}>
-						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
-							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
-							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
-								<p className="text-sm font-bold group-hover:text-yellow-400 transition-all delay-300 text-blue-600">{item.name}</p>
-								<span className="flex items-center space-x-4">
-									<p className="text-sm font-normal text-red-400">Ksh. {item.price}</p>
-									<p className="text-sm font-light text-gray-500 text-decoration-strike">Ksh. {item.price}</p>
-								</span>
-							</div>
-						</div>
-						</Link>
-					))}
-				</div>
-				<div className="col-span-12 lg:col-span-3 flex-col space-y-4 h-fit w-full">
-					<span className="flex-col space-x-3 w-full text-lg cursor-pointer font-normal py-1.5 text-black border-b border-yellow-400">
-						Top Rated Products
-						<div className="border-b border-gray-300 w-full h-1"></div>
-					</span>
-					{products.slice(0,3).map(item => (
-						<Link to={`/${item.id}`} key={item.id}>
-						<div key={item.id} className="flex space-x-5 py-1 cursor-pointer group">
-							<img className="h-28 w-28 object-cover" src={item.image} alt={item.image} />
-							<div className="flex flex-col lg:space-y-1 lg:space-y-2">
-								<p className="text-sm font-bold group-hover:text-yellow-400 transition-all delay-300 text-blue-600">{item.name}</p>
-								<span className="flex items-center space-x-4">
-									<p className="text-sm font-normal text-red-400">Ksh. {item.price}</p>
-									<p className="text-sm font-light text-gray-500 text-decoration-strike">Ksh. {item.price}</p>
-								</span>
-							</div>
-						</div>
-						</Link>
-					))}
-				</div>
-				<div className="col-span-12 lg:col-span-3 h-fit w-full cursor-pointer">
-					<img className="w-full lg:w-auto lg:h-auto h-80 object-cover" src="https://electrox.arenacommerce.com/cdn/shop/files/v2-right-1.jpg?v=1649837269&width=329" alt="" />
 				</div>
 			</div>
 		</section>

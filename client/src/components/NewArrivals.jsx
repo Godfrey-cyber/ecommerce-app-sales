@@ -5,50 +5,29 @@ import { BsArrowsFullscreen } from "react-icons/bs";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom"
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
+import StarRating from "./StarRating.jsx"
+import { TrendingUp, Flame, Star as StarIcon } from 'lucide-react';
 
 const NewArrivals = () => {
 	const [wishlisted, setWishlisted] = useState(false);
   	const badge = true;
   	const { data, error, isLoading } = useGetProductsQuery();
 
-  	const StarRating = ({ value }) => {
-	    return (
-	      <div className="flex items-center gap-1">
-	        {[1, 2, 3, 4, 5].map((star) => {
-	          const filled = value >= star;
-	          const half = !filled && value >= star - 0.5;
-	          return (
-	            <span key={star} className="relative inline-block w-4 h-4">
-	              <svg viewBox="0 0 20 20" className="w-4 h-4 text-gray-200" fill="currentColor">
-	                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-	              </svg>
-
-	              {(filled || half) && (
-	                <span
-	                  className="absolute inset-0 overflow-hidden"
-	                  style={{ width: filled ? "100%" : "50%" }}
-	                >
-	                  <svg viewBox="0 0 20 20" className="w-4 h-4 text-amber-400" fill="currentColor">
-	                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-	                  </svg>
-	                </span>
-	              )}
-	            </span>
-	          );
-	        })}
-	        {/*<span className="text-xs font-semibold text-gray-700 ml-0.5">{value}</span>*/}
-	        <span className="text-xs text-gray-400">({value?.toLocaleString()})</span>
-	      </div>
-	    );
-	};
-
 	return (
-		<section className="w-full h-fit px-5 lg:px-10 my-5">
+		<section className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-10">
 			<div className="flex flex-col border-b border-gray-300">
-				<span className="flex items-center text-center border-b-2 my-4 border-yellow-500 cursor-pointer py-1">
-					<p className="text-lg font-semibold text-gray-800">New Arrivals</p>
-				</span>
-				<div className="grid lg:grid-cols-5 grid-cols-2 gap-5 lg:gap-x-3 w-full scroll-smooth snap-x">						
+				<div className="mb-6">
+					<div className="flex items-center gap-2.5 mb-3">
+						<div className={`w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center flex-shrink-0`}>
+							<TrendingUp className="w-4 h-4 text-white" strokeWidth={2.5} />
+						</div>
+						<h2 className="text-lg font-bold text-gray-900 tracking-tight">New Arrivals</h2>
+					</div>
+					<div className="h-0.5 bg-gradient-to-r from-orange-500 via-orange-300 to-transparent rounded-full" />
+				</div>
+
+
+				<div className="grid lg:grid-cols-5 grid-cols-2 gap-1 md:gap-5 lg:gap-x-3 w-full scroll-smooth snap-x">						
 				{data?.products?.map(item => (
 					<Link to={`/${item?.slug}/${item?._id}`} key={item?._id}>
 						<div className="group relative w-62 rounded-lg bg-white border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
@@ -98,6 +77,9 @@ const NewArrivals = () => {
 
 						      {/* Body */}
 						      <div className="p-4 space-y-3">
+{/*=======*/}
+						      {/*<div className="p-2 md:p-3 lg:p-4 space-y-1.5 md:space-y-2.5 space-y-3">*/}
+{/*>>>>>>> production*/}
 						        {/* Rating */}
 						        <StarRating value={item?.rating} />
 

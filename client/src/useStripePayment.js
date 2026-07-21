@@ -1,11 +1,13 @@
 import { useState, useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentIntent, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useParams, useNavigate, Link } from 'react-router-dom'
 
 export function useStripePayment() {
 	const [loading, setLoading]     = useState(false);
   	const [error, setError]         = useState(null);
   	const [succeeded, setSucceeded] = useState(false);
+    const stripe = loadStripe(import.meta.env.VITE_STRIPE_PUB_KEY);
  
   	const [createPaymentIntent] = useCreatePaymentIntentMutation();
 	const params = useParams()
@@ -23,7 +25,8 @@ export function useStripePayment() {
 	    setLoading(true);
  
     try {
-      const stripe = await stripePromise;
+      // const stripe = await stripePromise;
+      
       if (!stripe) throw new Error("Stripe.js failed to load.");
  
       // ── 1. Create PaymentIntent on your backend ───
@@ -48,10 +51,10 @@ export function useStripePayment() {
       const { paymentMethod, error: pmError } = await stripe.createPaymentMethod({
         type: "card",
         card: {
-          number:    cardNumber.replace(/\s/g, ""),
-          exp_month: expMonth,
-          exp_year:  2000 + expYear,
-          cvc:       cvv,
+            number:    cardNumber.replace(/\s/g, ""),
+            exp_month: expMonth,
+            exp_year:  2000 + expYear,
+            cvc:       cvv,
         },
         billing_details: {
           name:  cardName,

@@ -1,11 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './baseQuery';
 
 export const categoriesApi = createApi({
     reducerPath: 'categoriesApi',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-    prepareHeaders: (headers, { getState }) => {
-        return headers;
-    },
+    baseQuery,
     tagTypes: ['Category', 'Categories'],
 
       endpoints: (builder) => ({
@@ -13,6 +11,13 @@ export const categoriesApi = createApi({
         getCategories: builder.query({
             query: () => 
                 '/categories/get-parentCategories',
+            providesTags: ['Categories'],
+        }),
+
+        // Get all categories
+        getCatProducts: builder.query({
+            query: () => 
+                '/categories/get-productcats',
             providesTags: ['Categories'],
         }),
         
@@ -27,4 +32,5 @@ export const categoriesApi = createApi({
 export const {
   useGetCategoriesQuery,
   useGetCategoryByIdQuery,
+  useGetCatProductsQuery,
 } = categoriesApi;

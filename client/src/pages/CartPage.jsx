@@ -7,212 +7,95 @@ import { ToastContainer, toast } from 'react-toastify';
 import { FaTag, FaLock, FaCcVisa, FaCcMastercard } from "react-icons/fa6";
 import Header from "../components/Header.jsx"
 import Header1 from "../components/Header1.jsx"
+import Navbar from "../components/homepage/Navbar.jsx"
+import CartItem from "../components/cart/CartItem.jsx"
+import CartSummary from "../components/cart/CartSummary.jsx"
+import PromoCode from "../components/cart/PromoCode.jsx"
 // import  { cartItems } from "../utilities/assets.js"
 import { useAddToCartMutation, useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "../redux/cartApi.jsx"
+import { useGetCategoriesQuery } from "../redux/categoriesApi.jsx"
 import { Link } from "react-router-dom"
 // useUpdateCartItemMutation
 const CartPage = () => {
-	const appliedPromo = true
-	const subtotal = true
-	const { data, error } = useGetCartQuery();
-	const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
-	const [removeFromCart, {isLoading}] = useRemoveFromCartMutation();
+  const appliedPromo = true
+  const subtotal = true
+  const { data, error } = useGetCartQuery();
+  const [updateCartItem, { isLoading: isProcessing }] = useUpdateCartItemMutation();
+  const [removeFromCart, {isLoading}] = useRemoveFromCartMutation();
+  const { data:categories, isLoading:loadingCat } = useGetCategoriesQuery();
 
-	const cartItems = data?.cart[0]?.items || [];
-	const cartSummary = data?.cart[0];
+  const cartItems = data?.cart[0]?.items || [];
+  const totalItems = data?.cart[0]?.totalItems
+  const cartSummary = data?.cart[0];
 
-	// update cartitem qty
+  console.log("cartItems", cartItems?.map(x => x.price))
+  console.log("totalItems", totalItems)
+  console.log("cartSummary", cartSummary)
+
+  // update cartitem qty
     const handleQtyUpdate = async (item, delta) => {
-		const newQuantity = item.quantity + delta;
-		try {
-			await updateCartItem({
-				itemId: item._id,        // Cart item ID
-				quantity: newQuantity,   // New calculated quantity
-			}).unwrap();
-			toast.success(data.message);
-		} catch (error) {
-			// toast.error(error.data.message);
-			console.log(error.data.message);
-			console.error('Failed to update quantity:', error);
-		}
-	};
+    const newQuantity = item.quantity + delta;
+    try {
+      await updateCartItem({
+        itemId: item._id,        // Cart item ID
+        quantity: newQuantity,   // New calculated quantity
+      }).unwrap();
+      toast.success(data.message);
+    } catch (error) {
+      // toast.error(error.data.message);
+      console.log(error.data.message);
+      console.error('Failed to update quantity:', error);
+    }
+  };
 
-	// @Remove item from cart
-	const handleItemRemove = async (itemId) => {
-		try {
-	    	await removeFromCart(itemId).unwrap();
-	    	toast.succes("Items successfully removed");
-	  	} catch (error) {
-	  		toast.error(error.message);
-	    	console.error('Error:', error);
-	  	}
-	}
+  // @Remove item from cart
+  const handleItemRemove = async (itemId) => {
+    try {
+        await removeFromCart(itemId).unwrap();
+        toast.succes("Items successfully removed");
+      } catch (error) {
+        toast.error(error.message);
+        console.error('Error:', error);
+      }
+  }
 
-	return (
-		<div className="flex flex-col bg-gray-50 w-full min-h-screen text-sm font-bold">
-			{/*<Header />*/}
-			<Header1 />
-			<div className="flex items-center space-x-3 h-12 px-5 group-hover mt-4">
-				<Link to="/">
-					<div className="flex items-center space-x-4 hover:bg-amber-100 hover:rounded-md cursor-pointer px-3">
-					<span className="text-sm items-center text-white text-2xl ">
-						<GoChevronLeft className="text-gray-600 text-4xl" />
-					</span>
-					<p className="text-lg font-semibold text-gray-600">Back.</p>
-				</div>
-				</Link>
-			</div>
-			<div className="grid grid-cols-12 gap-6 px-3 md:px-10 lg:px-20 my-5">
-				<div className="flex col-span-12 lg:col-span-8 h-fit  flex-col bg-white shadow-lg rounded-md">
-					<div className="flex items-center justify-between">
-						<p className="text-lg font-semibold text-gray-800 px-6 py-2">Cart Items ({cartSummary?.totalItems}).</p>
-						<button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm">
-					      	<BsThreeDotsVertical className="text-gray-800 text-2xl" />
-					    </button>
-					</div>
-					{/*  */}
-					{cartItems?.map(item => (
-						<div key={item?._id} className="flex gap-6 lg:gap-4 px-2 lg:px-6 my-4 w-full divide-gray-200 divide-y">
-					      <div className="flex-shrink-0">
-					        <div className="w-28 h-32 bg-white rounded-md overflow-hidden shadow-sm">
-					          <img 
-					            src={item?.image} 
-					            alt={item?.title} 
-					            className="w-full h-full object-cover"
-					          />
-					        </div>
-					      </div>
-					      
-					      <div className="flex-1 flex flex-col justify-between">
-					        <div className="flex flex-col p-2 space-y-2 mb-3">
-					          <p className="text-sm font-semibold text-gray-800">{item.name}.</p>
-					          {/*<p className="text-sm font-semibold text-gray-600">{item.author}.</p>*/}
-					        </div>
-					        
-					        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-					        	{/* @Cart Quantity Update */}
-					          <div className="flex items-center gap-3">
-					            <button onClick={() => handleQtyUpdate(item, +1)} disabled={isLoading} className={`w-10 h-10 ${isProcessing ? "bg-gray-200 text-gray-100 rounded-xl cursor-not-allowed" : "bg-white rounded-lg hover:bg-gray-200"} rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm`}>
-					              <Plus className="text-green-500 w-5 h-5" />
-					            </button>
-					            <span className="font-semibold text-slate-900 w-8 text-center">{item.quantity}</span>
-					            <button onClick={() => handleQtyUpdate(item, -1)} disabled={isLoading} className={`w-10 h-10 ${isProcessing ? "bg-gray-200 text-gray-100 rounded-xl cursor-not-allowed" : "bg-white rounded-lg hover:bg-gray-200"} rounded-lg flex items-center justify-center hover:bg-slate-200 transition shadow-sm`}>
-					              <Minus className="text-red-500 w-5 h-5" />
-					            </button>
-					          </div>
-					          
-					          <div className="flex items-center justify-between w-full gap-4">
-					            <span className="text-sm md:text-lg font-bold text-gray-600">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(item.finalPrice)}</span>
-					            <button onClick={() => handleItemRemove(item._id)} disabled={isLoading} title="Remove item" className="text-red-500 hover:text-red-700 transition p-2 hover:bg-red-50 rounded-lg">
-					              <Trash2 className="text-red-600 w-6 h-6" />
-					            </button>
-					          </div>
-					        </div>
-					      </div>
-					    </div>
-					))}
-					{/*  */}
-				</div>
-				<div className="col-span-12 lg:col-span-4">
-              		<div className="bg-white rounded-md shadow-lg p-6 sticky top-4">
-                		<h2 className="text-2xl font-bold text-slate-900 mb-4">Order Summary</h2>
-                
-                		{/* Promo Code */}
-		                <div className="mb-6">
-		                  <label className="block text-lg md:text-sm font-semibold text-slate-700 mb-2">
-		                    Promo Code
-		                  </label>
-		                  <div className="flex gap-2">
-		                    <div className="relative flex-grow">
-		                      <FaTag className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-		                      <input
-		                        type="text"
-		                        // value={promoCode}
-		                        // onChange={(e) => setPromoCode(e.target.value)}
-		                        placeholder="Enter code"
-		                        className="w-full pl-12 pr-6 py-3 lg:pl-10 lg:pr-4 lg:py-2 border border-slate-300 rounded-sm focus:border-blue-500 focus:outline-none"
-		                      />
-		                    </div>
-		                    <button
-		                      // onClick={applyPromo}
-		                      className="px-4 py-2 bg-slate-900 text-white rounded-sm font-semibold hover:bg-slate-800 transition"
-		                    >
-		                      Apply
-		                    </button>
-		                  </div>
-		                  {appliedPromo && (
-		                    <div className="mt-2 flex items-center gap-2 text-green-600 text-sm">
-		                      <span className="font-semibold">✓ BOOK20 Applied!</span>
-		                    </div>
-		                  )}
-		                  <p className="mt-2 text-xs text-slate-500">Try code: BOOK20</p>
-		                </div>
+  return (
+    <main className="min-h-screen w-full bg-[#F8F5F0]">
+      {/*<Header />*/}
+      	<Navbar totalItems={totalItems} categories={categories} />
+      	<div className="flex flex-col px-20 py-14">
+      		
+	      	<div className="flex items-baseline gap-3 mb-10">
+	            <h1 className="font-display text-[20px] font-normal">Your Cart</h1>
+	            <span className="text-sm text-mist font-medium">({cartItems.length} items)</span>
+	        </div>
 
-		                {/* Price Breakdown */}
-		                <div className="space-y-3 mb-6 pb-6 border-b-2 border-slate-100">
-		                  <div className="flex justify-between text-slate-800 font-semibold">
-		                    <span>Subtotal</span>
-		                    <span className="font-semibold">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.totalAmount)}</span>
-		                  </div>
-		                  {appliedPromo && (
-		                    <div className="flex justify-between text-green-600">
-		                      <span>Discount (BOOK20)</span>
-		                      <span className="font-semibold">- {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.discount)}</span>
-		                    </div>
-		                  )}
-		                  <div className="flex justify-between text-slate-700">
-		                    <span>Shipping</span>
-		                    <span className="font-semibold">
-		                      {cartSummary?.shipping === 0 ? "FREE" : cartSummary?.shipping }
-		                    </span>
-		                  </div>
-		                  <div className="flex justify-between text-slate-700">
-		                    <span>Tax (8%)</span>
-		                    <span className="font-semibold">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.tax)}</span>
-		                  </div>
-		                </div>
-		                <div className="flex justify-between items-center mb-4">
-		                  <span className="text-xl font-bold text-slate-900">Total</span>
-		                  <span className="text-2xl font-semibold text-gray-600">{new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(cartSummary?.finalAmount)}</span>
-		                </div>
-
-		                {subtotal < 50 && (
-		                  <div className="mb-3 p-3 bg-yellow-100 rounded-xl text-sm text-green-700">
-		                    <p className="font-semibold">Add $50 more for free shipping!</p>
-		                  </div>
-		                )}
-		                <Link to="/pay/checkout">
-			                <button className="w-full bg-amber-400 text-gray-800 py-4 rounded-xl font-bold text-lg hover:bg-amber-400 transition shadow-lg hover:shadow-xl mb-3">
-			                  Proceed to Checkout
-			                </button>
-		                </Link>
-		                <div className="flex items-center justify-center gap-2 text-slate-500 text-sm">
-		                  <FaLock className="text-slate-400" />
-		                  <span>Secure checkout</span>
-		                </div>
-		                {/* ============================== Credit Cards ============================== */}
-		                <div className="flex flex-col justify-center mt-4 pt-4 border-t-2 border-slate-100">
-		                  	<h3 className="font-semibold items-center flex justify-center text-slate-900 mb-3">We Accept</h3>
-		                  	<div className="flex items-center justify-evenly space-x-5 gap-2">
-		                      	{/*VISA*/}
-		                      	<span className="text-sm items-center text-white text-2xl ">
-									<FaCcVisa className="text-blue-700 text-4xl" />
-								</span>
-		                      	{/*MASTER*/}
-		                    	<span className="text-sm items-center text-white text-2xl ">
-									<FaCcMastercard className="text-red-600 text-4xl" />
-								</span>
-		                      	{/*AMEX*/}
-		                    	<span className="text-sm items-center text-white text-2xl ">
-									<FaCcAmex className="text-sky-600 text-4xl" />
-								</span>
-		                  	</div>
-		                </div>
+	        {cartItems.length === 0 ? (
+	          	<div className="flex flex-col items-center py-20 animate-fade-in">
+	                <span className="text-7xl mb-5">🛒</span>
+	                <h2 className="font-display text-3xl font-normal mb-3">Your cart is empty</h2>
+	                <p className="text-mist mb-8">Add some beautiful pieces to get started.</p>
+	                <Link to="/" className="btn-primary no-underline">
+	                  	Browse Collection
+	                </Link>
+	            </div>
+	        ) : (
+	          	<div className="grid grid-cols-[1fr_380px] gap-10 items-start">
+	                {/* Left: items + promo */}
+	                <div className="flex flex-col gap-4">
+		                {cartItems?.map((item, i) => (
+		                    <CartItem key={item.id} item={item} index={i} />
+		                ))}
+		                <PromoCode />
 	                </div>
-                </div>
-			</div>
-		</div>
-	)
+
+	                {/* Right: summary */}
+	                <CartSummary cartSummary={cartSummary} />
+	            </div>
+	        )}
+	    </div>
+    </main>
+  )
 }
 
 export default CartPage;

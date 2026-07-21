@@ -3,11 +3,17 @@ import { X, MapPin, ChevronDown } from 'lucide-react';
 import { useCreateOrderMutation, useGetOrdersQuery } from '../redux/orderApi';
 import { useGetCartQuery } from '../redux/cartApi';
 import { useGetMeQuery } from '../redux/authApi';
+import { useCreatePaymentIntentMutation } from '../redux/paymentApi.jsx';
 import Done from "../components/checkout/Done.jsx"
 import CheckoutField from "../components/checkout/CheckoutField.jsx"
 import SectionHeader from "../components/checkout/SectionHeader.jsx"
 import { counties, subCounties, stations } from "../utilities/assets.js"
 import { ToastContainer, toast } from 'react-toastify';
+
+// Stripe 
+import { loadStripe } from "@stripe/stripe-js";
+// import { useStripe, useElements, Elements } from "@stripe/react-stripe-js";
+import { CardElement, useStripe, useElements, Elements } from "@stripe/react-stripe-js";
 
 // const fmt = (n) => `KSh ${n.toLocaleString()}`;
 // violet
@@ -54,9 +60,13 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
 
+    const stripe   = useStripe();
+    const elements = useElements();
+
     const { data: user, isLoading } = useGetMeQuery();
     const { data:orders, isLoading:isFetching, error:isError } = useGetOrdersQuery();
     const [createOrder, { isLoading: isCreating }] = useCreateOrderMutation();
+    const [ createPaymentIntent, { isLoading: isPaying } ] = useCreatePaymentIntentMutation();
     const { data, error } = useGetCartQuery();
 
     const cartItems = data?.cart[0]?.items || [];
@@ -64,7 +74,7 @@ const Checkout = () => {
     
     // payment mode
     const [selectedDelivery, setSelectedDelivery] = useState("Door Delivery");
-    const [selectedPayment, setSelectedPayment] = useState("Bank");
+    const [selectedPayment, setSelectedPayment] = useState("Bank"); // M-Pesa | Cash
     // form
     const [form, setForm] = useState({
         email: user?.user?.email,
@@ -91,11 +101,6 @@ const Checkout = () => {
     });
     
     const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
-
-    const handlePay = () => {
-        setLoading(true);
-        setTimeout(() => { setLoading(false); setDone(true); }, 2200);
-    };
 
     const handleCountyChange = (event) => {
         const newCounty = event.target.value;
@@ -136,64 +141,212 @@ const Checkout = () => {
         );
     }
 
-    const handleCheckout = async () => {
-        try {
-            if (!location.county || !location.subCounty || !location.station) {
-                toast.error('Please provide country number');
-                return;
-            }
-            const orderData = {
-                  // Items from cart
-                items: cartSummary?.items.map(item => ({
-                    product: item.product,
-                    title: item.name,
-                    image: item.image,
-                    quantity: item.quantity,
-                    price: item.price,
-                    finalPrice: item.finalPrice,
-                    discount: item.discountAmount,
-                })),
-         
-                  // Shipping info
-                shippingAddress: {
-                    firstname: form?.firstname,
-                    lastname: form?.lastname,
+    // paymentDetails
+    const handleStripePayment = async (orderId) => {
+        if (!stripe || !elements) {
+            toast.error("Stripe is not loaded yet. Please wait.");
+            console.log("Stripe", stripe)
+            console.log("elements", elements)
+            return;
+        }
+
+        const cardElement = elements.getElement(CardElement);
+
+        if (!cardElement) {
+            toast.error("Card element not found. Please refresh.");
+            return;
+        }
+        // Get client secret from backend for this order
+        const result = await createPaymentIntent({ orderId })
+
+        if (!result || result?.error) {
+            toast.error(result?.error?.data?.message || "Card element not found. Please refresh.");
+            return;
+        }
+
+        const { clientSecret } = result?.data;
+
+        if (!clientSecret) {
+            toast.error("Failed to initialize payment. Try again.");
+            return;
+        }
+
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name:  form?.cardName,
                     phone: form?.phone,
                     email: form?.email,
-                    county: form?.county,
-                    subCounty: form?.subCounty,
-                    station: form?.station,
-                    address: selectedDelivery === 'Door-Delivery' 
-                      ? form?.address 
-                      : '',
                 },
+            },
+        })
 
-                  // Delivery method totalPrice
-                deliveryMethod: selectedDelivery, // 'door-delivery' or 'pick-up-station'
+        console.log("paymentIntent", paymentIntent)
 
-                  // Payment method
-                paymentMethod: selectedPayment, // 'mpesa', 'bank', 'pay-on-delivery'
+        if (error) throw new Error(error.message);
+        console.log("error", error)
 
-                  // Pricing
-                subtotal: cartSummary?.totalAmount,
-                deliveryFee: cartSummary?.deliveryFee || 0,
-                tax: cartSummary?.tax || 0,
-                discount: cartSummary?.discount || 0,
-                totalAmount: cartSummary?.finalAmount,
-            };
-            console.log(orderData)
-            const result = await createOrder(orderData).unwrap();
-            toast.success('Order placed successfully!');
-            console.log(result)
-        } catch (error) {
-            console.log(error)
-            toast.error(error?.data?.msg || 'Failed to create order')
+        if (paymentIntent?.status === "succeeded") {
+            toast.success("Payment succeded");
+            return true;
         }
     }
-    console.log('form', form)
-    console.log('cartSummary', cartSummary)
-    console.log('cartItems', cartItems)
-    console.log('orders', orders?.orders)
+
+    console.log("isPaying", isPaying)
+
+    // Main Checkout
+    const handleCheckout = async () => {
+        if (!location.county || !location.subCounty || !location.station) {
+            toast.error("Please complete your shipping address");
+            return;
+        }
+        if (selectedPayment === "Bank" && !form.cardName) {
+            toast.error("Please enter the cardholder name");
+            return;
+        }
+        if (selectedPayment === "M-Pesa" && !form.mpesaPhone) {
+            toast.error("Please enter your M-Pesa phone number");
+            return;
+        }
+
+        try {
+            // ─────── Step 1: Create order (always Pending) ─────────
+            const orderData = {
+                items: cartSummary?.items.map(item => ({
+                    product:    item.product,
+                    title:      item.name,
+                    image:      item.image,
+                    quantity:   item.quantity,
+                    price:      item.price,
+                    finalPrice: item.finalPrice,
+                    discount:   item.discountAmount,
+                })),
+                shippingAddress: {
+                    firstname: form.firstname,
+                    lastname:  form.lastname,
+                    phone:     form.phone,
+                    email:     form.email,
+                    county:    form.county    || location.county,
+                    subCounty: form.subCounty || location.subCounty,
+                    station:   form.station   || location.station,
+                    address:   selectedDelivery === "Door Delivery" ? form.address : "",
+                },
+                deliveryMethod: selectedDelivery,
+                paymentMethod:  selectedPayment,
+                subtotal:       cartSummary?.totalAmount,
+                deliveryFee:    cartSummary?.deliveryFee  || 0,
+                tax:            cartSummary?.tax          || 0,
+                discount:       cartSummary?.discount     || 0,
+                totalAmount:    cartSummary?.finalAmount,
+            }
+
+            const result = await createOrder(orderData).unwrap();
+            const orderId = result?.order?._id;
+            console.log("orderId", orderId)
+
+            // ──────────── Step 2: Initiate payment based on method ─────────────
+            if (selectedPayment === "Bank") {
+                await handleStripePayment(orderId);
+            } else if (selectedPayment === "Pay-On-Delivery") {
+                console.log("No M-Pesa for now")
+            }
+            toast.success("Order placed successfully!");
+        } catch (error) {
+            console.log(error);
+            console.log(error?.data);
+            toast.error(error?.data?.message || error?.message || "Failed to place order");
+        } finally {
+            console.log("No Loading")
+        }
+    }
+
+    // console.log(stripe, elements)
+    // console.log("cardElement", cardElement)
+
+    // const handleCheckout = async () => {
+    //     try {
+    //         if (!location.county || !location.subCounty || !location.station) {
+    //             toast.error('Please provide country number');
+    //             return;
+    //         }
+    //         const orderData = {
+    //               // Items from cart
+    //             items: cartSummary?.items.map(item => ({
+    //                 product: item.product,
+    //                 title: item.name,
+    //                 image: item.image,
+    //                 quantity: item.quantity,
+    //                 price: item.price,
+    //                 finalPrice: item.finalPrice,
+    //                 discount: item.discountAmount,
+    //             })),
+         
+    //               // Shipping info
+    //             shippingAddress: {
+    //                 firstname: form?.firstname,
+    //                 lastname: form?.lastname,
+    //                 phone: form?.phone,
+    //                 email: form?.email,
+    //                 county: form?.county,
+    //                 subCounty: form?.subCounty,
+    //                 station: form?.station,
+    //                 address: selectedDelivery === 'Door-Delivery' 
+    //                   ? form?.address 
+    //                   : '',
+    //             },
+
+    //               // Delivery method totalPrice
+    //             deliveryMethod: selectedDelivery, // 'door-delivery' or 'pick-up-station'
+
+    //               // Payment method
+    //             paymentMethod: selectedPayment, // 'M-Pesa', 'Bank', 'Pay-On-Delivery'
+
+    //               // Pricing
+    //             subtotal: cartSummary?.totalAmount,
+    //             deliveryFee: cartSummary?.deliveryFee || 0,
+    //             tax: cartSummary?.tax || 0,
+    //             discount: cartSummary?.discount || 0,
+    //             totalAmount: cartSummary?.finalAmount,
+    //         };
+    //         console.log(orderData)
+    //         const result = await createOrder(orderData).unwrap();
+
+    //         const cardElement = elements.getElement(CardElement);
+    //         // setLoading(true);
+    //         // setTimeout(() => { setLoading(false); setDone(true); }, 2200);
+    //         // payment "M-Pesa', 'Bank', 'Pay-On-Delivery"
+    //         if (selectedPayment === "Bank") {
+    //             const { clientSecret } = await createPaymentIntent({ orderId: order._id }).unwrap();
+
+    //             const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+    //                 payment_method: {
+    //                     card: cardElement,
+    //                     billing_details: { 
+    //                         name: form.cardName,
+    //                         phone: form?.phone,
+    //                         email: form?.email,
+    //                     }
+    //                 }
+    //             })
+
+    //             if (error) throe new Error(error.message)
+
+    //             if (paymentIntent.status === "succeeded") {
+    //                 console.log(paymentIntent.status)
+    //             }
+    //         }
+    //         toast.success('Order placed successfully!');
+    //         console.log(result)
+    //     } catch (error) {
+    //         console.log(error)
+    //         toast.error(error?.data?.message || 'Failed to create order')
+    //     }
+    // }
+    // console.log('form', form)
+    // console.log('cartSummary', cartSummary)
+    // console.log('cartItems', cartItems)
+    // console.log('orders', orders?.orders)
     
     return (
         <div className="min-h-screen bg-slate-50" style={{ fontFamily: "'DM Sans', sans-serif" }}>
@@ -433,71 +586,104 @@ const Checkout = () => {
 
                 {/* Card form */}
                 {selectedPayment === "Bank" && (
-                  <div className="space-y-4">
-                    {/* Card number */}
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
-                        Card Number
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="1234  5678  9012  3456"
-                          maxLength={19}
-                          value={form.cardNumber}
-                          onChange={(e) => {
-                            const v = e.target.value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
-                            setForm((f) => ({ ...f, cardNumber: v }));
-                          }}
-                          className="w-full px-4 py-3 pr-28 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
-                        />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                          <CardIcon brand="visa" />
-                          <CardIcon brand="mastercard" />
-                        </div>
-                      </div>
-                    </div>
+                  // <div className="space-y-4">
+                  //   {/* Card number */}
+                  //   <div>
+                  //     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
+                  //       Card Number
+                  //     </label>
+                  //     <div className="relative">
+                  //       <input
+                  //         type="text"
+                  //         placeholder="1234  5678  9012  3456"
+                  //         maxLength={19}
+                  //         value={form.cardNumber}
+                  //         onChange={(e) => {
+                  //           const v = e.target.value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
+                  //           setForm((f) => ({ ...f, cardNumber: v }));
+                  //         }}
+                  //         className="w-full px-4 py-3 pr-28 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
+                  //       />
+                  //       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                  //         <CardIcon brand="visa" />
+                  //         <CardIcon brand="mastercard" />
+                  //       </div>
+                  //     </div>
+                  //   </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
-                          Expiry Date
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="MM / YY"
-                          maxLength={7}
-                          value={form.expiry}
-                          onChange={(e) => {
-                            let v = e.target.value.replace(/\D/g, "");
-                            if (v.length >= 2) v = v.slice(0, 2) + " / " + v.slice(2, 4);
-                            setForm((f) => ({ ...f, expiry: v }));
-                          }}
-                          className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
-                          CVV / CVC
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="password"
-                            placeholder="•••"
-                            maxLength={4}
-                            value={form.cvv}
-                            onChange={set("cvv")}
-                            className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 transition-all"
-                          />
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300">
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  //   <div className="grid grid-cols-2 gap-4">
+                  //     <div>
+                  //       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
+                  //         Expiry Date
+                  //       </label>
+                  //       <input
+                  //         type="text"
+                  //         placeholder="MM / YY"
+                  //         maxLength={7}
+                  //         value={form.expiry}
+                  //         onChange={(e) => {
+                  //           let v = e.target.value.replace(/\D/g, "");
+                  //           if (v.length >= 2) v = v.slice(0, 2) + " / " + v.slice(2, 4);
+                  //           setForm((f) => ({ ...f, expiry: v }));
+                  //         }}
+                  //         className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 placeholder:font-sans transition-all"
+                  //       />
+                  //     </div>
+                  //     <div>
+                  //       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
+                  //         CVV / CVC
+                  //       </label>
+                  //       <div className="relative">
+                  //         <input
+                  //           type="password"
+                  //           placeholder="•••"
+                  //           maxLength={4}
+                  //           value={form.cvv}
+                  //           onChange={set("cvv")}
+                  //           className="w-full px-4 py-3 text-sm font-mono text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 transition-all"
+                  //         />
+                  //         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300">
+                  //           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  //             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+                  //           </svg>
+                  //         </div>
+                  //       </div>
+                  //     </div>
+                  //   </div>
 
+                  //   <div>
+                  //     <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
+                  //       Cardholder Name
+                  //     </label>
+                  //     <input
+                  //       type="text"
+                  //       placeholder="As it appears on your card"
+                  //       value={form.cardName}
+                  //       onChange={set("cardName")}
+                  //       className="w-full px-4 py-3 text-sm text-slate-800 bg-white border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 placeholder:text-slate-300 transition-all uppercase tracking-widest"
+                  //     />
+                  //   </div>
+
+                  //   {/* Save card toggle */}
+                  //   <div
+                  //     className="flex items-center gap-3 cursor-pointer select-none group"
+                  //     onClick={() => setSaveCard(!saveCard)}
+                  //   >
+                  //     <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all
+                  //       ${saveCard ? "bg-amber-400 border-amber-400 text-white" : "border-slate-300 group-hover:border-slate-400"}`}
+                  //     >
+                  //       {saveCard && <CheckIcon />}
+                  //     </div>
+                  //     <span className="text-xs text-slate-500 font-medium">
+                  //       Save this card for future purchases
+                  //     </span>
+                  //   </div>
+                  // </div>
+
+
+
+                    <div className="space-y-4">
+                    {/* Cardholder name — your own input, safe to store */}
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
                         Cardholder Name
@@ -511,19 +697,42 @@ const Checkout = () => {
                       />
                     </div>
 
-                    {/* Save card toggle */}
-                    <div
-                      className="flex items-center gap-3 cursor-pointer select-none group"
-                      onClick={() => setSaveCard(!saveCard)}
-                    >
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5">
+                        Card Details
+                      </label>
+                      <div className="px-4 py-3.5 border border-slate-200 rounded-xl focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-100 transition-all bg-white">
+                        <CardElement
+                          options={{
+                            style: {
+                              base: {
+                                fontSize:        "14px",
+                                color:           "#1e293b",
+                                fontFamily:      "'DM Sans', sans-serif",
+                                fontSmoothing:   "antialiased",
+                                "::placeholder": { color: "#cbd5e1" },
+                              },
+                              invalid: {
+                                color:     "#ef4444",
+                                iconColor: "#ef4444",
+                              },
+                            },
+                            hidePostalCode: true,
+                          }}
+                        />
+                      </div>
+                      <p className="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
+                        <LockIcon /> Card details are encrypted and handled securely by Stripe
+                      </p>
+                    </div>
+
+                    {/* Save card */}
+                    <div className="flex items-center gap-3 cursor-pointer select-none group" onClick={() => setSaveCard(!saveCard)}>
                       <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all
-                        ${saveCard ? "bg-amber-400 border-amber-400 text-white" : "border-slate-300 group-hover:border-slate-400"}`}
-                      >
+                        ${saveCard ? "bg-amber-400 border-amber-400 text-white" : "border-slate-300 group-hover:border-slate-400"}`}>
                         {saveCard && <CheckIcon />}
                       </div>
-                      <span className="text-xs text-slate-500 font-medium">
-                        Save this card for future purchases
-                      </span>
+                      <span className="text-xs text-slate-500 font-medium">Save this card for future purchases</span>
                     </div>
                   </div>
                 )}
@@ -582,11 +791,10 @@ const Checkout = () => {
 
               {/* Pay button */}
               <button
-                // onClick={handlePay}
                 onClick={handleCheckout}
-                disabled={isCreating}
+                disabled={isPaying}
                 className={`w-full py-4 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2.5 transition-all duration-200
-                  ${isCreating
+                  ${isPaying
                     ? "bg-amber-400 cursor-not-allowed"
                     : "bg-amber-400 hover:bg-amber-400 active:scale-[0.99] shadow-lg shadow-amber-200 hover:shadow-amber-300"
                   }`}

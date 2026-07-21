@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useGetProductsQuery } from "../redux/productsApi.jsx"
 import { useDispatch, useSelector } from "react-redux"
 import { Heart, ShoppingCart, Star, TrendingUp } from 'lucide-react';
+import StarRating from "./StarRating.jsx"
 
 const ProductsCat = () => {
 	// const { products, isLoading, success, isError } = useSelector(state => state.products); 
@@ -42,6 +43,7 @@ const ProductsCat = () => {
 	      </div>
 	    );
 	};
+
 	return (
 		<div className="w-full h-fit bg-gray-50 px-3 md:px-5 lg:px-10">
 			<span className="flex items-center space-x-6 border-b border-gray-300 py-2 my-4">
@@ -50,7 +52,8 @@ const ProductsCat = () => {
 				<p className="text-lg font-light active:border-b active:border-yellow-400 cursor-pointer">On sale</p>
 			</span>
 
-			<div className="grid lg:grid-cols-5 grid-cols-2 gap-5 lg:gap-x-3 w-full scroll-smooth snap-x">
+			<div className="grid lg:grid-cols-5 grid-cols-2 gap-1 md:gap-5 lg:gap-x-3 w-full scroll-smooth snap-x">
+
 				{data?.products?.map(product => (
 					<Link to={`/${product?.slug}/${product?._id}`} key={product?._id}>
 						<div className="group relative w-62 rounded-lg bg-white border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
@@ -71,6 +74,7 @@ const ProductsCat = () => {
 						            </span>
 						          )}
 						        </div>
+
 
 						        {/* Wishlist button — below the tags */}
 						        <button
@@ -99,7 +103,7 @@ const ProductsCat = () => {
 						      </div>
 
 						      {/* Body */}
-						      <div className="p-4 space-y-3">
+						      <div className="p-2 md:p-3 lg:p-4 space-y-1.5 md:space-y-2.5 space-y-3">
 						        {/* Rating */}
 						        <StarRating value={product?.rating} />
 
@@ -125,7 +129,7 @@ const ProductsCat = () => {
 
 						        {/* Savings badge */}
 						        {product?.discountAmount > 0 && (
-						          <div className="flex items-center gap-1.5">
+						          <div className="flex items-center gap-1 md:gap-1.5">
 						            <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
 						              <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
 						            </svg>
@@ -154,18 +158,6 @@ const ProductsCat = () => {
 						              : "Out of stock"}
 						          </span>
 						        </div>
-
-						        {/* CTA */}
-						        {/*<button
-						          disabled={!product?.stock <= 0}
-						          className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95
-						            ${product?.stock > 0
-						              ? "bg-amber-400 text-white hover:bg-gray-700 shadow-sm hover:shadow-md"
-						              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-						            }`}
-						        >
-						          {product?.stock >= 0 ? "Add to Cart" : "Unavailable"}
-						        </button>*/}
 						    </div>
 						</div>
 					</Link>

@@ -1,61 +1,70 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './baseQuery';
 
 export const productsApi = createApi({
     reducerPath: 'productsApi',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-    prepareHeaders: (headers, { getState }) => {
-      return headers;
-    },
+    baseQuery,    
     tagTypes: ['Product', 'Products'],
   
     endpoints: (builder) => ({
-    
         // Get all products
         getProducts: builder.query({
-          query: () => 
-            '/products/get-products',
-          providesTags: ['Products'],
+            query: () => 
+                '/products/get-products',
+            providesTags: ['Products'],
+        }),
+
+        // Get all products brands
+        getBrands: builder.query({
+            query: () => 
+                '/products/get-brands',
+            providesTags: ['Brands'],
         }),
         
         // Get one product
         getProductById: builder.query({
-          query: (id) => `/products/get-product/${id}`,
-          providesTags: (result, error, id) => [{ type: 'Product', id }],
+            query: (id) => `/products/get-product/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Product', id }],
+        }),
+
+        // Get products by category
+        getProductByCategory: builder.query({
+            query: ({ category, page = 1, limit = 24 }) => `products/get-products-by-category/${category}?page=${page}&limit=${limit}`, // ?page=1&limit=3
+            providesTags: (result, error, category) => [{ type: 'Product', category }],
         }),
         
         // Create product
         createProduct: builder.mutation({
-          query: (newProduct) => ({
-            url: '/products/create-product',
-            method: 'POST',
-            body: newProduct,
-          }),
-          invalidatesTags: ['Products'],
+            query: (newProduct) => ({
+                url: '/products/create-product',
+                method: 'POST',
+                body: newProduct,
+            }),
+            invalidatesTags: ['Products'],
         }),
         
         // Update product
         updateProduct: builder.mutation({
-          query: ({ id, ...data }) => ({
-            url: `/products/update-product/${id}`,
-            method: 'PUT',
-            body: data,
-          }),
-          invalidatesTags: (result, error, { id }) => [
-            { type: 'Product', id },
-            'Products',
-          ],
+            query: ({ id, ...data }) => ({
+                url: `/products/update-product/${id}`,
+                method: 'PUT',
+                body: data,
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Product', id },
+                'Products',
+            ],
         }),
         
         // Delete product
         deleteProduct: builder.mutation({
-          query: (id) => ({
-            url: `/products/delete-product/${id}`,
-            method: 'DELETE',
-          }),
-          invalidatesTags: ['Products'],
+            query: (id) => ({
+                url: `/products/delete-product/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Products'],
         }),
-    
-  }),
+    }),
 });
 
 export const {
@@ -64,4 +73,6 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetBrandsQuery,
+  useGetProductByCategoryQuery,
 } = productsApi;

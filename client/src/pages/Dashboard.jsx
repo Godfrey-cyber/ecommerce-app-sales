@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGetOrdersQuery } from "../redux/orderApi.jsx"
 import { useGetProductsQuery, useCreateProductMutation } from "../redux/productsApi.jsx"
 import { useLogoutMutation, useGetMeQuery, useGetUsersQuery } from "../redux/authApi.jsx"
-import { useGetCategoriesQuery, useGetCategoryByIdQuery } from "../redux/categoriesApi.jsx"
+import { useGetCategoriesQuery } from "../redux/categoriesApi.jsx"
 import Sidebar from "../components/dashboard/Sidebar.jsx"
 import Header from "../components/dashboard/Header.jsx"
 import Setting from "../components/dashboard/Setting.jsx"

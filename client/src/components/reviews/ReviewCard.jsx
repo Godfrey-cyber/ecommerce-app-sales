@@ -5,6 +5,8 @@ import StarDisplay from "./StarDisplay.jsx"
 const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
   	const [deleting, setDeleting] = useState(false);
   	const isOwner = review.user?._id === currentUserId;
+  	console.log("review", review)
+  	console.log("isOwner", isOwner)
 
   	const handleDelete = async () => {
     	setDeleting(true);
@@ -24,7 +26,7 @@ const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
 
  	const Avatar = ({ user, size = 'md' }) => {
       const sz = size === 'md' ? 'w-10 h-10 text-sm' : 'w-8 h-8 text-xs';
-      const initials = user?.name
+      const initials = `${user?.firstname} ${user?.lastname}`
         ?.split(' ')
         .map((n) => n[0])
         .slice(0, 2)
@@ -52,13 +54,13 @@ const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
 	    <div className="group bg-white border border-gray-100 rounded-2xl p-5 hover:border-amber-100 hover:shadow-md transition-all duration-300">
 	      <div className="flex items-start justify-between gap-3">
 	        <div className="flex items-start gap-3">
-	          <Avatar user={review.user} />
+	          <Avatar user={review.userId} />
 	          <div>
 	            <div className="flex items-center gap-2 flex-wrap">
 	              <span className="font-semibold text-gray-900 text-sm">
-	                {review.user?.name || 'Anonymous'}
+	                {review?.userId?.firstname} {review?.userId?.lastname || 'Anonymous'}
 	              </span>
-	              {review.verified && (
+	              {review?.verified && (
 	                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
 	                  <ShieldCheck className="w-3 h-3" />
 	                  Verified Purchase
@@ -66,8 +68,8 @@ const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
 	              )}
 	            </div>
 	            <div className="flex items-center gap-2 mt-0.5">
-	              <StarDisplay value={review.rating} />
-	              <span className="text-xs text-gray-400">{timeAgo(review.createdAt)}</span>
+	              <StarDisplay value={review?.rating} />
+	              <span className="text-xs text-gray-400">{timeAgo(review?.createdAt)}</span>
 	            </div>
 	          </div>
 	        </div>
@@ -88,7 +90,7 @@ const ReviewCard = ({ review, currentUserId, productId, onDelete }) => {
 	        )}
 	      </div>
 
-	      <p className="mt-3 text-sm text-gray-600 leading-relaxed">{review.comment}</p>
+	      <p className="mt-3 text-sm text-gray-600 leading-relaxed">{review?.comment}</p>
 	    </div>
   	);
 };

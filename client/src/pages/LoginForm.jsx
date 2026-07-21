@@ -36,8 +36,9 @@ const LoginForm = () => {
 	    		resetForm();
 	    		navigate('/');
 	    	} catch (error) {
+	    		console.log("Full error object:", error);
 	    		resetForm();
-	    		toast.error(error.error);
+	    		toast.error(error?.data?.message || error?.message || "Login failed. Please try again.");
 	    	}
 		}	
   	};
@@ -45,49 +46,49 @@ const LoginForm = () => {
   return (
   	<div className="lg:flex lg:flex-row flex-col w-full min-h-screen bg-white divide-gray-200 divide-x py-8">
 	    <div className=" flex flex-col justify-center w-full max-w-md mx-auto bg-white p-6">
-	      <span className="flex flex-row items-center space-x-3 text-2xl font-bold text-gray-800 mb-6">
-				<LogIn className=""/>	
-	    		<p className="">Login</p>
-	      </span>
+		    <span className="flex flex-row items-center space-x-3 text-2xl font-bold text-gray-800 mb-6">
+					<LogIn className=""/>	
+		    		<p className="">Login</p>
+		    </span>
 	      
-	      <div className="space-y-4">
-	        <div className="w-full">
-	          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-	            Email address <span className="text-red-500">*</span>
-	          </label>
-	          <input
-	            type="email"
-	            name="email"
-	            id="email"
-	            value={email}
-	            onChange={handleChange}
-	            required
-	            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
-	          />
-	        </div>
+	      	<div className="space-y-4">
+		        <div className="w-full">
+			        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+			            Email address <span className="text-red-500">*</span>
+			        </label>
+			        <input
+			            type="email"
+			            name="email"
+			            id="email"
+			            value={email}
+			            onChange={handleChange}
+			            required
+			            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
+			        />
+		        </div>
 
-	        <div className="w-full">
-	          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-	            Password <span className="text-red-500">*</span>
-	          </label>
-	          <input
-	            type="password"
-	            name="password"
-	            id="password"
-	            value={password}
-	            onChange={handleChange}
-	            required
-	            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
-	          />
-	        </div>
+		        <div className="w-full">
+			        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+			            Password <span className="text-red-500">*</span>
+			        </label>
+			        <input
+			            type="password"
+			            name="password"
+			            id="password"
+			            value={password}
+			            onChange={handleChange}
+			            required
+			            className="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"
+			        />
+		        </div>
 
-	        <button
-	          onClick={handleSubmit}
-	          disabled={isLoading || formData.email === "" || formData.password === ""}
-	          className={`w-full ${isLoading || formData.email === "" || formData.password === "" ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-amber-400 text-white hover:bg-amber-600 transition duration-200' } font-semibold py-3 px-4 rounded-sm my-10`}>
-	          {isLoading ? 'Signing in...' : 'Login'}
-	        </button>
-	      </div>
+		        <button
+		          onClick={handleSubmit}
+		          disabled={isLoading || formData.email === "" || formData.password === ""}
+		          className={`w-full ${isLoading || formData.email === "" || formData.password === "" ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-amber-400 text-white hover:bg-amber-600 transition duration-200' } font-semibold py-3 px-4 rounded-sm my-10`}>
+		          {isLoading ? 'Signing in...' : 'Login'}
+		        </button>
+	      	</div>
 	    </div>
 
 	    <div className="flex md:hidden items-center space-x-4 px-5 w-full">
@@ -104,7 +105,7 @@ const LoginForm = () => {
 	      	<Link to="/auth/register">
 		      	<button className="w-fit bg-amber-400 text-white font-semibold py-3 px-6 rounded-sm hover:bg-amber-600 transition duration-200 mt-6">
 		          Register
-		    		</button>
+		    	</button>
 	    	</Link>
 	    </div>
     </div>

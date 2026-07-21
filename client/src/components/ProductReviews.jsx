@@ -19,6 +19,7 @@ const ProductReviews = ({ id }) => {
     const [page, setPage] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
     const { data: user, isLoading } = useGetMeQuery();
+    console.log("user", user?.user._id)
 
     const {
         data,
@@ -30,6 +31,8 @@ const ProductReviews = ({ id }) => {
         data: canReviewData,
         isLoading: checkLoading,
     } = useCanUserReviewQuery(id, { skip: !user });
+
+    console.log("data", data)
 
     const [deleteReview] = useDeleteReviewMutation();
 
@@ -155,7 +158,7 @@ const ProductReviews = ({ id }) => {
                   <ReviewCard
                     key={review._id}
                     review={review}
-                    currentUserId={user?._id}
+                    currentUserId={user?.user._id}
                     id={id}
                     onDelete={deleteReview}
                   />

@@ -5,18 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import HeaderModal from "../components/header/HeaderModal.jsx"
 import { useLogoutMutation, useGetMeQuery } from "../redux/authApi.jsx"
 import CategoriesModal from "../components/header/CategoriesModal.jsx"
-import { 
-  Search, 
-  User, 
-  Heart, 
-  ShoppingCart, 
-  LogOut, 
-  Package, 
-  Mail, 
-  UserCircle,
-  Check,
-  ChevronDown
-} from 'lucide-react';
+import { Search, User, Heart, ShoppingCart, LogOut, Package, Mail, UserCircle, Check, ChevronDown } from 'lucide-react';
 import { useGetCartQuery } from "../redux/cartApi.jsx"
 
 const Header1 = () => {
@@ -26,7 +15,7 @@ const Header1 = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const menuRef = useRef(null);
   const { data, error } = useGetCartQuery();
-  const [logout, { isLoading }] = useLogoutMutation();
+  const [ logout, { isLoading } ] = useLogoutMutation();
   const { data:userData } = useGetMeQuery(); // isLoading, isSuccess, isError, error
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   // ✅ Get auth state from Redux
@@ -39,9 +28,9 @@ const Header1 = () => {
   
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowUserMenu(false);
-      }
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setShowUserMenu(false);
+        }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -51,10 +40,10 @@ const Header1 = () => {
  // @Logout User
   const handleLogout = async () => {    
     try {
-      await logout().unwrap();
-      navigate('/');
+        await logout().unwrap();
+        navigate('/');
     } catch (error) {
-      toast.error("You have Successfully logged out!");
+        toast.error("You have Successfully logged out!");
     }
     setShowUserMenu(false);
     navigate('/auth/login');
@@ -63,7 +52,7 @@ const Header1 = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${searchQuery}`);
+       navigate(`/search?q=${searchQuery}`);
     }
   };
 

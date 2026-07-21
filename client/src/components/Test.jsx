@@ -5,6 +5,19 @@ const Test = () => {
 		<div className="w-full h-screen px-20">
 		
           
+
+
+
+
+          
+
+
+
+
+
+
+
+
         
     </div>
 	)

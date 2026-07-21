@@ -14,7 +14,7 @@ export const createProduct = async(req, res) => {
     }
 
     if (!req.userId) {
-      console.log(req.userId)  
+      // console.log(req.userId)  
       return res.status(400).json("Unauthorized");
     }
     const slug = slugify(title, { lower: true })
@@ -306,3 +306,108 @@ export const deleteProduct = async (req, res) => {
         return res.status(500).json({ message: 'Server error while deleting product' })
     }   
 }
+
+export const getBrands = async (req, res) => {
+    try {
+        const brands = await Products.aggregate([
+            {
+                $match: { brand: { $ne: null }}
+            },
+            {
+                $group: {
+                    _id: "$brand",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    brand: "$_id",
+                    count: 1
+                },
+            },
+            {
+                $sort: { count: -1 }
+            }
+        ])
+        return res.status(200).json({
+            success: true,
+            message: "Brands fetched Successfully!",
+            brands
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server error while deleting product',
+        })
+    }
+}
+
+// GET /api/products/category/:categoryId
+export const getProductsByCategory1 = async (req, res) => {
+    try {
+        const products = await Products.find({
+          category: req.params.categoryId,
+        });
+
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+// GET /api/products/category/:categoryId
+export const getProductsByCategory = async (req, res) => {
+    try {
+        const { slug } = req.params;
+
+        // 1. Find subcategories
+        const parentCategory = await Category.findOne({ slug }).select("_id title slug");
+
+        if (!parentCategory) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        // 2. Find all subcategories belonging to this parent
+        const subcategories = await Category.find({
+            parent: parentCategory._id,   // query by _id, not slug
+        }).select("_id title slug");
+
+        // 3. Collect parent + all subcategory IDs
+        const categoryIds = [
+            parentCategory._id,
+            ...subcategories.map((c) => c._id),
+        ];
+
+        // 4. Pagination
+        const page  = parseInt(req.query.page)  || 1;
+        const limit = parseInt(req.query.limit) || 24;
+        const skip  = (page - 1) * limit;
+
+        // 5. Fetch products with pagination + total count
+        const [products, total] = await Promise.all([
+            Products.find({ category: { $in: categoryIds } })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate("category", "title slug"),
+            Products.countDocuments({ category: { $in: categoryIds } }),
+        ]);
+
+        res.json({
+            category: parentCategory,
+            subcategories: subcategories,
+            products,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
