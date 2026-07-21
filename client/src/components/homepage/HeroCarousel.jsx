@@ -32,13 +32,13 @@ const HeroCarousel = () => {
 	          >
 	            <Zap className="w-3 h-3" /> {s?.tag}
 	          </div>
-	          <h1 className="text-4xl lg:text-3xl font-black text-white leading-tight mb-2">{s?.title}</h1>
+	          <h1 className="text-lg lg:text-2xl font-black text-white leading-tight mb-2">{s?.title}</h1>
 	          {/*<p className="text-white/60 text-lg font-light mb-1">{s.subtitle}</p>*/}
 	          <p className="text-white/40 text-sm mb-6">{s?.description.slice(0, 150)}</p>
 
 	          <div className="flex items-baseline gap-3 mb-8">
-	            <span className="text-3xl font-black text-white">KSh {s?.finalPrice?.toLocaleString()}</span>
-	            <span className="text-white/40 line-through text-lg">KSh {s?.price?.toLocaleString()}</span>
+	            <span className="text-sm lg:text-3xl font-black text-white">KSh {s?.finalPrice?.toLocaleString()}</span>
+	            <span className="text-white/40 line-through text-sm lg:text-lg">KSh {s?.price?.toLocaleString()}</span>
 
 	            {s?.discount > 0 && (<span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: '#F59E0B33', color: '#F59E0B' }}>
 	              {s.discount}% OFF
