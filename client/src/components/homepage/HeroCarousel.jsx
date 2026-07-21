@@ -17,7 +17,6 @@ const HeroCarousel = () => {
 	}, []);
   	// const s = HERO_SLIDES[active];
   	const s = products?.products[active];
-  	console.log(products?.products[active])
   	// console.log("Hero Section", s)
 	return (
 		<div className={`relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 transition-all duration-700`} style={{ minHeight: 420 }}>
@@ -31,11 +30,11 @@ const HeroCarousel = () => {
 	            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
 	            style={{ background: '#F59E0B22', color: '#F59E0B', border: `1px solid #F59E0B44` }}
 	          >
-	            <Zap className="w-3 h-3" /> {s.tag}
+	            <Zap className="w-3 h-3" /> {s?.tag}
 	          </div>
-	          <h1 className="text-4xl lg:text-3xl font-black text-white leading-tight mb-2">{s.title}</h1>
-	          <p className="text-white/60 text-lg font-light mb-1">{s.subtitle}</p>
-	          <p className="text-white/40 text-sm mb-6">{s.description.slice(0, 150)}</p>
+	          <h1 className="text-4xl lg:text-3xl font-black text-white leading-tight mb-2">{s?.title}</h1>
+	          {/*<p className="text-white/60 text-lg font-light mb-1">{s.subtitle}</p>*/}
+	          <p className="text-white/40 text-sm mb-6">{s?.description.slice(0, 150)}</p>
 
 	          <div className="flex items-baseline gap-3 mb-8">
 	            <span className="text-3xl font-black text-white">KSh {s?.finalPrice?.toLocaleString()}</span>
@@ -63,7 +62,7 @@ const HeroCarousel = () => {
 	        <div className="flex-shrink-0 flex items-center justify-center">
 	          <div className={`w-56 h-56 lg:w-72 lg:h-72 rounded-3xl bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center shadow-2xl`} style={{ boxShadow: `0 40px 80px #F59E0B33` }}>
 	            {/*<span className="text-8xl lg:text-9xl select-none">{s.emoji}</span>*/}
-					<img className="object-cover h-full w-full" src={s.image} alt='image.jpg' />
+					<img className="object-cover h-full w-full" src={s?.image} alt='image.jpg' />
 	          </div>
 	        </div>
 	      </div>
