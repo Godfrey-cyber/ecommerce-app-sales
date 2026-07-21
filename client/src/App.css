@@ -1,13 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
-*{
+*, *::before, *::after {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
   /*font-family: 'Outfit', sans-serif;*/
 /*	overflow-x: hidden;*/
 }
+
+  html { scroll-behavior: smooth; }
+  body { 
+    background-color: #F8F5F0;
+    color: #1F2937;
+    /*font-sans antialiased; */
+  }
+  /*::-webkit-scrollbar {
+   width: 4px; 
+  }
+  ::-webkit-scrollbar-track { 
+    background-color: #FFFDD0; 
+  }
+  ::-webkit-scrollbar-thumb { 
+    background-color: #D4AF37;
+    /*border-radius: 2px 2px; */
+  /*}*/
 
 li, ul, ol {
 	list-style-type: none;
