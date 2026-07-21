@@ -5,7 +5,7 @@ import {
   Bell, Menu, X, MapPin
 } from "lucide-react";
 import { Link } from "react-router-dom"
-// import { useGetCategoriesQuery, useGetCategoryByIdQuery } from "../redux/categoriesApi.jsx"
+// import { useGetProductsQuery } from "../redux/productsApi.jsx"
 
 const fmt = (n) =>
   	new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES", maximumFractionDigits: 0 }).format(n);
