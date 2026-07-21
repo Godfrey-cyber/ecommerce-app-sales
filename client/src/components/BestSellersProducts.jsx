@@ -11,7 +11,6 @@ const BestSellersProducts = () => {
   	const [isHovered, setIsHovered] = useState(false);
   	const { data, error, isLoading } = useGetProductsQuery();
   	const navigate = useNavigate()
-// <<<<<<< HEAD
   	
   	const StarRating = ({ value }) => {
 	    return (

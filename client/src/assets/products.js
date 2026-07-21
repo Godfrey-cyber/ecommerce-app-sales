@@ -478,7 +478,7 @@ export const HERO_SLIDES = [
     bg: "from-slate-900 via-slate-800 to-slate-900",
     accent: "#F59E0B",
     imgBg: "from-slate-700 to-slate-600",
-    emoji: "💻",
+    emoji: "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/49/6087603/1.jpg?2623",
   },
   {
     id: 2,
@@ -493,7 +493,7 @@ export const HERO_SLIDES = [
     bg: "from-violet-900 via-purple-900 to-indigo-900",
     accent: "#A78BFA",
     imgBg: "from-violet-700 to-purple-600",
-    emoji: "📱",
+    emoji: "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/95/2128623/1.jpg?4682",
   },
   {
     id: 3,
@@ -508,7 +508,7 @@ export const HERO_SLIDES = [
     bg: "from-gray-900 via-zinc-900 to-neutral-900",
     accent: "#34D399",
     imgBg: "from-zinc-700 to-gray-600",
-    emoji: "📺",
+    emoji: "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/87/8178771/1.jpg?1231",
   },
 ];
 

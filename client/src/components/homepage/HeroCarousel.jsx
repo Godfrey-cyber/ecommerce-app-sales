@@ -5,16 +5,22 @@ import {
   Star, Zap, TrendingUp, ArrowRight, Phone, Shield, Truck, RotateCcw,
   Bell, Menu, X, MapPin
 } from "lucide-react";
+import { useGetProductsQuery } from "../../redux/productsApi.jsx"
 
 const HeroCarousel = () => {
 	const [active, setActive] = useState(0);
+	const { data:products, error, isLoading } = useGetProductsQuery();
+
 	useEffect(() => {
 	    const t = setInterval(() => setActive(a => (a + 1) % HERO_SLIDES.length), 5000);
 	    return () => clearInterval(t);
 	}, []);
-  	const s = HERO_SLIDES[active];
+  	// const s = HERO_SLIDES[active];
+  	const s = products?.products[active];
+  	console.log(products?.products[active])
+  	// console.log("Hero Section", s)
 	return (
-		<div className={`relative rounded-3xl overflow-hidden bg-gradient-to-br ${s.bg} transition-all duration-700`} style={{ minHeight: 420 }}>
+		<div className={`relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 transition-all duration-700`} style={{ minHeight: 420 }}>
 	      {/* Subtle grid overlay */}
 	      <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
 
@@ -23,28 +29,29 @@ const HeroCarousel = () => {
 	        <div className="flex-1 text-white">
 	          <div
 	            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
-	            style={{ background: `${s.accent}22`, color: s.accent, border: `1px solid ${s.accent}44` }}
+	            style={{ background: '#F59E0B22', color: '#F59E0B', border: `1px solid #F59E0B44` }}
 	          >
 	            <Zap className="w-3 h-3" /> {s.tag}
 	          </div>
-	          <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-2">{s.title}</h1>
+	          <h1 className="text-4xl lg:text-3xl font-black text-white leading-tight mb-2">{s.title}</h1>
 	          <p className="text-white/60 text-lg font-light mb-1">{s.subtitle}</p>
-	          <p className="text-white/40 text-sm mb-6">{s.desc}</p>
+	          <p className="text-white/40 text-sm mb-6">{s.description.slice(0, 150)}</p>
 
 	          <div className="flex items-baseline gap-3 mb-8">
-	            <span className="text-3xl font-black text-white">{s.price}</span>
-	            <span className="text-white/40 line-through text-lg">{s.originalPrice}</span>
-	            <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: `${s.accent}33`, color: s.accent }}>
-	              {s.discount}
-	            </span>
+	            <span className="text-3xl font-black text-white">KSh {s?.finalPrice?.toLocaleString()}</span>
+	            <span className="text-white/40 line-through text-lg">KSh {s?.price?.toLocaleString()}</span>
+
+	            {s?.discount > 0 && (<span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: '#F59E0B33', color: '#F59E0B' }}>
+	              {s.discount}% OFF
+	            </span>)}
 	          </div>
 
 	          <div className="flex gap-3">
 	            <button
 	              className="px-7 py-3 rounded-xl font-bold text-sm transition-all hover:scale-105 active:scale-95"
-	              style={{ background: s.accent, color: "#1a1a1a" }}
+	              style={{ background: '#F59E0B', color: "#1a1a1a" }}
 	            >
-	              {s.cta}
+	              Buy Now
 	            </button>
 	            <button className="px-7 py-3 rounded-xl font-semibold text-sm text-white/70 border border-white/20 hover:border-white/40 transition-all">
 	              Learn More
@@ -54,8 +61,9 @@ const HeroCarousel = () => {
 
 	        {/* Product visual */}
 	        <div className="flex-shrink-0 flex items-center justify-center">
-	          <div className={`w-56 h-56 lg:w-72 lg:h-72 rounded-3xl bg-gradient-to-br ${s.imgBg} flex items-center justify-center shadow-2xl`} style={{ boxShadow: `0 40px 80px ${s.accent}33` }}>
-	            <span className="text-8xl lg:text-9xl select-none">{s.emoji}</span>
+	          <div className={`w-56 h-56 lg:w-72 lg:h-72 rounded-3xl bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center shadow-2xl`} style={{ boxShadow: `0 40px 80px #F59E0B33` }}>
+	            {/*<span className="text-8xl lg:text-9xl select-none">{s.emoji}</span>*/}
+					<img className="object-cover h-full w-full" src={s.image} alt='image.jpg' />
 	          </div>
 	        </div>
 	      </div>
@@ -67,7 +75,7 @@ const HeroCarousel = () => {
 	            key={i}
 	            onClick={() => setActive(i)}
 	            className="h-1.5 rounded-full transition-all duration-300"
-	            style={{ width: i === active ? 24 : 8, background: i === active ? s.accent : "rgba(255,255,255,0.3)" }}
+	            style={{ width: i === active ? 24 : 8, background: i === active ? '#F59E0B' : "rgba(255,255,255,0.3)" }}
 	          />
 	        ))}
 	      </div>

@@ -1,20 +1,23 @@
 import { slides } from "../utilities/assets.js"
 import React, { useState, useEffect } from 'react'
 import { ChevronRight, ChevronLeft } from "lucide-react";
-
+import { useGetProductsQuery } from "../redux/productsApi.jsx"
 const ShowcaseSection = () => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+	const { data, error, isLoading } = useGetProductsQuery();
+
+	console.log("products", data?.products)
 
 	useEffect(() => {
 		if (!isAutoPlaying) return;
 		
 		const interval = setInterval(() => {
-			setCurrentSlide((prev) => (prev + 1) % slides.length);
+			setCurrentSlide((prev) => (prev + 1) % data?.products?.length);
 		}, 4000);
 
 		return () => clearInterval(interval);
-	}, [isAutoPlaying, slides.length]);
+	}, [isAutoPlaying, data?.products?.length]);
 
 	const goToSlide = (index) => {
 		setCurrentSlide(index);
@@ -23,13 +26,13 @@ const ShowcaseSection = () => {
 	};
 
 	const nextSlide = () => {
-		setCurrentSlide((prev) => (prev + 1) % slides.length);
+		setCurrentSlide((prev) => (prev + 1) % data?.products?.length);
 		setIsAutoPlaying(false);
 		setTimeout(() => setIsAutoPlaying(true), 5000);
 	};
 
 	const prevSlide = () => {
-		setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+		setCurrentSlide((prev) => (prev - 1 + data?.products?.length) % data?.products?.length);
 		setIsAutoPlaying(false);
 		setTimeout(() => setIsAutoPlaying(true), 5000);
 	};
@@ -38,7 +41,7 @@ const ShowcaseSection = () => {
 		<div className="grid grid-cols-12 h-[750px] md:h-[400px] w-full px-2 md:px-10 lg:px-20 my-10 lg:gap-x-4  bg-white">
 			<div className="col-span-12 lg:col-span-9 relative overflow-hidden bg-gray-100 w-full h-['450px']">
 				{/* Carousel Slides */}
-				{slides.map((slide, index) => (
+				{data?.products?.map((slide, index) => (
 					<div
 						key={slide.id}
 						className={`absolute inset-0 flex justify-between items-center px-4 md:px-7 py-4 md:px-10 transition-all duration-700 ease-in-out ${
@@ -51,13 +54,13 @@ const ShowcaseSection = () => {
 					>
 						{/*desc*/}
 						<div className="flex flex-col space-y-4 lg:space-y-3 w-4/5 md:w-1/2">
-							<p className="text-xl md:text-2xl lg:text-6xl text-gray-800">{slide.title} <span>{slide.subtitle}</span></p>
+							<p className="text-xl md:text-2xl lg:text-6xl text-green-400">{slide.title}</p>
 							<p className="text-sm text-gray-800">{slide.description}</p>
 							<p className="text-xl md:text-2xl lg:text-5xl font-bold text-gray-800">{slide.price}</p>
 							<button className="bg-yellow-400 font-bold text-sm px-8 py-3 my-4 rounded-md w-fit cursor-pointer">Buy Now</button>
 						</div>
 						<div className="flex h-full w-full">
-							<img className="object-cover" src="" alt="" />
+							<img className="object-cover" src="" alt='image.jpg' />
 						</div>
 					</div>
 				))}
