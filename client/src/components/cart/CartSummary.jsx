@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from "react-router-dom"
+import PromoCode from "./PromoCode.jsx"
 
 const TRUST_BADGES = ["🔒 Secure", "✓ Encrypted", "↩ Easy Returns"];
 
